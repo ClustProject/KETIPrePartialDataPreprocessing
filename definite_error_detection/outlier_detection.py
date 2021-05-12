@@ -1,3 +1,4 @@
+#
 class OutlierDetection():
     def __init__(self):
         #first_ratio=0.05
@@ -37,6 +38,7 @@ class OutlierDetection():
                 data_out1.iloc[pos-1].loc[column_name] = data_out1.iloc[pos].loc[column_name]
         return data_out1
     
+    
     def outlier_extream_value_analysis(self, sample, data, extream):
         data_out= data.copy()
         for feature in data_out.columns:
@@ -56,7 +58,7 @@ class OutlierDetection():
         
         return data_out
 
-def error_dection_with_neihbor_dataset(data_original):
+def make_neighborErrorDetected_dataSet(data_original):
     data_clean={}
 
     for i, data in enumerate(data_original):

@@ -1,4 +1,11 @@
 import numpy as np
+
+
+# Make valid data
+# 1. delete duplicated data
+# 2. [data <min  or data > max] -> make data = nan
+ 
+
 class ValidData():
     def __init__(self):
         pass
@@ -40,7 +47,7 @@ class ValidData():
         return data_out
     
     
-def definite_error_detected_dataset(data_original, data_min_max_limit):
+def make_valid_dataSet(data_original, data_min_max_limit):
     data_clean={}
 
     for i, data in enumerate(data_original):

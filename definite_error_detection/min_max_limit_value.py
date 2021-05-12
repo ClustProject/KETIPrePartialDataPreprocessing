@@ -1,4 +1,4 @@
-class MinMaxLmitValueSet():
+class GMinMaxLmitValueSet():
     
     def __init__(self, type):
         self.type = type
