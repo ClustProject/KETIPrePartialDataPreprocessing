@@ -46,13 +46,3 @@ class ValidData():
             
         return data_out
     
-    
-def make_valid_dataSet(data_original, data_min_max_limit):
-    data_clean={}
-
-    for i, data in enumerate(data_original):
-        #data_sample = data_original[i][:100]
-        data = data_original[i]
-        data_clean[i] = ValidData().get_valid_data(data, data_min_max_limit)
-    
-    return data_clean

@@ -58,12 +58,3 @@ class OutlierDetection():
         
         return data_out
 
-def make_neighborErrorDetected_dataSet(data_original):
-    data_clean={}
-
-    for i, data in enumerate(data_original):
-        #data_sample = data_original[i][:100]
-        data = data_original[i]
-        data_clean[i] = OutlierDetection().get_neighbor_error_detected_data(data)
-
-    return data_clean
