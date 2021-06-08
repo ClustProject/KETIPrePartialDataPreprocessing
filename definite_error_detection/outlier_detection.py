@@ -1,4 +1,6 @@
-#
+#data_resample[data_name] = data_resample[data_name].fillna(method='bfill', limit=1)
+#data_resample[data_name] = data_resample[data_name].fillna(method='ffill', limit=1)
+        
 class OutlierDetection():
     def __init__(self):
         #first_ratio=0.05
