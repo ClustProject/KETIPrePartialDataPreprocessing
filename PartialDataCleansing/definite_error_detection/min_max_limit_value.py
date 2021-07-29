@@ -8,11 +8,29 @@ class MinMaxLmitValueSet():
         if self.type =='air':
             #data_clean_partial =  edd.extream_error_deletion(data_raw_partial)
             data_min_max_limit = {'max_num':{'CO2ppm':10000, 'H2Sppm':100, 'NH3ppm':300, 'OptimalTemperature':45, 
-                                       'RichTemperature':45, 'RichHumidity':100, 'comp_temp':45, 'comp_humid':100,
-                                       '2ndPanSpeed':200, 'UpperPanSpeed':200,
-                                      'out_humid':100,'out_pressure':2000,'out_temp':50 },
+                                        'RichTemperature':45, 'RichHumidity':100, 'comp_temp':45, 'comp_humid':100,
+                                        '2ndPanSpeed':200, 'UpperPanSpeed':200, 'out_pressure':2000,
+                                        "in_pm01_raw":99999, "in_pm25_raw":99999, "in_pm10_raw":99999,
+                                        "in_temp":-9899.99, "in_humi":99999, "co2":99999, "voc":99999, 
+                                        "in_noise":99999, "in_pm10":99999, "in_pm25":99999, "in_pm01":99999, 
+                                        "cici_pm10":100, "cici_pm25":100, "cici_temp":100, "cici_humi":100, 
+                                        "cici_noise":100, "cici":100, "ciai":100,
+                                        "out_pm25_raw":1000, "out_pm10_raw":1000, "out_temp":80, "out_humi":100, "out_noise":90,
+                                        "out_pm10":1000, "out_pm25":1000, "ultraviolet_rays":16, "light_intensity":120000, "blacksphere_temp":80,
+                                        "coci_pm10":100, "coci_pm25":100, "coci_temp":100, "coci_humi":100, "coci":100, "coai":100,
+                                        "nh3":100, "h2s":100, "o3":2, "co":2, "no2":2, "so2":2, "vibration_x":16, "vibration_y":16, 
+                                        "vibration_z":16, "vibration_max_x":16, "vibration_max_y":16, "vibration_max_z":16},
                            'min_num':{'CO2ppm':0, 'H2Sppm':0, 'NH3ppm':0, 'OptimalTemperature':-20, 'RichTemperature':-20, 
-                                      'RichHumidity':0, 'comp_temp':-20, 'comp_humid':0, '2ndPanSpeed':0, 'UpperPanSpeed':0,
-                                     'out_humid':0, 'out_pressure':0, 'out_temp':-30}}
+                                        'RichHumidity':0, 'comp_temp':-20, 'comp_humid':0, '2ndPanSpeed':0, 'UpperPanSpeed':0, 'out_pressure':0, 
+                                        "in_pm01_raw":0, "in_pm25_raw":0, "in_pm10_raw":0,
+                                        "in_temp":-100, "in_humi":0, "co2":0, "voc":0, 
+                                        "in_noise":0, "in_pm10":0, "in_pm25":0, "in_pm01":0, 
+                                        "cici_pm10":0, "cici_pm25":0, "cici_temp":0, "cici_humi":0, 
+                                        "cici_noise":0, "cici":0, "ciai":0,
+                                        "out_pm25_raw":0, "out_pm10_raw":0, "out_temp":-40, "out_humi":0, "out_noise":35,
+                                        "out_pm10":0, "out_pm25":0, "ultraviolet_rays":0, "light_intensity":0, "blacksphere_temp":-40,
+                                        "coci_pm10":0, "coci_pm25":0, "coci_temp":0, "coci_humi":0, "coci":0, "coai":0,
+                                        "nh3":0, "h2s":0, "o3":0, "co":0, "no2":0, "so2":0, "vibration_x":0, "vibration_y":0, 
+                                        "vibration_z":0, "vibration_max_x":0, "vibration_max_y":0, "vibration_max_z":0}}
             
         return data_min_max_limit
