@@ -12,7 +12,6 @@ class ValidData():
        
     def get_valid_data(self, data, min_max_limit):
         data_out = data.copy()
-        
         data_out = self._duplicate_data_deletion(data_out)
         data_out = self._out_of_range_error_deletion (data_out, min_max_limit)
         return data_out
