@@ -7,7 +7,6 @@ class DataRemoveByNaNStatus():
     def __init__(self):
         pass
     ## Select one remove method : (time, ratio, num)
-    
     def removeNaNData(self, data, NanLImitProcessingInfo):
         type = NanLImitProcessingInfo['type']
         # 0,0 일 경우 NaN 이 하나 이상일 경우 모두 삭제
@@ -71,6 +70,7 @@ class DataRemoveByNaNStatus():
     
     def removeNaNDataByTotalNaNLimitNum(self, totalNanLimitNum, data):
         columnNaNCountSet = data.isnull().sum()
+
         for column_name in data.columns:
             columnNaNCount = columnNaNCountSet[column_name]
             if totalNanLimitNum < columnNaNCount:
@@ -78,11 +78,10 @@ class DataRemoveByNaNStatus():
         return data
     
     def removeNaNDataByConsecutiveNaNLimitNum(self, ConsecutiveNanLimitNum, data):
-        consecutiveNanCountMap = self.consecutiveNaNCountMap(data)
-        consecutiveNanCountMap.plot()
-        plt.show()
+        self.consecutiveNanCountMap = self.consecutiveNaNCountMap(data)
+        #plt.show()
         for column_name in data.columns:
-            consecutiveNanCount_column = consecutiveNanCountMap[column_name]
+            consecutiveNanCount_column = self.consecutiveNanCountMap[column_name]
             if (consecutiveNanCount_column > ConsecutiveNanLimitNum).any():
                 data = data.drop(column_name,axis=1)
          
