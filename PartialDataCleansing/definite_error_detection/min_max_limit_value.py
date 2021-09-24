@@ -12,7 +12,7 @@ class MinMaxLmitValueSet():
                                         '2ndPanSpeed':200, 'UpperPanSpeed':200, 'out_pressure':2000,
                                         "in_pm01_raw":1000, "in_pm25_raw":1000, "in_pm10_raw":1000,
                                         "in_temp":80, "in_humi":100, "co2":99999, "voc":99999, 
-                                        "in_noise":1000, "in_pm10":99999, "in_pm25":99999, "in_pm01":99999, 
+                                        "in_noise":5000, "in_pm10":99999, "in_pm25":99999, "in_pm01":99999, 
                                         "cici_pm10":100, "cici_pm25":100, "cici_temp":100, "cici_humi":100, 
                                         "cici_noise":100, "cici":100, "ciai":100, 'cici_voc':100, 'cici_co2':100,
                                         "out_pm25_raw":1000, "out_pm10_raw":1000, "out_temp":80, "out_humi":100, "out_noise":90,
