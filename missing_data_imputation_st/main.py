@@ -53,7 +53,9 @@ import pandas as pd
 
 import argparse
 import json
-import imputation
+import MeasurementOutlierDetection
+import MissingPatternDetection
+import Imputation
 
 
 parser = argparse.ArgumentParser(description='Partial Imputation')
@@ -69,18 +71,36 @@ parser.add_argument('--method2_max', type = int, default = 5, help = 'Mid term m
 parser.add_argument('--method3', type = str, default = 'brits', help = 'Imputation strategies for long term missing values. [brits, naomi, ...]')
 parser.add_argument('--method3_min', type = int, default = 6, help = 'Long term mimimum length')
 parser.add_argument('--method3_max', type = int, default = 10, help = 'Long term maximum length')   
-parser.add_argument('--TotalNanLimit', type = float, default = 0.3, help = 'TotalNanLimit')
+parser.add_argument('--TotalNaNLimit', type = float, default = 0.3, help = 'TotalNaNLimit')
 parser.add_argument('--output_path', type = str, default = './', help = ' Output destination')
 
 def main(args):
     dataset = pd.read_csv(args.input_path)
-    if (dataset.isnull().sum())/len(dataset) > args.TotalNaNLimit:
-        return dataset
+    total_index_num = dataset.shape[0]*(dataset.shape[1]-1) # Datetime 제외
+    
+    if (dataset.isnull().sum().sum)/total_index_num > args.TotalNaNLimit: # 전체 column에 대한 TotalNaNLimit
+        imputed_dataset = dataset
+
+    elif dataset[args.column].isnull().sum()/len(dataset) > args.TotalNaNLimit: # 특정 column에 대한 TotalNaNLimit
+        imputed_dataset = dataset[args.column]
+
     else:
-        
-        imputer = imputation.imputation_methods
+        # 1. Measurement Outlier Detection Module
+        Outlier2NaN = MeasurementOutlierDetection.OutlierDetection
+        Outlier2NaN.certain_outlier_detection(dataset, args.column)
+        Outlier2NaN.uncertain_outlier_detection(dataset, args.column)
+
+        # 2. Missing Pattern Detection Module
+        NaNPatternCheck = MissingPatternDetection.MissingPatternDetection
+        NaNPatternCheck.get_missing_pattern(dataset, args.column)
+
+        # 3. Missing Data Imputation
+        Imputer = Imputation.imputation_methods
 
 
+
+
+    imputed_dataset.to_csv(args.output_path, mode='w', index=False, header=False)
 
 if __name__ == '__main__':
     args = parser.parse_args()

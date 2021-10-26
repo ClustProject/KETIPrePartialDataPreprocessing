@@ -13,7 +13,7 @@ class OutlierDetection():
         data[data[column] < data_min_max_limit['min_num'][column]] = np.nan
         return data
                     
-    def uncertain_outlier_detection(self, data, column, weight):
+    def uncertain_outlier_detection(self, data, column, weight=1.5):
 
         # 추가로 하나 더 기능 넣을 예정
 
