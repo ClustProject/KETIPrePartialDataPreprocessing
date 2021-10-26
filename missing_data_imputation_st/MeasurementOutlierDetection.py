@@ -1,19 +1,20 @@
 import MinMaxLimit
 import numpy as np
+import numpy as np
 
 class OutlierDetection():
 
     def __init__(self):
         pass
 
-    def certain_outlier_detection(self, data, column):
+    def certain_outlier_detection(self, data):
         # column별 min, max 범위 밖 데이터 nan 처리
         data_min_max_limit = MinMaxLimit.MinMaxLmitValueSet().get_data_min_max_limitSet(type = 'air')
         data[data[column] > data_min_max_limit['max_num'][column]] = np.nan
         data[data[column] < data_min_max_limit['min_num'][column]] = np.nan
         return data
                     
-    def uncertain_outlier_detection(self, data, column, weight=1.5):
+    def uncertain_outlier_detection(self, data, weight=1.5):
 
         # 추가로 하나 더 기능 넣을 예정
 
