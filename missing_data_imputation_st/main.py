@@ -1,5 +1,4 @@
 
-
 ##
 #  input: data
 #
@@ -93,36 +92,83 @@ def main(args):
         dataset = Outlier2NaN.certain_outlier_detection(dataset, args.column)
         dataset = Outlier2NaN.uncertain_outlier_detection(dataset, args.column)
 
+
         # 2. Missing Pattern Detection Module
         NaNPatternCheck = MissingPatternDetection.MissingPatternDetection()
         dataset = NaNPatternCheck.get_missing_pattern(dataset, args.column)
 
+
         # 3. Missing Data Imputation
         Imputer = Imputation.imputation_methods()
+
 
         ## 3-1. method 1
 
         if args.method1 == 'mean':
-            dataset = Imputer.mean_interpolate(dataset, args.column, args.method1_max, args.method1_min)
+            dataset = Imputer.mean_interpolate(dataset, args.column, args.method1_min, args.method1_max)
 
         elif args.method1 == 'median':
-            dataset = Imputer.median_interpolate(dataset, args.column, args.method1_max, args.method1_min)
+            dataset = Imputer.median_interpolate(dataset, args.column, args.method1_min, args.method1_max)
 
         elif args.method1 == 'bfill':
-            dataset = Imputer.bfill(dataset, args.column, args.method1_max, args.method1_min)
+            dataset = Imputer.bfill(dataset, args.column, args.method1_min, args.method1_max)
 
         elif args.method1 == 'ffill':    
-            dataset = Imputer.ffill(dataset, args.column, args.method1_max, args.method1_min)
+            dataset = Imputer.ffill(dataset, args.column, args.method1_min, args.method1_max)
 
         ## 3-2. method 2
 
         if args.method2 == 'linear':
-            dataset = Imputer.linear_interpolate(dataset, args.column, args.method1_max, args.method1_min)
+            dataset = Imputer.linear_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+        
+        elif args.method2 == 'time':
+            dataset = Imputer.time_interpolation(dataset, args.column, args.method2_min, args.method2_max)
+
+        elif args.method2 == 'nearest':
+            dataset = Imputer.nearest_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        elif args.method2 == 'zero':
+            dataset = Imputer.zero_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        elif args.method2 == 'slinear':
+            dataset = Imputer.slinear_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        elif args.method2 == 'quadratic':
+            dataset = Imputer.quadratic_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        elif args.method2 == 'cubic':
+            dataset = Imputer.cubic_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+    
+        elif args.method2 == 'spline':
+            dataset = Imputer.spline_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        elif args.method2 == 'barycentric':
+            dataset = Imputer.barycentric_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        elif args.method2 == 'polynomial':
+            dataset = Imputer.polynomial_interpolate(dataset, args.column, args.method2_min, args.method2_max)
         
         
-
-
         ## 3-3. method 3
+
+        # if args.method3 == 'linear':
+        #     dataset = Imputer.linear_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+        
+        # elif args.method2 == 'time':
+        #     dataset = Imputer.time_interpolation(dataset, args.column, args.method2_min, args.method2_max)
+
+        # elif args.method2 == 'nearest':
+        #     dataset = Imputer.nearest_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        # elif args.method2 == 'zero':
+        #     dataset = Imputer.zero_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        # elif args.method2 == 'slinear':
+        #     dataset = Imputer.slinear_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
+        # elif args.method2 == 'quadratic':
+        #     dataset = Imputer.quadratic_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+
 
 
     imputed_dataset.to_csv(args.output_path, index=False)
