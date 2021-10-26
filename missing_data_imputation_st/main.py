@@ -99,7 +99,31 @@ def main(args):
 
         # 3. Missing Data Imputation
         Imputer = Imputation.imputation_methods()
-        imputed_dataset = dataset
+
+        ## 3-1. method 1
+
+        if args.method1 == 'mean':
+            dataset = Imputer.mean_interpolate(dataset, args.column, args.method1_max, args.method1_min)
+
+        elif args.method1 == 'median':
+            dataset = Imputer.median_interpolate(dataset, args.column, args.method1_max, args.method1_min)
+
+        elif args.method1 == 'bfill':
+            dataset = Imputer.bfill(dataset, args.column, args.method1_max, args.method1_min)
+
+        elif args.method1 == 'ffill':    
+            dataset = Imputer.ffill(dataset, args.column, args.method1_max, args.method1_min)
+
+        ## 3-2. method 2
+
+        if args.method2 == 'linear':
+            dataset = Imputer.linear_interpolate(dataset, args.column, args.method1_max, args.method1_min)
+        
+        
+
+
+        ## 3-3. method 3
+
 
     imputed_dataset.to_csv(args.output_path, index=False)
 

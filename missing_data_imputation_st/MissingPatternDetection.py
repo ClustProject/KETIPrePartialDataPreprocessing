@@ -11,7 +11,7 @@ class MissingPatternDetection():
             data,
             (data[column].isnull().astype(int)
             .groupby(data[column].notnull().astype(int).cumsum())
-            .cumsum().to_frame('nan_count_'+column)
+            .cumsum().to_frame('NaN_'+column)
             )], axis=1)        
         ## data[column].isnull().astype(int).groupby(data[column].notnull().astype(int).cumsum()).cumsum
         
