@@ -50,6 +50,7 @@
 
 import numpy as np
 import pandas as pd
+import sys
 
 import argparse
 import json
@@ -72,35 +73,33 @@ parser.add_argument('--method3', type = str, default = 'brits', help = 'Imputati
 parser.add_argument('--method3_min', type = int, default = 6, help = 'Long term mimimum length')
 parser.add_argument('--method3_max', type = int, default = 10, help = 'Long term maximum length')   
 parser.add_argument('--TotalNaNLimit', type = float, default = 0.3, help = 'TotalNaNLimit')
-parser.add_argument('--output_path', type = str, default = './', help = ' Output destination')
+parser.add_argument('--output_path', type = str, default = './output/imputed_dataset.csv', help = ' Output destination')
 
 def main(args):
     dataset = pd.read_csv(args.input_path)
     total_index_num = dataset.shape[0]*(dataset.shape[1]-1) # Datetime 제외
     
-    if (dataset.isnull().sum().sum)/total_index_num > args.TotalNaNLimit: # 전체 column에 대한 TotalNaNLimit
+    if (dataset.isnull().sum().sum())/total_index_num > args.TotalNaNLimit: # 전체 column에 대한 TotalNaNLimit
         imputed_dataset = dataset
 
     elif dataset[args.column].isnull().sum()/len(dataset) > args.TotalNaNLimit: # 특정 column에 대한 TotalNaNLimit
         imputed_dataset = dataset[args.column]
 
     else:
-        # 1. Measurement Outlier Detection Module
-        Outlier2NaN = MeasurementOutlierDetection.OutlierDetection
+        # 1. Measurement Outlier Detection Module`
+        Outlier2NaN = MeasurementOutlierDetection.OutlierDetection()
         Outlier2NaN.certain_outlier_detection(dataset, args.column)
         Outlier2NaN.uncertain_outlier_detection(dataset, args.column)
 
         # 2. Missing Pattern Detection Module
-        NaNPatternCheck = MissingPatternDetection.MissingPatternDetection
+        NaNPatternCheck = MissingPatternDetection.MissingPatternDetection()
         NaNPatternCheck.get_missing_pattern(dataset, args.column)
 
         # 3. Missing Data Imputation
-        Imputer = Imputation.imputation_methods
+        Imputer = Imputation.imputation_methods()
+        imputed_dataset = dataset
 
-
-
-
-    imputed_dataset.to_csv(args.output_path, mode='w', index=False, header=False)
+    imputed_dataset.to_csv(args.output_path, index=False, header=False)
 
 if __name__ == '__main__':
     args = parser.parse_args()
