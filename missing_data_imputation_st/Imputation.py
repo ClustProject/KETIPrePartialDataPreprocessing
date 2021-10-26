@@ -66,7 +66,7 @@ class imputation_methods():
         return data
 
     def spline_interpolate(self, data, column, min, max, order):
-        data.interpolate(method='spline', limit = max, order = order)
+        data.interpolate(method='spline', limit = max, order = 5)
         return data
 
     def barycentric_interpolate(self, data, column, min, max):
@@ -74,5 +74,5 @@ class imputation_methods():
         return data
 
     def polynomial_interpolate(self, data, column, min, max, order):
-        data.interpolate(method='polynomial', limit = max, order = order)
+        data.interpolate(method='polynomial', limit = max, order = 5) 
         return data
