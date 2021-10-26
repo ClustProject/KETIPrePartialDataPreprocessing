@@ -16,7 +16,7 @@ import pandas as pd
 #                                )
 
 
-class imputation():
+class imputation_methods():
 
     def __init__(self):
         pass
