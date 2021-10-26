@@ -116,6 +116,8 @@ def main(args):
         elif args.method1 == 'ffill':    
             dataset = Imputer.ffill(dataset, args.column, args.method1_min, args.method1_max)
 
+        imputed_dataset_1 = dataset
+
         ## 3-2. method 2
 
         if args.method2 == 'linear':
@@ -148,13 +150,14 @@ def main(args):
         elif args.method2 == 'polynomial':
             dataset = Imputer.polynomial_interpolate(dataset, args.column, args.method2_min, args.method2_max)
         
-        
+        imputed_dataset_2 = dataset
+
         ## 3-3. method 3
 
-        # if args.method3 == 'linear':
-        #     dataset = Imputer.linear_interpolate(dataset, args.column, args.method2_min, args.method2_max)
+        # if args.method3 == 'brits':
+        #     dataset = Imputer.linear_interpolate(dataset, args.column, args.method3_min, args.method3_max)
         
-        # elif args.method2 == 'time':
+        # elif args.method3 == 'time':
         #     dataset = Imputer.time_interpolation(dataset, args.column, args.method2_min, args.method2_max)
 
         # elif args.method2 == 'nearest':
@@ -169,7 +172,7 @@ def main(args):
         # elif args.method2 == 'quadratic':
         #     dataset = Imputer.quadratic_interpolate(dataset, args.column, args.method2_min, args.method2_max)
 
-
+        imputed_datset_3 = dataset
 
     imputed_dataset.to_csv(args.output_path, index=False)
 
