@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.append("../")
+sys.path.append("../..")
+
 class partialDataProcessing():
     def __init__(self):
         self.columnNaNCount={}

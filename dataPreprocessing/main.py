@@ -1,12 +1,13 @@
 import numpy as np
 import pandas as pd
 import sys
+import os
 sys.path.append("../")
 sys.path.append("../..")
 
-
 if __name__ == '__main__':
-    input_file = './data_miss_original.csv'
+    BASE_DIR = os.getcwd()
+    input_file = os.path.join(BASE_DIR, 'KETIPrePartialDataPreprocessing', 'dataPreProcessing','data_miss_original.csv')
     imputation_parameter ={
     "imputation_method":[
         {
@@ -28,11 +29,10 @@ if __name__ == '__main__':
         "totalNanLimit":0.3
     }
 
-    from KETIPrePartialDataPreprocessing.dataPreprocessing.dataIngestion import getData
-    from KETIPrePartialDataPreprocessing.dataPreprocessing.partial_data_processing import partialDataProcessing
-
+    from dataIngestion import getData
     input_data = getData().getFileInput(input_file, 'timedate')
     test_data = input_data[:10000]
+    from partial_data_processing import partialDataProcessing
     MDP = partialDataProcessing()
     MDP.setData(test_data)
     output_data = MDP.dataCleaning(imputation_parameter)
