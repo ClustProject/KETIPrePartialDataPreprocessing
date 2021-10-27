@@ -5,12 +5,13 @@ sys.path.append("../")
 sys.path.append("../..")
 
 def inputControl(inputType):
+    dataC = getData()
     if inputType=="file":
         BASE_DIR = os.getcwd()
         input_file = os.path.join(BASE_DIR, 'data_miss_original.csv')
-        input_data = getData().getFileInput(input_file, 'timedate')
+        input_data = dataC.getFileInput(input_file, 'timedate')
     elif inputType =="influx":
-        input_data = "Emtpy"
+        input_data = dataC.getInfluxInput()
 
     return input_data
 
@@ -40,7 +41,7 @@ if __name__ == '__main__':
     outlier_remove_param={'flag':True, 'data_type':'air', 'uncertain_outlier_remove':False, 'staticFrequency':True}
     from KETIPrePartialDataPreprocessing.data_manager.multipleDataSourceIngestion import getData
 
-    inputType ='file'
+    inputType ='influx' # and file
     input_data = inputControl(inputType)
     from data_cleaning import DataCleaning
     MDP = DataCleaning()
