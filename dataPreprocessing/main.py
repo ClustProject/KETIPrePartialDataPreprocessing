@@ -32,8 +32,9 @@ if __name__ == '__main__':
     from KETIPrePartialDataPreprocessing.dataPreprocessing.partial_data_processing import partialDataProcessing
 
     input_data = getData().getFileInput(input_file, 'timedate')
+    test_data = input_data[:10000]
     MDP = partialDataProcessing()
-    MDP.setData(input_data[:10000])
+    MDP.setData(test_data)
     output_data = MDP.dataCleaning(imputation_parameter)
 
 
