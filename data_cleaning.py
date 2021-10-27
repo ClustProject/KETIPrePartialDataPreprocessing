@@ -3,7 +3,10 @@ import os
 sys.path.append("../")
 sys.path.append("../..")
 
-class partialDataProcessing():
+# Data Cleaning Class
+# Init -> SetData -> data Cleaning
+
+class DataCleaning():
     def __init__(self):
         self.columnNaNCount={}
         self.columnNaNRatio={}
@@ -13,36 +16,24 @@ class partialDataProcessing():
         self.resultData = data.copy()
         self.totalLength = len(data)
         self.columns = data.columns
-    
-    def dataCleaning(self, imputation_parameter):
+
+    def dataCleaning(self, imputation_parameter, outlier_param):
         self.imputation_parameter = imputation_parameter
-        #Outlier2NaN = OutlierDetection.CertainOutlierDetection()
-        clean_param={'flag':True, 'data_type':'air'}
+
         #Outlier Detection and let outlier be NaN
-        self.dataWithMoreNaN = self.OutlierDetection(self.data, clean_param)
+        from KETIPrePartialDataPreprocessing.outlier_detection import outlierToNaN
+        self.dataWithMoreNaN = outlierToNaN.OutlierToNaN(self.data, outlier_param).getDataWithNaN()
         for column in self.columns:
             column_data = self.dataWithMoreNaN[[column]] 
-            column_data = self.columnImputation(column_data, column)
+            column_data = self._columnImputation(column_data, column)
             self.resultData[column] = column_data
         return self.resultData
     
-    # 옆에서 가져왔음, 수정해야함 
-    def OutlierDetection(self, data_raw, clean_param):
-        if clean_param['flag'] ==True:
-            from KETIPrePartialDataPreprocessing.PartialDataCleansing.definite_error_detection import min_max_limit_value
-            self.limit_min_max = min_max_limit_value.MinMaxLimitValueSet().get_data_min_max_limitSet(clean_param['data_type'])
-            from KETIPrePartialDataPreprocessing.dataPreprocessing import MSOutlierDetection
-            preprocessed_data = MSOutlierDetection.CertainOutlierDetection().get_valid_data(data_raw, self.limit_min_max)
-            #preprocessed_data = MSOutlierDetection.uncertain_outlier_detection(preprocessed_data, column) 
-            # Column Error
-        else:
-            preprocessed_data = data_raw.copy()
-        return preprocessed_data
     
-    def columnImputation(self, column_data, column):
+    def _columnImputation(self, column_data, column):
                     
         # 2. Missing Pattern Detection Module
-        from KETIPrePartialDataPreprocessing.dataPreprocessing import MissingPatternDetection
+        from KETIPrePartialDataPreprocessing.data_imputation import MissingPatternDetection
         NaNPatternCheck = MissingPatternDetection.MissingPatternDetection()
         column_data = NaNPatternCheck.get_missing_pattern(column_data, column)
 
@@ -65,7 +56,8 @@ class partialDataProcessing():
         min_limit = method_set['min']
         max_limit = method_set['max']
         method = method_set['method']
-        from KETIPrePartialDataPreprocessing.dataPreprocessing import Imputation
+        from KETIPrePartialDataPreprocessing.data_imputation import Imputation
+
         Imputer = Imputation.imputation_methods()
         if method == 'mean':
             dataset = Imputer.mean_interpolate(dataset, min_limit, max_limit)
@@ -98,14 +90,14 @@ class partialDataProcessing():
             dataset = Imputer.quadratic_interpolate(dataset, min_limit, max_limit)
 
         elif method == 'cubic':
-            dataset = Imputer.cubic_interpolate(dataset, min_limi, max_limit)
+            dataset = Imputer.cubic_interpolate(dataset, min_limit, max_limit)
     
         elif method == 'spline':
-            dataset = Imputer.spline_interpolate(dataset,  min_limi, max_limit)
+            dataset = Imputer.spline_interpolate(dataset,  min_limit, max_limit)
 
         elif method == 'barycentric':
-            dataset = Imputer.barycentric_interpolate(dataset, min_limi, max_limit)
+            dataset = Imputer.barycentric_interpolate(dataset, min_limit, max_limit)
 
         elif method == 'polynomial':
-            dataset = Imputer.polynomial_interpolate(dataset, min_limi, max_limit)
+            dataset = Imputer.polynomial_interpolate(dataset, min_limit, max_limit)
         return dataset
