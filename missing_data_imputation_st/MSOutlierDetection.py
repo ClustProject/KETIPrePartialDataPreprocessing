@@ -26,11 +26,11 @@ class CertainOutlierDetection():
         min_list = min_max_limit['min_num']
 
         for column_name in column_list:
-
+            print(column_name)
             if column_name in max_list.keys():  
                 max_num = max_list[column_name]
                 min_num = min_list[column_name]
-
+                print(min_num, max_num)
                 mask = data_out[column_name] > max_num
                 #merged_result.loc[mask, column_name] = max_num
                 data_out[column_name][mask] = np.nan#max_num
