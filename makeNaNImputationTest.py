@@ -37,7 +37,7 @@ if __name__ == '__main__':
         "totalNanLimit":0.3
     }
 
-    outlier_remove_param={'flag':True, 'data_type':'air', 'uncertain_outlier_remove':False}
+    outlier_remove_param={'flag':True, 'data_type':'air', 'uncertain_outlier_remove':False, 'staticFrequency':True}
     from KETIPrePartialDataPreprocessing.data_manager.multipleDataSourceIngestion import getData
 
     inputType ='file'

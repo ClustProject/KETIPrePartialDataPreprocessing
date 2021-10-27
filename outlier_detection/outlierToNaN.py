@@ -12,6 +12,7 @@ class OutlierToNaN():
         limit_min_max = dataRangeInfo_manager.MinMaxLimitValueSet().get_data_min_max_limitSet(data_type)
         return limit_min_max
 
+
     def getDataWithNaN(self):
         data = self.data
         if self.outlier_param['flag'] ==True:  

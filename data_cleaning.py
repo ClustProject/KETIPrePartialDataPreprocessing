@@ -17,16 +17,41 @@ class DataCleaning():
         self.totalLength = len(data)
         self.columns = data.columns
 
+    def _duplicate_data_remove(self, data):
+        # duplicated Column, Index Drop
+        data = data.sort_index()
+        data = data.loc[:, ~data.columns.duplicated()]
+        first_idx = data.first_valid_index()
+        last_idx = data.last_valid_index()
+        valid_data = data.loc[first_idx:last_idx]
+        valid_data = valid_data.drop_duplicates(keep='first')
+           
+        return valid_data
+
+    def make_static_frequency(self, data):
+        # This function make static frequency 
+        data_staticFrequency = data.copy()
+        if len(data)> 2:
+            #inferred_freq = pd.infer_freq(data_partial_raw[:5])
+            inferred_freq = (data.index[1]-data.index[0])
+            data_staticFrequency = data.asfreq(freq=inferred_freq)
+        return data_staticFrequency
+
     def dataCleaning(self, imputation_parameter, outlier_param):
         self.imputation_parameter = imputation_parameter
 
         #Outlier Detection and let outlier be NaN
         from KETIPrePartialDataPreprocessing.outlier_detection import outlierToNaN
-        self.dataWithMoreNaN = outlierToNaN.OutlierToNaN(self.data, outlier_param).getDataWithNaN()
+        self.dataWithMoreNaN = self.data.copy()
+        self.dataWithMoreNaN = self._duplicate_data_remove(self.dataWithMoreNaN)
+        if outlier_param['staticFrequency'] == True:
+            self.dataWithMoreNaN = self.make_static_frequency(self.dataWithMoreNaN)
+        self.dataWithMoreNaN = outlierToNaN.OutlierToNaN(self.dataWithMoreNaN, outlier_param).getDataWithNaN()
         for column in self.columns:
             column_data = self.dataWithMoreNaN[[column]] 
             column_data = self._columnImputation(column_data, column)
             self.resultData[column] = column_data
+            
         return self.resultData
     
     

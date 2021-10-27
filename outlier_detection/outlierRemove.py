@@ -15,21 +15,12 @@ class CertainOutlierRemove():
         # - Delete Out of range error 
 
         data_out = self.data.copy()
-        data_out = self._duplicate_data_remove(data_out)
         data_out = self._out_of_range_error_remove (data_out, self.min_max_limit)
         anomal_value_list = [99.9, 199.9, 299.9, 9999, -99.9, -199.9, -299.9, -9999]
         # anomal_value_list 관련 향후 수정/업그레이드 해야 함 
         data_out = self._anomal_value_remove(data_out, anomal_value_list)
         return data_out
         
-    def _duplicate_data_remove(self, data):
-        data = data.sort_index()
-        data = data.loc[:, ~data.columns.duplicated()]
-        first_idx = data.first_valid_index()
-        last_idx = data.last_valid_index()
-        valid_data = data.loc[first_idx:last_idx]
-           
-        return valid_data
 
     def _out_of_range_error_remove (self, data, min_max_limit):
         data_out = data.copy()
@@ -38,11 +29,9 @@ class CertainOutlierRemove():
         min_list = min_max_limit['min_num']
 
         for column_name in column_list:
-            print(column_name)
             if column_name in max_list.keys():  
                 max_num = max_list[column_name]
                 min_num = min_list[column_name]
-                print(min_num, max_num)
                 mask = data_out[column_name] > max_num
                 #merged_result.loc[mask, column_name] = max_num
                 data_out[column_name][mask] = np.nan#max_num
