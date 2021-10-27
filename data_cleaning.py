@@ -47,11 +47,13 @@ class DataCleaning():
         if outlier_param['staticFrequency'] == True:
             self.dataWithMoreNaN = self.make_static_frequency(self.dataWithMoreNaN)
         self.dataWithMoreNaN = outlierToNaN.OutlierToNaN(self.dataWithMoreNaN, outlier_param).getDataWithNaN()
+        """
         for column in self.columns:
             column_data = self.dataWithMoreNaN[[column]] 
             column_data = self._columnImputation(column_data, column)
             self.resultData[column] = column_data
-            
+        """
+        self.resultData = self.dataWithMoreNaN 
         return self.resultData
     
     
