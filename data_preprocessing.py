@@ -6,70 +6,58 @@ sys.path.append("../..")
 # Data Cleaning Class
 # Init -> SetData -> data Cleaning
 
-class DataCleaning():
+class DataPreprocessing():
+    """
+    This class provides method to clean Data
+    1) duplicated_data_remove: Remove duplicated part
+    2) make_static_fequency: Generate data with static frequency inferred from the original data
+    3) 
+    """
     def __init__(self):
-        self.columnNaNCount={}
-        self.columnNaNRatio={}
-        
-    def setData(self, data):
-        self.data = data
-        self.resultData = data.copy()
-        self.totalLength = len(data)
-        self.columns = data.columns
+        pass
 
-    def _duplicate_data_remove(self, data):
-        # duplicated Column, Index Drop
-        data = data.sort_index()
-        data = data.loc[:, ~data.columns.duplicated()]
-        first_idx = data.first_valid_index()
-        last_idx = data.last_valid_index()
-        valid_data = data.loc[first_idx:last_idx]
-        valid_data = valid_data.drop_duplicates(keep='first')
-           
-        return valid_data
-
-    def make_static_frequency(self, data):
-        # This function make static frequency 
-        data_staticFrequency = data.copy()
-        if len(data)> 2:
-            #inferred_freq = pd.infer_freq(data_partial_raw[:5])
-            inferred_freq = (data.index[1]-data.index[0])
-            data_staticFrequency = data.asfreq(freq=inferred_freq)
-        return data_staticFrequency
-
-    def dataCleaning(self, imputation_parameter, outlier_param):
-        self.imputation_parameter = imputation_parameter
-
-        #Outlier Detection and let outlier be NaN
+    def get_refinedData(self, data, refine_param):
+        self.refineData = data.copy()
+        from KETIPrePartialDataPreprocessing.data_cleaning import data_refine
+        # 1. Data Refining
+        if refine_param['removeDuplication'] == True:
+            self.refineData = data_refine.duplicate_data_remove(self.refineData)
+        if refine_param['staticFrequency'] == True:
+            # TODO extending static frequency function 
+            self.refineData = data_refine.make_static_frequency(self.refineData)
+        return self.refineData
+    
+    def get_outlierToNaNData(self, data, outlier_param):
         from KETIPrePartialDataPreprocessing.outlier_detection import outlierToNaN
-        self.dataWithMoreNaN = self.data.copy()
-        self.dataWithMoreNaN = self._duplicate_data_remove(self.dataWithMoreNaN)
-        if outlier_param['staticFrequency'] == True:
-            self.dataWithMoreNaN = self.make_static_frequency(self.dataWithMoreNaN)
-        self.dataWithMoreNaN = outlierToNaN.OutlierToNaN(self.dataWithMoreNaN, outlier_param).getDataWithNaN()
-        """
-        for column in self.columns:
-            column_data = self.dataWithMoreNaN[[column]] 
-            column_data = self._columnImputation(column_data, column)
-            self.resultData[column] = column_data
-        """
-        self.resultData = self.dataWithMoreNaN 
-        return self.resultData
-    
-    
-    def _columnImputation(self, column_data, column):
-                    
+        self.get_outlierToNaNResult = outlierToNaN.OutlierToNaN(data, outlier_param).getDataWithNaN()
+        return self.get_outlierToNaNResult
+
+    def get_imputedData(self, data, impuation_param):
+        result = data.copy()
+        for column in data.columns:
+            column_data = data[[column]] 
+            column_data = self.columnImputation(column_data, column, impuation_param)
+            print(column_data)
+            result[column] = column_data
+        return result
+
+    ## 아래 두 function은 코딩 Release 후에 imputation package 쪽으로 가는게 맞아 보임 나중에 이야기
+    def columnImputation(self, column_data, column, imputation_parameter):
+        self.columnNaNCount={}
+        self.columnNaNRatio={}          
+        totalLength = len(column_data)
         # 2. Missing Pattern Detection Module
         from KETIPrePartialDataPreprocessing.data_imputation import MissingPatternDetection
         NaNPatternCheck = MissingPatternDetection.MissingPatternDetection()
         column_data = NaNPatternCheck.get_missing_pattern(column_data, column)
 
         # 3. Missing Data Imputation
-        imputation_method = self.imputation_parameter['imputation_method']
-        totalNanLimit = self.imputation_parameter['totalNanLimit']
+        imputation_method = imputation_parameter['imputation_method']
+        totalNanLimit = imputation_parameter['totalNanLimit']
 
-        self.columnNaNCount[column]=self.data[column].isna().sum()
-        self.columnNaNRatio[column]=round(float(self.columnNaNCount[column]*100/self.totalLength), 2)
+        self.columnNaNCount[column]=column_data.isna().sum()
+        print(self.columnNaNCount[column])
+        self.columnNaNRatio[column]=round(float(self.columnNaNCount[column]*100/totalLength), 2)
         if (self.columnNaNRatio[column] < totalNanLimit):
         # if total column NaN number is less tan limit, Impute it according to the parameter    
             for method_set in imputation_method:

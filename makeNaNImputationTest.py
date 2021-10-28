@@ -4,7 +4,9 @@ import os
 sys.path.append("../")
 sys.path.append("../..")
 
+
 def inputControl(inputType):
+    from KETIPrePartialDataPreprocessing.data_manager.multipleDataSourceIngestion import getData
     dataC = getData()
     if inputType=="file":
         BASE_DIR = os.getcwd()
@@ -19,37 +21,30 @@ if __name__ == '__main__':
     
     imputation_param ={
     "imputation_method":[
-        {
-            "min":0,
-            "max":1,
-            "method":"mean"
-        },
-        {
-            "min":2,
-            "max":4,
-            "method":"linear"
-        },
-        {
-            "min":5,
-            "max":10,
-            "method":"brits"
-        }
-    ],
-        "totalNanLimit":0.3
-    }
-
-    outlier_remove_param={'flag':True, 'data_type':'air', 'uncertain_outlier_remove':False, 'staticFrequency':True}
-    from KETIPrePartialDataPreprocessing.data_manager.multipleDataSourceIngestion import getData
+        {"min":0,"max":1,"method":"mean"},
+        {"min":2,"max":4,"method":"linear"},
+        {"min":5,"max":10,"method":"brits"}],
+    "totalNanLimit":0.3}
+    refine_param = {'removeDuplication':True, 'staticFrequency':True}
+    outlier_param= {'certainOutlierToNaN':True, 'uncertainOutlierToNaN':True, 'data_type':'air'}
 
     inputType ='influx' # and file
     input_data = inputControl(inputType)
-    from data_cleaning import DataCleaning
-    MDP = DataCleaning()
-    MDP.setData(input_data)
+    from data_preprocessing import DataPreprocessing
+    MDP = DataPreprocessing()
     
-    output_data = MDP.dataCleaning(imputation_param, outlier_remove_param)
-    print(input_data.isna().sum())
-    print(output_data.isna().sum())
+    print('original', input_data.isna().sum())
+    output_data = MDP.get_refinedData(input_data, refine_param)
+    print('after refine', output_data.isna().sum())
+    output_data = MDP.get_outlierToNaNData(output_data, outlier_param)
+    print('after outlierDetection', output_data.isna().sum())
+
+    """
+    output_data = MDP.get_imputedData(output_data, imputation_param)
+    print('after imputation', output_data.isna().sum())
+    """
+    
+    
 
 
 
