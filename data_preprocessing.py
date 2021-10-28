@@ -5,7 +5,24 @@ sys.path.append("../..")
 
 # Data Cleaning Class
 # Init -> SetData -> data Cleaning
+def get_preprocessed_data(input_data, refine_param, outlier_param, imputation_param):
 
+    MDP = DataPreprocessing()
+    ###########
+    print('original', input_data.isna().sum())
+    output_data = MDP.get_refinedData(input_data, refine_param)
+    print('after refine', output_data.isna().sum())
+    ###########
+    output_data = MDP.get_outlierToNaNData(output_data, outlier_param)
+    print('after outlierDetection', output_data.isna().sum())
+    ###########
+    """
+    ### TODO ST Oh
+    output_data = MDP.get_imputedData(output_data, imputation_param)
+    print('after imputation', output_data.isna().sum())
+    """
+    return output_data
+    
 class DataPreprocessing():
     """
     This class provides method to clean Data

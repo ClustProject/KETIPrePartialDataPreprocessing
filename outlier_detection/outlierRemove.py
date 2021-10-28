@@ -48,7 +48,7 @@ class CertainOutlierRemove():
             data = data.replace(index, np.NaN)
         return data
 
-
+#TODO Uncertain Outlier Remove 함수 에러 자주 남... 수정해야할 듯
 class UnCertainOutlierRemove():
 
     def __init__(self, data):
