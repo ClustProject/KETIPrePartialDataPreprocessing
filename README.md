@@ -24,18 +24,16 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 - input: data, refine_param
 1) data_refine.duplicate_data_remove: Remove duplicated data
 2) data_refine.make_static_frequency: Let the original data have a static frequency
-```json
-data: datafrmae type
-``
+- data: datafrmae type
 ```json
 refine_param: {'removeDuplication':True, 'staticFrequency':True}
-``
+```
 
 ### get_outlierToNaNData(self, data, outlier_param)
 - outlierToNaN.OutlierToNaN:Let outliered data be.
 ```json
 outlier_param: {'certainOutlierToNaN':True, 'uncertainOutlierToNaN':True, 'data_type':'air'}
-``
+```
 
 ### get_imputedData(self, data, impuation_param)
 - Replace missing data with substituted values according to the imputation parameter.
