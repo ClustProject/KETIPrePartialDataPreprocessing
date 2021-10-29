@@ -25,8 +25,9 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 1) data_refine.duplicate_data_remove: Remove duplicated data
 2) data_refine.make_static_frequency: Let the original data have a static frequency
 - data: datafrmae type
+
 ```json
-     refine_param: {'removeDuplication':True, 'staticFrequency':True}
+refine_param: {'removeDuplication':True, 'staticFrequency':True}
 ```
 
 ### get_outlierToNaNData(self, data, outlier_param)
