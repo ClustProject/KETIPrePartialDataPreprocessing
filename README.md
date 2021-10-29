@@ -19,3 +19,15 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 
 - So far, data refining, outlier removal, imputation module are available.
 - There is a plan to expand more preprocessing modules.
+
+### get_refinedData(self, data, refine_param)
+input: data, refine_param
+> data: datafrmae type
+> refine_param: {'removeDuplication':True, 'staticFrequency':True}
+> outlier_param: {'certainOutlierToNaN':True, 'uncertainOutlierToNaN':True, 'data_type':'air'}
+> imputation_param : {
+    "imputation_method":[
+        {"min":0,"max":1,"method":"mean"},
+        {"min":2,"max":4,"method":"linear"},
+        {"min":5,"max":10,"method":"brits"}],
+    "totalNanLimit":0.3}
