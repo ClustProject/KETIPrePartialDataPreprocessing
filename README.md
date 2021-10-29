@@ -11,7 +11,9 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 (If you want to change db and measurement name, you need to modify multipleDataSourceIngestion.py)
 
 ## data_preprocessing.py
-> data_preprocessing.get_preprocessed_data(input_data, refine_param, outlier_param, imputation_param)
-- This function get data through all possible data preprocessing module.
+> function get_preprocessed_data(input_data, refine_param, outlier_param, imputation_param)
+- This function gets cleaner data by all possible data preprocessing modules from KETIPrePartialDataPreprocessing packages.
+
+> class DataPreprocessing
 - So far, data refining, outlier removal, imputation module are available.
-We have a plan to extend more preprocessing modules.
+- There is a plan to expand more preprocessing modules.
