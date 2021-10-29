@@ -26,22 +26,22 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 2) data_refine.make_static_frequency: Let the original data have a static frequency
 - data: datafrmae type
 ```json
-refine_param: {'removeDuplication':True, 'staticFrequency':True}
+     refine_param: {'removeDuplication':True, 'staticFrequency':True}
 ```
 
 ### get_outlierToNaNData(self, data, outlier_param)
 - outlierToNaN.OutlierToNaN:Let outliered data be.
 ```json
-outlier_param: {'certainOutlierToNaN':True, 'uncertainOutlierToNaN':True, 'data_type':'air'}
+     outlier_param: {'certainOutlierToNaN':True, 'uncertainOutlierToNaN':True, 'data_type':'air'}
 ```
 
 ### get_imputedData(self, data, impuation_param)
 - Replace missing data with substituted values according to the imputation parameter.
 ```json
-imputation_param : {
-"imputation_method":[
-     {"min":0,"max":1,"method":"mean"},
-     {"min":2,"max":4,"method":"linear"},
-     {"min":5,"max":10,"method":"brits"}],
- "totalNanLimit":0.3}
+     imputation_param : {
+     "imputation_method":[
+          {"min":0,"max":1,"method":"mean"},
+          {"min":2,"max":4,"method":"linear"},
+          {"min":5,"max":10,"method":"brits"}],
+      "totalNanLimit":0.3}
 ```
