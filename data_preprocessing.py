@@ -22,7 +22,17 @@ def get_preprocessed_data(input_data, refine_param, outlier_param, imputation_pa
     print('after imputation', output_data.isna().sum())
     """
     return output_data
-    
+
+ ## Get Multiple output
+def get_preprocessed_Multipledataset(multiple_dataset, process_param):
+    output={}
+    refine_param = process_param['refine_param']
+    outlier_param = process_param['outlier_param']
+    imputation_param = process_param['imputation_param']
+    for key in list(multiple_dataset.keys()):
+        output[key] = get_preprocessed_data(multiple_dataset[key], refine_param, outlier_param, imputation_param)
+    return output
+
 class DataPreprocessing():
     """
     This class provides method to clean Data

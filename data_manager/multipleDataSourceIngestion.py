@@ -7,14 +7,12 @@ from KETIAppDataServer.data_manager import measurement_ingestion
 class getData():
     def __init__(self):
         pass
-    def getInfluxDB(self):
-        pass
     
     def getFileInput(self, file_name, time_index="timedate"):
         dataset = pd.read_csv(file_name, parse_dates=True, index_col=[time_index])
         return dataset
 
-    def getInfluxInput(self, db_name, ms_name):
+    def getInfluxInput(self):
         from KETIPreDataIngestion.KETI_setting import influx_setting_KETI as ins
         from KETIPreDataIngestion.data_influx import influx_Client
        
