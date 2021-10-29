@@ -5,15 +5,15 @@
 It includes cleaning, imputation, outlier detection modules.
 And It also has dataRemoveByNaN module which remove a part of data according to the NaN status.
 
-## makeNaNImputationTest.py (+ makeNaNImputationTest.ipynb)
+## 1. makeNaNImputationTest.py (+ makeNaNImputationTest.ipynb)
 > This is the code to test the data_preprocessing module 
 > Input can be both file or inlxlufDB 
 (If you want to change db and measurement name, you need to modify multipleDataSourceIngestion.py)
 
-## data_preprocessing.py
-> function get_preprocessed_data(input_data, refine_param, outlier_param, imputation_param)
-- This function gets cleaner data by all possible data preprocessing modules from KETIPrePartialDataPreprocessing packages.
+## 2. data_preprocessing.py
+### function get_preprocessed_data(input_data, refine_param, outlier_param, imputation_param)
+> This function gets cleaner data by all possible data preprocessing modules from KETIPrePartialDataPreprocessing packages.
 
-> class DataPreprocessing
-- So far, data refining, outlier removal, imputation module are available.
-- There is a plan to expand more preprocessing modules.
+### class DataPreprocessing
+> So far, data refining, outlier removal, imputation module are available.
+> There is a plan to expand more preprocessing modules.
