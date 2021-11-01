@@ -56,6 +56,7 @@ class UnCertainOutlierRemove():
                     
     def getDataWitoutCertainOutlier(self):
         self.data_out = self.IQRDetection(self.data)
+        self.data_out = self.HampelDetection(self.data)
         return self.data_out
 
     def IQRDetection(self, data, weight=1.5):
@@ -73,14 +74,13 @@ class UnCertainOutlierRemove():
 
     def HampelDetection(self, data, window_size=7, n_sigma=3):
         n = len(data)
-        new_data = data.copy()
         k = 1.4826 # scale factor for Gaussian distribution
-        
-        for column in new_data.columns:
+        for column in data.columns:
+            data = data.reset_index()
             for i in range((window_size),(n - window_size)):
-                x0 = np.nanmedian(new_data[column][(i - window_size):(i + window_size)])
-                S0 = k * np.nanmedian(np.abs(new_data[column][(i - window_size):(i + window_size)] - x0))
-                if (np.abs(new_data[column][i] - x0) > n_sigma * S0):
-                    new_data[column][i] = np.nan
-            data[column] = new_data[column]
+                x0 = np.nanmedian(data[column][(i - window_size):(i + window_size)])
+                S0 = k * np.nanmedian(np.abs(data[column][(i - window_size):(i + window_size)] - x0))
+                if (np.abs(data[column][i] - x0) > n_sigma * S0):
+                    data[column][i] = np.nan
+        data.set_index('time') # 'DB time column 이름이 time인 경우'
         return data
