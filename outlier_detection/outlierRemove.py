@@ -48,7 +48,7 @@ class CertainOutlierRemove():
             data = data.replace(index, np.NaN)
         return data
 
-#TODO Uncertain Outlier Remove 함수 에러 자주 남... 수정해야할 듯
+#TODO Uncertain Outlier Remove 함수 에러 자주 남... 수정해야할 듯 >> 수정 완료
 class UnCertainOutlierRemove():
 
     def __init__(self, data):
@@ -59,8 +59,6 @@ class UnCertainOutlierRemove():
         return self.data_out
 
     def IQRDetection(self, data, weight=1.5):
-
-        # 추가로 하나 더 기능 넣을 예정
         # IQR을 활용한 nan 처리
         for column in data.columns:
             quantile_25 = np.percentile(data[column].values, 25)
@@ -70,6 +68,19 @@ class UnCertainOutlierRemove():
             lowest = quantile_25 - IQR_weight
             highest = quantile_75 + IQR_weight
             outlier_idx = data[column][(data[column] < lowest) | (data[column] > highest)].index
-            data[data[column][outlier_idx]] = np.nan
+            data[column][outlier_idx] = np.nan
+        return data
+
+    def HampelDetection(self, data, window_size=7, n_sigma=3):
+        n = len(data)
+        new_data = data.copy()
+        k = 1.4826 # scale factor for Gaussian distribution
         
+        for column in new_data.columns:
+            for i in range((window_size),(n - window_size)):
+                x0 = np.nanmedian(new_data[column][(i - window_size):(i + window_size)])
+                S0 = k * np.nanmedian(np.abs(new_data[column][(i - window_size):(i + window_size)] - x0))
+                if (np.abs(new_data[column][i] - x0) > n_sigma * S0):
+                    new_data[column][i] = np.nan
+            data[column] = new_data[column]
         return data
