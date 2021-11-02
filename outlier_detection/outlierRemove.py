@@ -56,7 +56,7 @@ class UnCertainOutlierRemove():
                     
     def getDataWitoutCertainOutlier(self):
         self.data_out = self.IQRDetection(self.data)
-        self.data_out = self.HampelDetection(self.data)
+    #    self.data_out = self.HampelDetection(self.data)  > 너무 오래걸림
         return self.data_out
 
     def IQRDetection(self, data, weight=1.5):
@@ -76,7 +76,7 @@ class UnCertainOutlierRemove():
         n = len(data)
         k = 1.4826 # scale factor for Gaussian distribution
         for column in data.columns:
-            data = data.reset_index()
+            data = data.reset_index(drop=True)
             for i in range((window_size),(n - window_size)):
                 x0 = np.nanmedian(data[column][(i - window_size):(i + window_size)])
                 S0 = k * np.nanmedian(np.abs(data[column][(i - window_size):(i + window_size)] - x0))
