@@ -9,19 +9,29 @@ def get_preprocessed_data(input_data, refine_param, outlier_param, imputation_pa
 
     MDP = DataPreprocessing()
     ###########
+    print("=============")
     print('original', input_data.isna().sum())
-    output_data = MDP.get_refinedData(input_data, refine_param)
-    print('after refine', output_data.isna().sum())
+    print(input_data[:20])
+    refined_data = MDP.get_refinedData(input_data, refine_param)
+    print("=============")
+    print('after refine', refined_data.isna().sum())
+    print(refined_data[:20])
     ###########
-    output_data = MDP.get_outlierToNaNData(output_data, outlier_param)
-    print('after outlierDetection', output_data.isna().sum())
+    datawithMoreCertainNaN, datawithMoreUnCertainNaN = MDP.get_outlierToNaNData(refined_data, outlier_param)
+    print("=============")
+    print('after outlierDetection', datawithMoreUnCertainNaN.isna().sum())
+    print(datawithMoreUnCertainNaN[:20])
     ###########
-    """
+   
     ### TODO ST Oh
-    output_data = MDP.get_imputedData(output_data, imputation_param)
-    print('after imputation', output_data.isna().sum())
-    """
-    return output_data
+    imputed_data = MDP.get_imputedData(datawithMoreUnCertainNaN, imputation_param)
+    print("=============")
+    print('after imputation', imputed_data.isna().sum())
+    print(imputed_data[:20])
+    
+    result ={'original':input_data, 'refined_data':refined_data, 'datawithMoreCertainNaN':datawithMoreCertainNaN,
+    'datawithMoreUnCertainNaN':datawithMoreUnCertainNaN, 'imputed_data':imputed_data}
+    return result
 
  ## Get Multiple output
 def get_preprocessed_Multipledataset(multiple_dataset, process_param):
@@ -49,22 +59,27 @@ class DataPreprocessing():
         # 1. Data Refining
         if refine_param['removeDuplication'] == True:
             self.refineData = data_refine.duplicate_data_remove(self.refineData)
+            print("RemoveDuplicated Data")
+            print(self.refineData[:10])
+            print("=============")
         if refine_param['staticFrequency'] == True:
             # TODO extending static frequency function 
             self.refineData = data_refine.make_static_frequency(self.refineData)
+            print("Make staticFrequency Data")
+            print(self.refineData[:10])
+            print("=============")
         return self.refineData
     
     def get_outlierToNaNData(self, data, outlier_param):
         from KETIPrePartialDataPreprocessing.outlier_detection import outlierToNaN
-        self.get_outlierToNaNResult = outlierToNaN.OutlierToNaN(data, outlier_param).getDataWithNaN()
-        return self.get_outlierToNaNResult
+        self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = outlierToNaN.OutlierToNaN(data, outlier_param).getDataWithNaN()
+        return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
 
     def get_imputedData(self, data, impuation_param):
         result = data.copy()
         for column in data.columns:
-            column_data = data[[column]] 
+            column_data = data[[column]]
             column_data = self.columnImputation(column_data, column, impuation_param)
-            print(column_data)
             result[column] = column_data
         return result
 
@@ -75,16 +90,19 @@ class DataPreprocessing():
         totalLength = len(column_data)
         # 2. Missing Pattern Detection Module
         from KETIPrePartialDataPreprocessing.data_imputation import MissingPatternDetection
+        """
+        # 당분간 안씀
         NaNPatternCheck = MissingPatternDetection.MissingPatternDetection()
         column_data = NaNPatternCheck.get_missing_pattern(column_data, column)
-
+        """
+        
         # 3. Missing Data Imputation
         imputation_method = imputation_parameter['imputation_method']
         totalNanLimit = imputation_parameter['totalNanLimit']
 
         self.columnNaNCount[column]=column_data.isna().sum()
-        print(self.columnNaNCount[column])
-        self.columnNaNRatio[column]=round(float(self.columnNaNCount[column]*100/totalLength), 2)
+        self.columnNaNRatio[column]= float(self.columnNaNCount[column]/totalLength)*100
+        print("Ratio", self.columnNaNRatio[column])
         if (self.columnNaNRatio[column] < totalNanLimit):
         # if total column NaN number is less tan limit, Impute it according to the parameter    
             for method_set in imputation_method:
@@ -133,13 +151,14 @@ class DataPreprocessing():
 
         elif method == 'cubic':
             dataset = Imputer.cubic_interpolate(dataset, min_limit, max_limit)
-    
-        elif method == 'spline':
+  
+        elif method == 'spline': # order = 5
             dataset = Imputer.spline_interpolate(dataset,  min_limit, max_limit)
-
+        
         elif method == 'barycentric':
             dataset = Imputer.barycentric_interpolate(dataset, min_limit, max_limit)
 
-        elif method == 'polynomial':
+        elif method == 'polynomial': # order = 5
             dataset = Imputer.polynomial_interpolate(dataset, min_limit, max_limit)
+
         return dataset

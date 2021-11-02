@@ -22,56 +22,58 @@ class imputation_methods():
         pass
 
     def mean_interpolate(self, data, min, max):
-        data.fillna(data.mean(), limit = max)
+        data = data.fillna(data.mean(), limit = max)
         return data
     
     def median_interpolate(self, data, min, max):
-        data.fillna(data.median(), limit = max)
+        data = data.fillna(data.median(), limit = max)
         return data
 
     def bfill(self, data, min, max):
-        data.fillna(method='bfill', limit = max)
+        data = data.fillna(method='bfill', limit = max)
         return data
 
     def ffill(self, data, min, max):
-        data.fillna(method='ffill', limit = max)
+        data = data.fillna(method='ffill', limit = max)
         return data
 
     def linear_interpolate(self, data, min, max):
-        data.interpolate(method='linear', limit=max)
+        data = data.interpolate(method='linear', limit=max)
         return data
 
     def time_interpolation(self, data, min, max):
-        data.interpolate(method = 'time', limit = max)
+        data = data.interpolate(method = 'time', limit = max)
         return data
 
     def nearest_interpolate(self, data, min, max):
-        data.interpolate(method='nearest', limit = max)
+        data = data.interpolate(method='nearest', limit = max)
         return data
 
     def zero_interpolate(self, data, min, max):
-        data.interpolate(method='zero', limit = max)
+        data = data.interpolate(method='zero', limit = max)
         return data
 
     def slinear_interpolate(self, data, min, max):
-        data.interpolate(method='slinear', limit = max)
+        data = data.interpolate(method='slinear', limit = max)
         return data
 
     def quadratic_interpolate(self, data, min, max):
-        data.interpolate(method='quadratic', limit = max)
+        data =data.interpolate(method='quadratic', limit = max)
         return data
 
     def cubic_interpolate(self, data, min, max):
-        data.interpolate(method='cubic', limit = max)
+        data = data.interpolate(method='cubic', limit = max)
         return data
 
-    def spline_interpolate(self, data, min, max, order):
-        data.interpolate(method='spline', limit = max, order = order)
+    def spline_interpolate(self, data, min, max, order = 5):
+        data = data.interpolate(method='spline', limit = max, order = order)
+        return data
 
     def barycentric_interpolate(self, data, min, max):
-        data.interpolate(method='barycentric', limit = max)
+        data = data.interpolate(method='barycentric', limit = max)
         return data
 
-    def polynomial_interpolate(self, data, min, max, order):
-        data.interpolate(method='polynomial', limit = max, order = order)
+    def polynomial_interpolate(self, data, min, max, order = 2):
+        data = data.interpolate(method='polynomial', limit = max, order = order)
+        return data
    

@@ -15,10 +15,11 @@ class OutlierToNaN():
         # Make Outlier to Nan according to the parameter
         # CertainOutlierToNaN == True : clean only certain outlier data.
         # UncertainOUtlierToNaN == Ture : clean uncertain outlier data.
-        datawithMoreNaN = self.data.copy()
+        datawithMoreCertainNaN = self.data.copy()
         if self.outlier_param['certainOutlierToNaN'] ==True:  
             from KETIPrePartialDataPreprocessing.outlier_detection import outlierRemove
-            datawithMoreNaN = outlierRemove.CertainOutlierRemove(datawithMoreNaN, self.limit_min_max).getDataWitoutCertainOutlier()
+            datawithMoreCertainNaN = outlierRemove.CertainOutlierRemove(datawithMoreCertainNaN, self.limit_min_max).getDataWitoutCertainOutlier()
+            datawithMoreUnCertainNaN = datawithMoreCertainNaN.copy()
         if self.outlier_param['uncertainOutlierToNaN'] == True:
-            datawithMoreNaN = outlierRemove.UnCertainOutlierRemove(datawithMoreNaN).getDataWitoutCertainOutlier()
-        return datawithMoreNaN
+            datawithMoreUnCertainNaN = outlierRemove.UnCertainOutlierRemove(datawithMoreUnCertainNaN).getDataWitoutCertainOutlier()
+        return datawithMoreCertainNaN, datawithMoreUnCertainNaN
