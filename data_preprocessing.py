@@ -9,25 +9,15 @@ def get_preprocessed_data(input_data, refine_param, outlier_param, imputation_pa
 
     MDP = DataPreprocessing()
     ###########
-    print("=============")
-    print('original', input_data.isna().sum())
-    print(input_data[:20])
+    print("Preprocessing:Refining")
     refined_data = MDP.get_refinedData(input_data, refine_param)
-    print("=============")
-    print('after refine', refined_data.isna().sum())
-    print(refined_data[:20])
     ###########
+    print("Preprocessing:DataWithMoreNaN")
     datawithMoreCertainNaN, datawithMoreUnCertainNaN = MDP.get_outlierToNaNData(refined_data, outlier_param)
-    print("=============")
-    print('after outlierDetection', datawithMoreUnCertainNaN.isna().sum())
-    print(datawithMoreUnCertainNaN[:20])
     ###########
-   
     ### TODO ST Oh
+    print("Preprocessing:Imputation")
     imputed_data = MDP.get_imputedData(datawithMoreUnCertainNaN, imputation_param)
-    print("=============")
-    print('after imputation', imputed_data.isna().sum())
-    print(imputed_data[:20])
     
     result ={'original':input_data, 'refined_data':refined_data, 'datawithMoreCertainNaN':datawithMoreCertainNaN,
     'datawithMoreUnCertainNaN':datawithMoreUnCertainNaN, 'imputed_data':imputed_data}
@@ -59,15 +49,9 @@ class DataPreprocessing():
         # 1. Data Refining
         if refine_param['removeDuplication'] == True:
             self.refineData = data_refine.duplicate_data_remove(self.refineData)
-            print("RemoveDuplicated Data")
-            print(self.refineData[:10])
-            print("=============")
         if refine_param['staticFrequency'] == True:
             # TODO extending static frequency function 
             self.refineData = data_refine.make_static_frequency(self.refineData)
-            print("Make staticFrequency Data")
-            print(self.refineData[:10])
-            print("=============")
         return self.refineData
     
     def get_outlierToNaNData(self, data, outlier_param):
@@ -102,7 +86,7 @@ class DataPreprocessing():
 
         self.columnNaNCount[column]=column_data.isna().sum()
         self.columnNaNRatio[column]= float(self.columnNaNCount[column]/totalLength)*100
-        print("Ratio", self.columnNaNRatio[column])
+        print("NaN Ratio", column, self.columnNaNRatio[column])
         if (self.columnNaNRatio[column] < totalNanLimit):
         # if total column NaN number is less tan limit, Impute it according to the parameter    
             for method_set in imputation_method:

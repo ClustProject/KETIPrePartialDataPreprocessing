@@ -25,6 +25,7 @@ class getData():
 
         feature_list = DBClient.get_fieldList(db_name, ms_name)
         full_data = DBClient.get_data(db_name, ms_name)
+        #full_data = full_data.set_index('time')
 
         # 우선 full data 가져오도록 해놨음 db 이름과 ms 이름은 list에서 적당한것 바꿔볼 수 있음
         return full_data
