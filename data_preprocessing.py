@@ -49,9 +49,11 @@ class DataPreprocessing():
         # 1. Data Refining
         if refine_param['removeDuplication'] == True:
             self.refineData = data_refine.duplicate_data_remove(self.refineData)
+            print("after removeDuplication", len(self.refineData))
         if refine_param['staticFrequency'] == True:
             # TODO extending static frequency function 
             self.refineData = data_refine.make_static_frequency(self.refineData)
+            print("after make_static_frequency", len(self.refineData))
         return self.refineData
     
     def get_outlierToNaNData(self, data, outlier_param):

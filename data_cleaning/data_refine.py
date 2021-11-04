@@ -1,14 +1,17 @@
-
 def duplicate_data_remove(data):
-    # duplicated Column, Index Drop
-    data = data.sort_index()
+    
     # duplicated column remove
     data = data.loc[:, ~data.columns.duplicated()]
+    # duplicated Index Drop
+    data = data.sort_index()
     # duplicated index remove
+    """
     first_idx = data.first_valid_index()
     last_idx = data.last_valid_index()
     valid_data = data.loc[first_idx:last_idx]
-    valid_data = valid_data.drop_duplicates(keep='first')
+    # 
+    """
+    valid_data = data[~data.index.duplicated(keep='first')]
     ####
         
     return valid_data
