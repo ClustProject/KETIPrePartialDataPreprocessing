@@ -38,7 +38,7 @@ class imputation_methods():
         return data
 
     def linear_interpolate(self, data, min, max):
-        data = data.interpolate(method='linear', limit=max)
+        data = data.interpolate(method='linear', limit=max, limit_direction='both')
         return data
 
     def time_interpolation(self, data, min, max):
@@ -65,7 +65,7 @@ class imputation_methods():
         data = data.interpolate(method='cubic', limit = max)
         return data
 
-    def spline_interpolate(self, data, min, max, order = 5):
+    def spline_interpolate(self, data, min, max, order = 1):
         data = data.interpolate(method='spline', limit = max, order = order)
         return data
 
@@ -73,7 +73,7 @@ class imputation_methods():
         data = data.interpolate(method='barycentric', limit = max)
         return data
 
-    def polynomial_interpolate(self, data, min, max, order = 2):
-        data = data.interpolate(method='polynomial', limit = max, order = order)
+    def polynomial_interpolate(self, data, min, max, order):
+        data = data.interpolate(method='polynomial', limit = max, order = order, limit_direction='both')
         return data
    

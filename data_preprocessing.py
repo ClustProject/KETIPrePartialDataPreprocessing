@@ -9,14 +9,12 @@ def get_preprocessed_data(input_data, refine_param, outlier_param, imputation_pa
 
     MDP = DataPreprocessing()
     ###########
-    print("Preprocessing:Refining")
     refined_data = MDP.get_refinedData(input_data, refine_param)
     ###########
-    print("Preprocessing:DataWithMoreNaN")
     datawithMoreCertainNaN, datawithMoreUnCertainNaN = MDP.get_outlierToNaNData(refined_data, outlier_param)
     ###########
     ### TODO ST Oh
-    print("Preprocessing:Imputation")
+
     imputed_data = MDP.get_imputedData(datawithMoreUnCertainNaN, imputation_param)
     
     result ={'original':input_data, 'refined_data':refined_data, 'datawithMoreCertainNaN':datawithMoreCertainNaN,
@@ -102,8 +100,13 @@ class DataPreprocessing():
         min_limit = method_set['min']
         max_limit = method_set['max']
         method = method_set['method']
-        from KETIPrePartialDataPreprocessing.data_imputation import Imputation
 
+        # Get Input Nan Locatoin Info
+        from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
+        column_name= dataset.columns[0]
+        NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(dataset, column_name, max_limit))
+        print(dataset[:10])
+        from KETIPrePartialDataPreprocessing.data_imputation import Imputation
         Imputer = Imputation.imputation_methods()
         if method == 'mean':
             dataset = Imputer.mean_interpolate(dataset, min_limit, max_limit)
@@ -146,5 +149,7 @@ class DataPreprocessing():
 
         elif method == 'polynomial': # order = 5
             dataset = Imputer.polynomial_interpolate(dataset, min_limit, max_limit)
-
-        return dataset
+        print(dataset[:10])
+        DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(dataset, column_name, NaNInfoOverThresh, max_limit)
+        print(DataWithMaskedNaN[:10])
+        return DataWithMaskedNaN
