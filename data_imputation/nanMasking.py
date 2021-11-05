@@ -20,5 +20,6 @@ def setNaNSpecificDuration(data, column_name, NaNInfoOverThresh, thresh):
     for NaNInfoOverThreshitem in NaNInfoOverThresh:
         indexLocation = data.index.get_loc(NaNInfoOverThreshitem[0])
         consecutiveNum= NaNInfoOverThreshitem[1]
-        data.loc[indexLocation+thresh:indexLocation+consecutiveNum, column_name] = np.nan
+        column_index = data.columns.get_loc(column_name)
+        data.iloc[(indexLocation+thresh):(indexLocation+consecutiveNum), column_index] = np.nan
     return data

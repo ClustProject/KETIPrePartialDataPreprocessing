@@ -1,6 +1,69 @@
 import numpy as np
 import pandas as pd
 
+
+class MultipleImputation():
+    def __init__ (self):
+        self.simpleMethods=['mean','median']
+        self.fillNAMethods = ['bfill','ffill']
+        self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
+        self.orderIntMethods = [  'polynomial', 'spline']
+
+        pass
+    def getDataWithMultipleImputation(self, data, imputation_param):
+        result = data.copy()
+        self.imputation_param = imputation_param
+        for column in data.columns:
+            column_data = data[[column]]
+            column_data = self.columnImputation(column_data, column, imputation_param)
+            result[column] = column_data
+        print(result)
+        return result
+
+    def columnImputation(self, column_data, column, imputation_parameter):
+            self.columnNaNCount={}
+            self.columnNaNRatio={}          
+            totalLength = len(column_data)
+            
+            imputation_method = imputation_parameter['imputation_method']
+            totalNanLimit = imputation_parameter['totalNanLimit']
+
+            self.columnNaNCount[column]=column_data.isna().sum()
+            self.columnNaNRatio[column]= float(self.columnNaNCount[column]/totalLength)*100
+            print("NaN Ratio", column, self.columnNaNRatio[column])
+            if (self.columnNaNRatio[column] < totalNanLimit):
+            # if total column NaN number is less tan limit, Impute it according to the parameter    
+                for method_set in imputation_method:
+                    # 3. Missing Data Imputation
+                    column_data = self.imputeDataByMethod(method_set, column_data)
+            return column_data
+
+        
+    #def outlierToNaN(self, data)
+    def imputeDataByMethod(self, method_set, data):
+        min_limit = method_set['min']
+        max_limit = method_set['max']
+        method = method_set['method']
+
+        # Get Input Nan Locatoin Info
+        from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
+        column_name= data.columns[0]
+        NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, column_name, max_limit))
+        
+        from KETIPrePartialDataPreprocessing.data_imputation import imputationMethod as IM
+
+        if method in self.simpleMethods:
+            result = IM.simpleMethod(data, method, max_limit)
+        elif method in self.fillNAMethods:
+            result = IM.fillNAMethod(data, method, max_limit)
+        elif method in self.simpleIntMethods:
+            result = IM.simpleIntMethod(data, method, max_limit)
+        elif method in self.orderIntMethods:
+            result = IM.orderIntMethod(data, method, max_limit)
+        # Data Masking
+        DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(result, column_name, NaNInfoOverThresh, max_limit)
+        return DataWithMaskedNaN
+
 # from sklearn.impute import SimpleImputer, KNNImputer, IterativeImputer
 # from sklearn.experimental import enable_iterative_imputer
 
@@ -14,66 +77,3 @@ import pandas as pd
 #                                temp_na_iterative = lambda x: IterativeImputer().fit_transform(x[['temp']])[:, 0],
 #                                temp_na_zero = lambda x: SimpleImputer(fill_value=0.0, strategy='constant').fit_transform(x[['temp']])
 #                                )
-
-
-class imputation_methods():
-
-    def __init__(self):
-        pass
-
-    def mean_interpolate(self, data, min, max):
-        data = data.fillna(data.mean(), limit = max)
-        return data
-    
-    def median_interpolate(self, data, min, max):
-        data = data.fillna(data.median(), limit = max)
-        return data
-
-    def bfill(self, data, min, max):
-        data = data.fillna(method='bfill', limit = max)
-        return data
-
-    def ffill(self, data, min, max):
-        data = data.fillna(method='ffill', limit = max)
-        return data
-
-    def linear_interpolate(self, data, min, max):
-        data = data.interpolate(method='linear', limit=max, limit_direction='both')
-        return data
-
-    def time_interpolation(self, data, min, max):
-        data = data.interpolate(method = 'time', limit = max)
-        return data
-
-    def nearest_interpolate(self, data, min, max):
-        data = data.interpolate(method='nearest', limit = max)
-        return data
-
-    def zero_interpolate(self, data, min, max):
-        data = data.interpolate(method='zero', limit = max)
-        return data
-
-    def slinear_interpolate(self, data, min, max):
-        data = data.interpolate(method='slinear', limit = max)
-        return data
-
-    def quadratic_interpolate(self, data, min, max):
-        data =data.interpolate(method='quadratic', limit = max)
-        return data
-
-    def cubic_interpolate(self, data, min, max):
-        data = data.interpolate(method='cubic', limit = max)
-        return data
-
-    def spline_interpolate(self, data, min, max, order = 1):
-        data = data.interpolate(method='spline', limit = max, order = order)
-        return data
-
-    def barycentric_interpolate(self, data, min, max):
-        data = data.interpolate(method='barycentric', limit = max)
-        return data
-
-    def polynomial_interpolate(self, data, min, max, order):
-        data = data.interpolate(method='polynomial', limit = max, order = order, limit_direction='both')
-        return data
-   
