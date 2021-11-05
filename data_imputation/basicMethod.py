@@ -5,7 +5,7 @@ def simpleMethod(data, method, max):
 
     """
     return data
-
+    
 def fillNAMethod(data, method, max):
     result = data.fillna(method=method, limit=max, limit_direction='both')
     return result

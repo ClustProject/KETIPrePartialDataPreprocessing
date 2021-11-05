@@ -50,16 +50,18 @@ class MultipleImputation():
         column_name= data.columns[0]
         NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, column_name, max_limit))
         
-        from KETIPrePartialDataPreprocessing.data_imputation import imputationMethod as IM
-
+        from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
         if method in self.simpleMethods:
-            result = IM.simpleMethod(data, method, max_limit)
+            result = basicMethod.simpleMethod(data, method, max_limit)
         elif method in self.fillNAMethods:
-            result = IM.fillNAMethod(data, method, max_limit)
+            result = basicMethod.fillNAMethod(data, method, max_limit)
         elif method in self.simpleIntMethods:
-            result = IM.simpleIntMethod(data, method, max_limit)
+            result = basicMethod.simpleIntMethod(data, method, max_limit)
         elif method in self.orderIntMethods:
-            result = IM.orderIntMethod(data, method, max_limit)
+            result = basicMethod.orderIntMethod(data, method, max_limit)
+        else:
+            result = data.copy()
+            print("Couldn't find a proper imputation method.")
         # Data Masking
         DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(result, column_name, NaNInfoOverThresh, max_limit)
         return DataWithMaskedNaN
