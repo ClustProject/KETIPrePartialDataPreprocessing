@@ -5,7 +5,7 @@ import pandas as pd
 class MultipleImputation():
     def __init__ (self):
 
-        self.simpleMethods =['most_frequent', 'mean', 'median', 'constant']
+        self.simpleMethods =['most_frequent', 'mean', 'median', ' constant']
         self.fillNAMethods = ['bfill','ffill']
         self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
         self.orderIntMethods = [  'polynomial', 'spline']
@@ -50,7 +50,6 @@ class MultipleImputation():
         from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
         column_name= data.columns[0]
         NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, column_name, max_limit))
-        print(len(data))
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
         
         if method in self.simpleMethods:
@@ -65,7 +64,6 @@ class MultipleImputation():
             result = data.copy()
             print("Couldn't find a proper imputation method.")
         # Data Masking
-        print(len(data))
         DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(result, column_name, NaNInfoOverThresh, max_limit)
         return DataWithMaskedNaN
 

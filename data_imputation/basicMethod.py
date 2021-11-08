@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 from sklearn.impute import SimpleImputer
+
 # simpleMethods =['most_frequent', 'mean', 'median', 'constant']
 # fillNAMethods = ['bfill','ffill']
 # simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
