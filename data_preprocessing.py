@@ -49,5 +49,4 @@ class DataPreprocessing():
     def get_imputedData(self, data, impuation_param):
         from KETIPrePartialDataPreprocessing.data_imputation import Imputation
         self.imputedData = Imputation.MultipleImputation().getDataWithMultipleImputation(data, impuation_param)
-        print(self.imputedData)
         return self.imputedData

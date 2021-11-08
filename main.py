@@ -31,7 +31,7 @@ if __name__ == '__main__':
     "totalNanLimit":0.3}
     """
     imputation_param ={ "imputation_method":
-    [{"min":0,"max":1,"method":"linear"}, {"min":2,"max":5,"method":"spline"}],"totalNanLimit":30
+    [{"min":0,"max":1,"method":"most_frequent"}, {"min":2,"max":5,"method":"spline"}],"totalNanLimit":30
     }
     
     input_data = inputControl(inputType)
