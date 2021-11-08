@@ -4,7 +4,7 @@ import pandas as pd
 
 class MultipleImputation():
     def __init__ (self):
-        self.simpleMethods=['mean','median']
+        #self.simpleMethods=['mean','median']
         self.fillNAMethods = ['bfill','ffill']
         self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
         self.orderIntMethods = [  'polynomial', 'spline']
@@ -29,8 +29,8 @@ class MultipleImputation():
             totalNanLimit = imputation_parameter['totalNanLimit']
 
             self.columnNaNCount[column]=column_data.isna().sum()
-            self.columnNaNRatio[column]= float(self.columnNaNCount[column]/totalLength)*100
-            print("NaN Ratio", column, self.columnNaNRatio[column])
+            self.columnNaNRatio[column]= round(float(self.columnNaNCount[column]/totalLength)*100,2)
+            print("NaN Ratio:", column, self.columnNaNRatio[column],"%")
             if (self.columnNaNRatio[column] < totalNanLimit):
             # if total column NaN number is less tan limit, Impute it according to the parameter    
                 for method_set in imputation_method:
@@ -41,19 +41,22 @@ class MultipleImputation():
         
     #def outlierToNaN(self, data)
     def imputeDataByMethod(self, method_set, data):
+        
         min_limit = method_set['min']
         max_limit = method_set['max']
         method = method_set['method']
-
+        print(method)
         # Get Input Nan Locatoin Info
         from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
         column_name= data.columns[0]
         NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, column_name, max_limit))
         
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
+        """
         if method in self.simpleMethods:
             result = basicMethod.simpleMethod(data, method, max_limit)
-        elif method in self.fillNAMethods:
+        """
+        if method in self.fillNAMethods:
             result = basicMethod.fillNAMethod(data, method, max_limit)
         elif method in self.simpleIntMethods:
             result = basicMethod.simpleIntMethod(data, method, max_limit)

@@ -5,9 +5,12 @@ def simpleMethod(data, method, max):
 
     """
     return data
-    
+# fillNAMethods = ['bfill','ffill']
+# simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
+# orderIntMethods = [  'polynomial', 'spline']
+
 def fillNAMethod(data, method, max):
-    result = data.fillna(method=method, limit=max, limit_direction='both')
+    result = data.fillna(method=method, limit=max)
     return result
 
 def simpleIntMethod(data, method, max):
@@ -15,5 +18,5 @@ def simpleIntMethod(data, method, max):
     return result
 
 def orderIntMethod(data, method, max):
-    result = data.fillna(method=method, limit=max, limit_direction='both')
+    result = data.interpolate(method=method, limit = max, order = 2, limit_direction='both')
     return result
