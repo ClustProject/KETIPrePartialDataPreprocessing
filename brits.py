@@ -17,28 +17,30 @@ import ujson as json
 import math
 
 class BRITSimputation:
-    def __init__(self, path, use_gpu = torch.cuda.is_available()):
-        self.path = path
+    def __init__(self, df, column, use_gpu = torch.cuda.is_available()):
+   #     self.path = path
+        self.df = df
+        self.column = column
         self.device = torch.device("cuda") if use_gpu else torch.device("cpu")
-        self.df = pd.read_csv(self.path)
-        self.data = self.df["value"]
+        #self.df = pd.read_csv(self.path)
+        self.data = self.df[column]
         self.length = len(self.df)
         self.makejson()
     
     def makejson(self):
-        makedata(self.path)
+        makedata(self.df, self.column)
 
     def imputation(self, epoch=200):
         self.model = Brits_i(108, 1, 0, self.length, self.device).to(self.device)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.01)
-        self.data_iter = get_loader('./data/traffic.json', batch_size=64)
+        self.data_iter = get_loader('./data/data.json', batch_size=64)
         for i in tqdm(range(epoch)):
             self.model.train()
             for idx, data in enumerate(self.data_iter):  
                 data = to_var(data, self.device)
                 ret = self.model.run_on_batch(data, self.optimizer, i)
         self.result = self.predict_result()
-        self.df["value"] = self.result
+        self.df[self.column] = self.result
         return self.result
     
     def run_one_epoch(self):
@@ -62,7 +64,7 @@ class BRITSimputation:
     def predict_result(self):
         imputation  = self.evaluate()
         scaler = StandardScaler()
-        scaler = scaler.fit(self.df["value"].to_numpy().reshape(-1,1))
+        scaler = scaler.fit(self.df[self.column].to_numpy().reshape(-1,1))
         result = scaler.inverse_transform(imputation[0])
         return result[:,0]
     
@@ -378,20 +380,20 @@ def parse_rec(values, masks, evals, eval_masks, dir_):
 
     return rec
 
-def makedata(datapath):
-    df = pd.read_csv(datapath)
+def makedata(df, column):
+
     length = len(df)
     # df.columns = ["Time", "Velocity"]
-    df = df[["time", "value"]]
+    df = df[['time', column]]
 
-    mean = df["value"].mean()
-    std = df["value"].std()
+    mean = df[column].mean()
+    std = df[column].std()
 
     data = df
     evals = []
 
     for h in range(len(df)):
-        evals.append(data["value"].iloc[h])
+        evals.append(data[column].iloc[h])
     evals = (np.array(evals) - mean) / std
     shp = evals.shape
 
@@ -413,7 +415,7 @@ def makedata(datapath):
     rec['backward'] = parse_rec(values[::-1], masks[::-1], evals[::-1], eval_masks[::-1], dir_='backward')
 
     rec = json.dumps(rec)
-    fs = open('./data/traffic.json', 'w')
+    fs = open('./data/data.json', 'w')
     fs.write(rec)    
     fs.close()
     return length
