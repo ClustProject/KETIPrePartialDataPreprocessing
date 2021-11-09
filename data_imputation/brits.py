@@ -22,7 +22,6 @@ class BRITSimputation:
         self.df = df
         self.column = column
         self.device = torch.device("cuda") if use_gpu else torch.device("cpu")
-        #self.df = pd.read_csv(self.path)
         self.data = self.df[column]
         self.length = len(self.df)
         self.makejson()
@@ -39,6 +38,7 @@ class BRITSimputation:
             for idx, data in enumerate(self.data_iter):  
                 data = to_var(data, self.device)
                 ret = self.model.run_on_batch(data, self.optimizer, i)
+        
         self.result = self.predict_result()
         self.df[self.column] = self.result
         return self.result
@@ -385,13 +385,10 @@ def makedata(df, column):
     length = len(df)
     # df.columns = ["Time", "Velocity"]
     df = df[['time', column]]
-
     mean = df[column].mean()
     std = df[column].std()
-
     data = df
     evals = []
-
     for h in range(len(df)):
         evals.append(data[column].iloc[h])
     evals = (np.array(evals) - mean) / std

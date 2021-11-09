@@ -22,6 +22,7 @@ class getData():
         db_name  = 'air_indoor_경로당'
         ms_list = DBClient.measurement_list(db_name) # MS 이름 바꾸고 싶을때 여기 체크 가능
         ms_name = ms_list[0]
+        print(ms_name)
 
         feature_list = DBClient.get_fieldList(db_name, ms_name)
         full_data = DBClient.get_data(db_name, ms_name)
