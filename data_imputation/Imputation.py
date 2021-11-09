@@ -4,7 +4,7 @@ import pandas as pd
 
 class MultipleImputation():
     def __init__ (self):
-
+        self.ScikitLearnMethods =['KNN','MICE']
         self.simpleMethods =['most_frequent', 'mean', 'median', ' constant']
         self.fillNAMethods = ['bfill','ffill']
         self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
@@ -52,14 +52,16 @@ class MultipleImputation():
         NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, column_name, max_limit))
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
         
-        if method in self.simpleMethods:
-            result = basicMethod.simpleMethod(data, method, max_limit)
+        if method in self.ScikitLearnMethods:
+            result = basicMethod.ScikitLearnMethod(data, method, max_limit)
         elif method in self.fillNAMethods:
             result = basicMethod.fillNAMethod(data, method, max_limit)
         elif method in self.simpleIntMethods:
             result = basicMethod.simpleIntMethod(data, method, max_limit)
         elif method in self.orderIntMethods:
             result = basicMethod.orderIntMethod(data, method, max_limit)
+        elif method in self.autoImputeMethods:
+            result = basicMethod.autoImputeMethod(data, method, max_limit)
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
