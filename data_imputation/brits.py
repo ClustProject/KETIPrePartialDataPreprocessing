@@ -33,7 +33,7 @@ class BRITSimputation:
     def imputation(self, epoch=200):
         self.model = Brits_i(108, 1, 0, self.length, self.device).to(self.device)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.01)
-        self.data_iter = get_loader('./data/data.json', batch_size=64)
+        self.data_iter = get_loader('./brits_json/data.json', batch_size=64)
         for i in tqdm(range(epoch)):
             self.model.train()
             for idx, data in enumerate(self.data_iter):  
@@ -415,7 +415,7 @@ def makedata(df, column):
     rec['backward'] = parse_rec(values[::-1], masks[::-1], evals[::-1], eval_masks[::-1], dir_='backward')
 
     rec = json.dumps(rec)
-    fs = open('./data/data.json', 'w')
+    fs = open('./brits_json/data.json', 'w')
     fs.write(rec)    
     fs.close()
     return length
@@ -438,13 +438,13 @@ def to_var(var, device):
         var = map(lambda x: to_var(x, device), var)
         return var
 
-import argparse
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--path', type=str, required=True, help='data path')
-    parser.add_argument('--epoch', type=int, required=False, default=100, help='train epoch')
-    args = parser.parse_args()
-    britsIMP = BRITSimputation(args.path)
-    britsIMP.imputation(args.epoch)
-    britsIMP.plot()
-    britsIMP.df.to_csv("result.csv")
+# import argparse
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument('--path', type=str, required=True, help='data path')
+#     parser.add_argument('--epoch', type=int, required=False, default=100, help='train epoch')
+#     args = parser.parse_args()
+#     britsIMP = BRITSimputation(args.path)
+#     britsIMP.imputation(args.epoch)
+#     britsIMP.plot()
+#     britsIMP.df.to_csv("result.csv")

@@ -5,11 +5,11 @@ import pandas as pd
 class MultipleImputation():
     def __init__ (self):
 
-        self.simpleMethods =['most_frequent', 'mean', 'median', ' constant']
+        self.simpleMethods =['most_frequent', 'mean', 'median', 'constant']
         self.fillNAMethods = ['bfill','ffill']
         self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
-        self.orderIntMethods = [  'polynomial', 'spline']
-
+        self.orderIntMethods = [ 'polynomial', 'spline']   
+#        self.DLMethods = ['brits']
 
     def getDataWithMultipleImputation(self, data, imputation_param):
         result = data.copy()
@@ -50,7 +50,7 @@ class MultipleImputation():
         from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
         column_name= data.columns[0]
         NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, column_name, max_limit))
-        from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
+        from KETIPrePartialDataPreprocessing.data_imputation import basicMethod
         
         if method in self.simpleMethods:
             result = basicMethod.simpleMethod(data, method, max_limit)
@@ -60,6 +60,10 @@ class MultipleImputation():
             result = basicMethod.simpleIntMethod(data, method, max_limit)
         elif method in self.orderIntMethods:
             result = basicMethod.orderIntMethod(data, method, max_limit)
+
+        # elif method in self.DLMethods:
+        #     result = basicMethod.orderIntMethod(data, method, max_limit)
+
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
