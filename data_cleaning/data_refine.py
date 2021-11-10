@@ -44,3 +44,22 @@ class RefineData():
             if inferred_freq1 == inferred_freq2:
                 data_staticFrequency = data.asfreq(freq=inferred_freq1)
         return data_staticFrequency
+    
+    def get_frequency(self, data):
+        if len(data)> 3:
+            # Simply compare 2 intervals from 3 data points.
+            # And get estimated frequency.
+            inferred_freq1 = (data.index[1]-data.index[0])
+            inferred_freq2 = (data.index[2]-data.index[1])
+           
+            if inferred_freq1 == inferred_freq2:
+                estimated_freq = inferred_freq1
+            else:
+                inferred_freq1 = (data.index[-1]-data.index[-2])
+                inferred_freq2 = (data.index[-2]-data.index[-3])
+                if inferred_freq1 == inferred_freq2:
+                    estimated_freq = inferred_freq1
+                else : estimated_freq = None
+        else:
+            estimated_freq = None
+        return estimated_freq
