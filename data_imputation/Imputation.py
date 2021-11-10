@@ -65,8 +65,10 @@ class MultipleImputation():
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
+
         # Data Masking
         DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(result, column_name, NaNInfoOverThresh, max_limit)
+        print(DataWithMaskedNaN)
         return DataWithMaskedNaN
 
 # from sklearn.impute import SimpleImputer, KNNImputer, IterativeImputer
