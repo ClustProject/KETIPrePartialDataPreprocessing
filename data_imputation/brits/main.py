@@ -25,9 +25,10 @@ if __name__ == "__main__":
 
     # root = os.listdir()
     root = os.getcwd()
-    saved_model_name = os.path.join(root, db_name, ms_name, deepLearningModel, column_name + '.h5')
-    # print(saved_model_name) 
-    model = training(training_data, saved_model_name)
+    saved_model_name = os.path.join(root, db_name, ms_name, deepLearningModel, column_name + '.pt')
+    # print(saved_model_name)
+    epoch = 20 
+    model = training(epoch, training_data, saved_model_name)
     model_save(model)
 
     # ####
