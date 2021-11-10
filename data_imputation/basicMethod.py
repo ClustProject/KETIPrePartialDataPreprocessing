@@ -1,19 +1,8 @@
 import pandas as pd 
 import numpy as np
 
-from sklearn.impute import SimpleImputer
-
-# autoImputeMethods =['mice']
-# simpleMethods =['most_frequent', 'mean', 'median', 'constant']
-# fillNAMethods = ['bfill','ffill']
-# simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
-# orderIntMethods = [  'polynomial', 'spline']
-
-def makeDF(data, series_result):
-    dfResult = pd.DataFrame(series_result, columns = data.columns, index = data.index)
-    return dfResult
-
 from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import SimpleImputer
 from sklearn.impute import IterativeImputer
 from sklearn.impute import KNNImputer
 
@@ -23,25 +12,21 @@ def ScikitLearnMethod(data, method, max):
         # https://scikit-learn.org/stable/modules/generated/sklearn.impute.KNNImputer.html
         imputer = KNNImputer(n_neighbors=n_neighbors)
         series_result = imputer.fit_transform(data)
-        dfResult = makeDF(data, series_result)
     elif method =='MICE':
         #{‘mean’, ‘median’, ‘most_frequent’, ‘constant’}, default=’mean’
         # https://scikit-learn.org/stable/modules/generated/sklearn.impute.IterativeImputer.html#sklearn-impute-iterativeimputer
         imputer = IterativeImputer(random_state=0, initial_strategy='mean', sample_posterior=True)
         series_result = imputer.fit_transform(data)
-        dfResult = makeDF(data, series_result)
     else:
-        dfResult = data.cooy()
+        series_result = data
 
-    return dfResult
+    return series_result
 
 def simpleMethod(data, method, max):
-    print(method)
     result = SimpleImputer(strategy=method, missing_values = np.nan).fit_transform(data)
-    dfResult = makeDF(data, result)
-    return dfResult
+    return result
 
-def fillNAMethods(data, method, max):
+def fillNAMethod(data, method, max):
     result = data.fillna(method=method, limit=max)
     return result
 

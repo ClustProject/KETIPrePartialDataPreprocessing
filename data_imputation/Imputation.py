@@ -27,7 +27,6 @@ class MultipleImputation():
             
             imputation_method = imputation_parameter['imputation_method']
             totalNanLimit = imputation_parameter['totalNanLimit']
-
             self.columnNaNCount[column]=column_data.isna().sum()
             self.columnNaNRatio[column]= round(float(self.columnNaNCount[column]/totalLength)*100,2)
             print("NaN Ratio:", column, self.columnNaNRatio[column],"%")
@@ -40,6 +39,10 @@ class MultipleImputation():
 
         
     #def outlierToNaN(self, data)
+    def makeDF(self, data, series_result):
+        dfResult = pd.DataFrame(series_result, columns = data.columns, index = data.index)
+        return dfResult
+
     def imputeDataByMethod(self, method_set, data):
         
         min_limit = method_set['min']
@@ -50,25 +53,28 @@ class MultipleImputation():
         from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
         column_name= data.columns[0]
         NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, column_name, max_limit))
+        column_data = data[column_name].values
+        column_data = column_data.reshape(-1, 1)
+
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
-        
         if method in self.ScikitLearnMethods:
-            result = basicMethod.ScikitLearnMethod(data, method, max_limit)
-        elif method in self.fillNAMethods:
-            result = basicMethod.fillNAMethod(data, method, max_limit)
+            result = basicMethod.ScikitLearnMethod(column_data, method, max_limit)
+            result = self.makeDF(data, result)
+        elif method in self.simpleMethods:
+            result = basicMethod.simpleMethod(column_data, method, max_limit)
+            result = self.makeDF(data, result)
         elif method in self.simpleIntMethods:
             result = basicMethod.simpleIntMethod(data, method, max_limit)
+        elif method in self.fillNAMethods:
+            result = basicMethod.fillNAMethod(data, method, max_limit)
         elif method in self.orderIntMethods:
             result = basicMethod.orderIntMethod(data, method, max_limit)
-        elif method in self.autoImputeMethods:
-            result = basicMethod.autoImputeMethod(data, method, max_limit)
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
 
         # Data Masking
         DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(result, column_name, NaNInfoOverThresh, max_limit)
-        print(DataWithMaskedNaN)
         return DataWithMaskedNaN
 
 # from sklearn.impute import SimpleImputer, KNNImputer, IterativeImputer
