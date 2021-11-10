@@ -58,12 +58,14 @@ class MultipleImputation():
 
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
         if method in self.ScikitLearnMethods:
+            # use numpy ndarray input (column_data)
             result = basicMethod.ScikitLearnMethod(column_data, method, max_limit)
             result = self.makeDF(data, result)
         elif method in self.simpleMethods:
             result = basicMethod.simpleMethod(column_data, method, max_limit)
             result = self.makeDF(data, result)
         elif method in self.simpleIntMethods:
+            # use dataframe (data)
             result = basicMethod.simpleIntMethod(data, method, max_limit)
         elif method in self.fillNAMethods:
             result = basicMethod.fillNAMethod(data, method, max_limit)
