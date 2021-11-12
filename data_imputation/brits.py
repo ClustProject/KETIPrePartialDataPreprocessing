@@ -383,8 +383,8 @@ def parse_rec(values, masks, evals, eval_masks, dir_):
 def makedata(df, column):
 
     length = len(df)
-    # df.columns = ["Time", "Velocity"]
-    df = df[['time', column]]
+    #df = df[['time', column]]
+    df = df[[column]]
     mean = df[column].mean()
     std = df[column].std()
     data = df
