@@ -24,8 +24,9 @@ def evaluate(data_iter, model):
     return imputation
 
 def inference(model, data_iter, device, df):
+    column_name = df.columns[0]
     imputation = evaluate(model, data_iter, device)
     scaler = StandardScaler()
-    scaler = scaler.fit(df["value"].to_numpy().reshape(-1,1))
+    scaler = scaler.fit(df[column_name].to_numpy().reshape(-1,1))
     result = scaler.inverse_transform(imputation[0])
     return result[:, 0]

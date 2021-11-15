@@ -37,7 +37,7 @@ if __name__ == "__main__":
     nan_data = training_data[column_name].isnull()
     for i in range(len(nan_data)):
         if nan_data.iloc[i] == True:
-            training_data["value"].iloc[i] = to_csv_data[i]
+            training_data[column_name].iloc[i] = to_csv_data[i]
     training_data.to_csv("./imputated_data.csv", index=False)
     # ####
     # 좋은 데이터에 임의로 이상한 값 넣기
