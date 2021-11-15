@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from Brits_model import *
 
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 def model_load(model_name):
     # TODO 
@@ -10,10 +11,7 @@ def model_load(model_name):
     model = torch.load(PATH)
     return model
 
-def inference(data, model):
-    # TODO
-    # model을 불러온 후 data를 imputation하고 결과를 전달
-
+def evaluate(data_iter, model):
     model.eval()
     imputations = []
     for idx, data in enumerate(data_iter):
@@ -24,3 +22,10 @@ def inference(data, model):
         imputations += imputation[np.where(eval_masks == 1)].tolist()
     imputations = np.asarray(imputations)
     return imputation
+
+def inference(model, data_iter, device, df):
+    imputation = evaluate(model, data_iter, device)
+    scaler = StandardScaler()
+    scaler = scaler.fit(df["value"].to_numpy().reshape(-1,1))
+    result = scaler.inverse_transform(imputation[0])
+    return result[:, 0]

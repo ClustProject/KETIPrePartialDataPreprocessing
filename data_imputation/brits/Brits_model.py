@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-
+                    
 from tqdm import tqdm
 import ujson as json
 import math
@@ -55,7 +55,7 @@ def makedata(df):
     rec['forward'] = parse_rec(values, masks, evals, eval_masks, dir_='forward')
     rec['backward'] = parse_rec(values[::-1], masks[::-1], evals[::-1], eval_masks[::-1], dir_='backward')
     rec = json.dumps(rec)
-    with open("./dataset.json", "w") as fs:
+    with open('./data_imputation/brits/brits_json/data.json', "w") as fs:
         fs.write(rec)
 
 
