@@ -58,6 +58,6 @@ def training(data, model_address):
         loss_graphic.append(total_loss.tolist())
         progress.set_description("loss: {:0.4f}".format(total_loss / len(data_iter)))
 
-    torch.save(model, model_address + 'model.pt')
+    #torch.save(model, model_address)
 
     return model

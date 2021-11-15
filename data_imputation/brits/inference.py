@@ -11,7 +11,7 @@ def model_load(model_name):
     model = torch.load(PATH)
     return model
 
-def evaluate(data_iter, model):
+def evaluate(model, data_iter, device=torch.device("cpu")):
     model.eval()
     imputations = []
     for idx, data in enumerate(data_iter):
