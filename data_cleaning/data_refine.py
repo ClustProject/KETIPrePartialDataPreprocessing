@@ -36,13 +36,13 @@ class RefineData():
     def make_static_frequency(self, data):
         # This function makes data with static frequency.
         data_staticFrequency = data.copy()
-        if len(data)> 3:
-            inferred_freq1 = (data.index[1]-data.index[0])
-            inferred_freq2 = (data.index[2]-data.index[1])
-            # Simply compare 2 intervals from 3 data points.
-            # If this data has a static frequency from 3 data points, make the static description time-indexed data
-            if inferred_freq1 == inferred_freq2:
-                data_staticFrequency = data.asfreq(freq=inferred_freq1)
+        inferred_freq = self.get_frequency(data_staticFrequency)
+        if inferred_freq:
+            data_staticFrequency = data_staticFrequency.asfreq(freq=inferred_freq)
+        else:
+            #TODO JW 강제적으로 만들어놨음. 이걸 어떻게 해결해야할지? 메타정보로?
+            inferred_freq = (data_staticFrequency.index[1]-data_staticFrequency.index[0])
+            data_staticFrequency = data_staticFrequency.asfreq(freq=inferred_freq)
         return data_staticFrequency
     
     def get_frequency(self, data):
