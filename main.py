@@ -10,7 +10,7 @@ def inputControl(inputType):
     dataC = getData()
     if inputType=="file":
         BASE_DIR = os.getcwd()
-        input_file = os.path.join(BASE_DIR, 'data_miss_original.csv')
+        input_file = os.path.join(BASE_DIR, 'sampleData', 'data_miss_original.csv')
         input_data = dataC.getFileInput(input_file, 'timedate')
     elif inputType =="influx":
         input_data = dataC.getInfluxInput()
