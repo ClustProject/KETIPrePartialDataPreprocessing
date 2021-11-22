@@ -5,10 +5,10 @@
 It includes cleaning, imputation, outlier detection modules.
 And It also has dataRemoveByNaN module which remove a part of data according to the NaN status.
 
-## 1. makeNaNImputationTest.py (+ makeNaNImputationTest.ipynb)
-> This is the code to test the data_preprocessing module 
-> Input can be both file or inlxlufDB 
-(If you want to change db and measurement name, you need to modify multipleDataSourceIngestion.py)
+## 1. main.py (+ main.ipynb)
+> This is the test code full data_preprocessing pipeline.
+> Input can be both file or data from inlxlufDB 
+> If you want to change db and measurement name or add another data ingestion methods, modify data_manager/multipleDataSourceIngestion.py
 
 ## 2. data_preprocessing.py
 ### 2-1. function ByAllMethod(input_data, refine_param, outlier_param, imputation_param)
