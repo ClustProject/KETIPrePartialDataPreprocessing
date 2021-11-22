@@ -47,5 +47,5 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
           {"min":0,"max":1,"method":"mean"},
           {"min":2,"max":4,"method":"linear"},
           {"min":5,"max":10,"method":"brits"}],
-      "totalNanLimit":0.3}
+      "totalNanLimit":30}
 ```
