@@ -21,5 +21,5 @@ class OutlierToNaN():
             datawithMoreCertainNaN = outlierRemove.CertainOutlierRemove(datawithMoreCertainNaN, self.limit_min_max).getDataWitoutCertainOutlier()
             datawithMoreUnCertainNaN = datawithMoreCertainNaN.copy()
         if self.outlier_param['uncertainOutlierToNaN'] == True:
-            datawithMoreUnCertainNaN = outlierRemove.UnCertainOutlierRemove(datawithMoreUnCertainNaN).getDataWitoutCertainOutlier()
+            datawithMoreUnCertainNaN = outlierRemove.UnCertainOutlierRemove(datawithMoreUnCertainNaN).get_neighbor_error_detected_data()
         return datawithMoreCertainNaN, datawithMoreUnCertainNaN
