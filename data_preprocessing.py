@@ -20,7 +20,6 @@ def ByAllMethod(input_data, refine_param, outlier_param, imputation_param):
     return result
 
  ## Get Multiple output
- 
 def MultipleDatasetByAllMethod(multiple_dataset, process_param):
     output={}
     refine_param = process_param['refine_param']
@@ -43,7 +42,7 @@ class DataPreprocessing():
     
     def get_outlierToNaNData(self, data, outlier_param):
         from KETIPrePartialDataPreprocessing.outlier_detection import outlierToNaN
-        self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = outlierToNaN.OutlierToNaN(data, outlier_param).getDataWithNaN()
+        self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = outlierToNaN.OutlierToNaN(outlier_param).getDataWithNaN(data)
         return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
 
     def get_imputedData(self, data, impuation_param):
