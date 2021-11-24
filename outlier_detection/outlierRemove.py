@@ -17,7 +17,7 @@ class CertainOutlierRemove():
         data_out = self.data.copy()
         data_out = self._out_of_range_error_remove (data_out, self.min_max_limit)
         anomal_value_list = [99.9, 199.9, 299.9, 9999, -99.9, -199.9, -299.9, -9999]
-        # anomal_value_list 관련 향후 수정/업그레이드 해야 함 
+        # TODO JW anomal_value_list 관련 향후 수정/업그레이드 해야 함 
         data_out = self._anomal_value_remove(data_out, anomal_value_list)
         return data_out
         
@@ -58,31 +58,27 @@ class UnCertainOutlierRemove():
     
     def get_neighbor_error_detected_data(self):
         data_out = self.data.copy()
-        sample  = data_out[:60]
         for feature in data_out.columns:
             test_data= data_out[[feature]].copy()
-            sample_data = sample[[feature]].copy()
-            test_data = self.outlier_extream_value_analysis(sample_data, test_data, 10) 
-            test_data= self.outlier_detection_two_step_neighbor(sample_data, test_data)
+            #test_data = self.outlier_extream_value_analysis(sample_data, test_data, 10) 
+            test_data= self.outlier_detection_two_step_neighbor(test_data)
             data_out[[feature]] = test_data  
         
         return data_out
 
-    def outlier_detection_two_step_neighbor(self, sample, data):
+    def outlier_detection_two_step_neighbor(self, data):
         column_list = data.columns
         data_out1 = data.copy()
         for column_name in column_list:
             temp = data_out1[[column_name]]
-            sample_temp = sample[[column_name]]
             data_1 = temp.diff().abs()
             data_2 = temp.diff(periods=2).abs()
-            temp_mean = sample_temp.mean().values[0]
+            temp_mean = temp.mean().values[0]
             First_gap = temp_mean* self.first_ratio
             Second_gap = temp_mean * self.second_ratio
             data_1_index = data_1[data_1[column_name] > First_gap].index.tolist()
             data_2_index = data_2[data_2[column_name] < Second_gap].index.tolist()
             noise_index = set(data_1_index)&set(data_2_index)
-            print(noise_index)
             for noise in noise_index:
                 pos = data_out1.index.get_loc(noise)
                 data_out1.iloc[pos-1].loc[column_name] = data_out1.iloc[pos].loc[column_name]
@@ -108,31 +104,8 @@ class UnCertainOutlierRemove():
         
         return data_out
 
-#TODO 값 이상
+#Hample Detection
 """
-class UnCertainOutlierRemove():
-
-    def __init__(self, data):
-        self.data = data 
-                    
-    def getDataWitoutCertainOutlier(self):
-        self.data_out = self.IQRDetection(self.data)
-    #    self.data_out = self.HampelDetection(self.data)  > 너무 오래걸림
-        return self.data_out
-
-    def IQRDetection(self, data, weight=1.5):
-        # IQR을 활용한 nan 처리
-        for column in data.columns:
-            quantile_25 = np.percentile(data[column].values, 25)
-            quantile_75 = np.percentile(data[column].values, 75)
-            IQR = quantile_75 - quantile_25
-            IQR_weight = IQR*weight
-            lowest = quantile_25 - IQR_weight
-            highest = quantile_75 + IQR_weight
-            outlier_idx = data[column][(data[column] < lowest) | (data[column] > highest)].index
-            data[column][outlier_idx] = np.nan
-        return data
-
     def HampelDetection(self, data, window_size=7, n_sigma=3):
         n = len(data)
         k = 1.4826 # scale factor for Gaussian distribution

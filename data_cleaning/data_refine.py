@@ -7,7 +7,6 @@ class RefineData():
         ### Duplication
         if refine_param['removeDuplication'] == True:
             result = self.duplicate_data_remove(data)
-            print("data Length after removeDuplication:", len(result))
             self.dataWithoutDuplication = result
         else:
             self.dataWithoutDuplication = data.copy()
@@ -15,12 +14,11 @@ class RefineData():
         ### staticFrequency
         if refine_param['staticFrequency'] == True:
             result = self.make_static_frequency(self.dataWithoutDuplication)
-            print("data Length after make_static_frequency:", len(result))
             self.dataStaticFrequency = result
         else:
             self.dataStaticFrequency = self.dataWithoutDuplication.copy()
         
-        self.result = self.dataStaticFrequency
+        self.result = self.dataStaticFrequency.sort_index()
         return self.result
 
     def duplicate_data_remove(self, data):

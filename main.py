@@ -4,7 +4,6 @@ import os
 sys.path.append("../")
 sys.path.append("../..")
 
-
 def inputControl(inputType):
     from KETIPrePartialDataPreprocessing.data_manager.multipleDataSourceIngestion import getData
     dataC = getData()
@@ -13,7 +12,9 @@ def inputControl(inputType):
         input_file = os.path.join(BASE_DIR, 'sampleData', 'data_miss_original.csv')
         input_data = dataC.getFileInput(input_file, 'timedate')
     elif inputType =="influx":
-        input_data = dataC.getInfluxInput()
+        db_name  = 'air_indoor_경로당'
+        ms_name = 'ICL1L2000235' 
+        input_data = dataC.getInfluxInput(db_name, ms_name)
 
     return input_data
 
