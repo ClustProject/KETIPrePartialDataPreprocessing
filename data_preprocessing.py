@@ -24,7 +24,7 @@ class DataPreprocessing():
             from KETIPrePartialDataPreprocessing.data_imputation import Imputation
             self.imputedData = Imputation.SerialImputation().getDataWithSerialImputation(data, imputation_param['serialImputation'])
         else:
-            self.imputed_data = data.copy()
+            self.imputedData = data.copy()
         return self.imputedData
 
 # Data Cleaning Class
