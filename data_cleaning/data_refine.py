@@ -5,14 +5,14 @@ class RefineData():
     def makeRefineData(self, data, refine_param):
         self.refine_param = refine_param
         ### Duplication
-        if refine_param['removeDuplication'] == True:
+        if refine_param['removeDuplication']['flag'] == True:
             result = self.duplicate_data_remove(data)
             self.dataWithoutDuplication = result
         else:
             self.dataWithoutDuplication = data.copy()
 
         ### staticFrequency
-        if refine_param['staticFrequency'] == True:
+        if refine_param['staticFrequency']['flag'] == True:
             result = self.make_static_frequency(self.dataWithoutDuplication)
             self.dataStaticFrequency = result
         else:

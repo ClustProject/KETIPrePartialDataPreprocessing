@@ -19,9 +19,7 @@ class getData():
         ##
         DBClient = influx_Client.influxClient(ins)
         db_list = DBClient.get_DBList() # 나중에 DB 이름 바꾸고 싶을때 여기 체크 가능
-        print(db_list)
         ms_list = DBClient.measurement_list(db_name) # MS 이름 바꾸고 싶을때 여기 체크 가능
-        print(ms_list)
 
         feature_list = DBClient.get_fieldList(db_name, ms_name)
         full_data = DBClient.get_data(db_name, ms_name)

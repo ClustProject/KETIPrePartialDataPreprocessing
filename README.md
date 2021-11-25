@@ -27,7 +27,10 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 ### 2-2-1. get_refinedData(self, data, refine_param)
 - input: data, refine_param
 ```json
-     refine_param ={'removeDuplication':True, 'staticFrequency':True}
+         refine_param = {
+        "removeDuplication":{"flag":True},
+        "staticFrequency":{"flag":True}
+    }
 ```
 1) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.duplicate_data_remove: Remove duplicated data
 2) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.make_static_frequency: Let the original data have a static frequency
@@ -36,16 +39,24 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 ### 2-2-2. get_outlierToNaNData(self, data, outlier_param)
 - outlierToNaN.OutlierToNaN:Let outliered data be.
 ```json
-     outlier_param = {'certainOutlierToNaN':True, 'uncertainOutlierToNaN':True, 'data_type':'air'}
+    outlier_param  = {
+        "certainOutlierToNaN":{"flag":True},
+        "uncertainOutlierToNaN":{
+            "flag":True,
+            "param":{"neighbor":[0.5,0.6]}
+        },
+        "data_type":"air"
+    }
 ```
 
 ### 2-2-3. get_imputedData(self, data, impuation_param)
 - Replace missing data with substituted values according to the imputation parameter.
 ```json
      imputation_param = {
-     "imputation_method":[
-          {"min":0,"max":1,"method":"mean"},
-          {"min":2,"max":4,"method":"linear"},
-          {"min":5,"max":10,"method":"brits"}],
-      "totalNanLimit":30}
+        "serialImputation":{
+            "flag":True,
+            "imputation_method":[{"min":0,"max":10,"method":"linear"},{"min":11,"max":20,"method":"mean"}],
+            "totalNanLimit":70
+        }
+    }
 ```

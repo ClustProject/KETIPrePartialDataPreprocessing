@@ -18,9 +18,13 @@ class DataPreprocessing():
         self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = outlierToNaN.OutlierToNaN(outlier_param).getDataWithNaN(data)
         return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
 
-    def get_imputedData(self, data, impuation_param):
-        from KETIPrePartialDataPreprocessing.data_imputation import Imputation
-        self.imputedData = Imputation.MultipleImputation().getDataWithMultipleImputation(data, impuation_param)
+    def get_imputedData(self, data, imputation_param):
+        if imputation_param['serialImputation']['flag'] == True:
+            print("SerialImputation")
+            from KETIPrePartialDataPreprocessing.data_imputation import Imputation
+            self.imputedData = Imputation.SerialImputation().getDataWithSerialImputation(data, imputation_param['serialImputation'])
+        else:
+            self.imputed_data = data.copy()
         return self.imputedData
 
 # Data Cleaning Class

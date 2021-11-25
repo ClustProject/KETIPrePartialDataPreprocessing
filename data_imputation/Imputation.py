@@ -1,17 +1,15 @@
 import numpy as np
 import pandas as pd
-
-
-class MultipleImputation():
+  
+class SerialImputation():
     def __init__ (self):
         self.ScikitLearnMethods =['KNN','MICE']
         self.simpleMethods =['most_frequent', 'mean', 'median', ' constant']
         self.fillNAMethods = ['bfill','ffill']
         self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
-        self.orderIntMethods = [  'polynomial', 'spline']
+        self.orderIntMethods = [ 'polynomial', 'spline']
 
-
-    def getDataWithMultipleImputation(self, data, imputation_param):
+    def getDataWithSerialImputation(self, data, imputation_param):
         result = data.copy()
         self.imputation_param = imputation_param
         for column in data.columns:
@@ -20,13 +18,13 @@ class MultipleImputation():
             result[column] = column_data
         return result
 
-    def columnImputation(self, column_data, column, imputation_parameter):
+    def columnImputation(self, column_data, column, imputation_param):
             self.columnNaNCount={}
             self.columnNaNRatio={}          
             totalLength = len(column_data)
             
-            imputation_method = imputation_parameter['imputation_method']
-            totalNanLimit = imputation_parameter['totalNanLimit']
+            imputation_method = imputation_param['imputation_method']
+            totalNanLimit = imputation_param['totalNanLimit']
             self.columnNaNCount[column]=column_data.isna().sum()
             self.columnNaNRatio[column]= round(float(self.columnNaNCount[column]/totalLength)*100,2)
             print("NaN Ratio:", column, self.columnNaNRatio[column],"%")

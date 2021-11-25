@@ -20,21 +20,48 @@ def inputControl(inputType):
 
 if __name__ == '__main__':
     ### Parameter Test
-    inputType ='file' # or file
-    refine_param = {'removeDuplication':True, 'staticFrequency':True}
-    outlier_param= {'certainOutlierToNaN':True, 'uncertainOutlierToNaN':True, 'data_type':'air'}
-    """
-    imputation_param ={
-    "imputation_method":[
-        {"min":0,"max":1,"method":"mean"},
-        {"min":2,"max":4,"method":"linear"},
-        {"min":5,"max":10,"method":"brits"}],
-    "totalNanLimit":0.3}
-    """
-    imputation_param ={ "imputation_method":
-    [{"min":0,"max":1,"method":"MICE"}, {"min":2,"max":5,"method":"spline"}],"totalNanLimit":30
+    inputType ='influx' # or file
+    refine_param = {
+        "removeDuplication":{
+            "flag":True
+        },
+        "staticFrequency":{
+            "flag":True
+        }
     }
-    
+
+    outlier_param  = {
+        "certainOutlierToNaN":{
+            "flag":True
+        },
+        "uncertainOutlierToNaN":{
+            "flag":True,
+            "param":{
+                "neighbor":[
+                    0.5,
+                    0.6
+                ]
+            }
+        },
+        "data_type":"air"
+    }
+    imputation_param = {
+    "serialImputation":{
+        "flag":True,
+        "imputation_method":[
+            {
+                "min":0,
+                "max":50,
+                "method":"linear"
+            }
+        ],
+        "totalNanLimit":70
+    }
+}
+    ###
+    ### input
+    inputType ='file' # or file    
     input_data = inputControl(inputType)
+    ###
     from KETIPrePartialDataPreprocessing import data_preprocessing
     output = data_preprocessing.ByAllMethod(input_data, refine_param, outlier_param, imputation_param)
