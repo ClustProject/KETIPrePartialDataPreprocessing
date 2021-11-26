@@ -19,18 +19,22 @@ class OutlierToNaN():
         return datawithMoreCertainNaN, datawithMoreUnCertainNaN
 
     def getDataWithCertainNaN(self, data):
-        datawithMoreCertainNaN = data.copy()
         if self.outlier_param['certainOutlierToNaN']['flag'] ==True:  
             from KETIPrePartialDataPreprocessing.outlier_detection import outlierRemove
-            datawithMoreCertainNaN = outlierRemove.CertainOutlierRemove(datawithMoreCertainNaN, self.limit_min_max).getDataWitoutCertainOutlier()  
+            datawithMoreCertainNaN = outlierRemove.CertainOutlierRemove(data, self.limit_min_max).getDataWitoutCertainOutlier()  
+            print("getDataWithCertainNaN")
+        else:
+            datawithMoreCertainNaN = data.copy()
         return datawithMoreCertainNaN
     
-    def getDataWithUncertainNaN(self, data):
-        datawithMoreUnCertainNaN = data.copy()
+    def getDataWithUncertainNaN(self, data):    
         if self.outlier_param['uncertainOutlierToNaN']['flag'] == True:
+            print("getDataWithUncertainNaN")
             from KETIPrePartialDataPreprocessing.outlier_detection import outlierRemove
             param = self.outlier_param['uncertainOutlierToNaN']['param']
-            datawithMoreUnCertainNaN = outlierRemove.UnCertainOutlierRemove(datawithMoreUnCertainNaN, param).get_neighbor_error_detected_data()
+            datawithMoreUnCertainNaN = outlierRemove.UnCertainOutlierRemove(data, param).get_neighbor_error_detected_data()
+        else:
+            datawithMoreUnCertainNaN = data.copy()
         return datawithMoreUnCertainNaN
 
 

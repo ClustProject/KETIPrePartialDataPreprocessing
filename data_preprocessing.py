@@ -27,6 +27,8 @@ class DataPreprocessing():
             self.imputedData = data.copy()
         return self.imputedData
 
+    # Add New Function
+    
 # Data Cleaning Class
 # Init -> SetData -> data Cleaning
 def ByAllMethod(input_data, refine_param, outlier_param, imputation_param):
@@ -53,3 +55,36 @@ def MultipleDatasetByAllMethod(multiple_dataset, process_param):
         output[key] = ByAllMethod(multiple_dataset[key], refine_param, outlier_param, imputation_param)
     return output
 
+if __name__ == '__main__':
+    ### Parameter Test
+    refine_param = {
+    "removeDuplication":{"flag":True},
+    "staticFrequency":{"flag":True}
+    }
+    outlier_param  = {
+        "certainOutlierToNaN":{"flag":True},
+        "uncertainOutlierToNaN":{
+            "flag":True,
+            "param":{"neighbor":[0.3,0.3]}
+        },
+        "data_type":"air"
+    }
+    imputation_param = {
+        "serialImputation":{
+            "flag":True,
+            "imputation_method":[{"min":0,"max":2,"method":"mean"}],
+            "totalNanLimit":90
+        }
+    }
+    ###
+    ### input data 
+    inputType ='file' # or file    
+    from KETIPrePartialDataPreprocessing import main
+    input_data = main.inputControl(inputType)
+    ### function test
+    from KETIPrePartialDataPreprocessing import data_preprocessing
+    MDP = DataPreprocessing()
+    ###########
+    refined_data = MDP.get_refinedData(input_data, refine_param)
+    print(refined_data)
+    ###

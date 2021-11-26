@@ -78,13 +78,15 @@ class UnCertainOutlierRemove():
             First_gap = temp_mean* first_ratio
             Second_gap = temp_mean * second_ratio
             print(First_gap, Second_gap)
+            print(data_1[column_name])
+            print(data_2[column_name])
             data_1_index = data_1[data_1[column_name] > First_gap].index.tolist()
-            data_2_index = data_2[data_2[column_name] < Second_gap].index.tolist()
+            data_2_index = data_2[data_2[column_name] > Second_gap].index.tolist()
             noise_index = set(data_1_index)&set(data_2_index)
             print(noise_index)
             for noise in noise_index:
                 pos = data_out1.index.get_loc(noise)
-                data_out1.iloc[pos-1].loc[column_name] = data_out1.iloc[pos].loc[column_name]
+                data_out1.iloc[pos].loc[column_name] = data_out1.iloc[pos-1].loc[column_name]
         return data_out1
     
     
