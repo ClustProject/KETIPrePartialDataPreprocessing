@@ -27,18 +27,20 @@ class CertainOutlierRemove():
         column_list = data.columns
         max_list = min_max_limit['max_num']
         min_list = min_max_limit['min_num']
-
+        
         for column_name in column_list:
-            if column_name in max_list.keys():  
-                max_num = max_list[column_name]
+            print(column_name)
+            if column_name in min_list.keys():
                 min_num = min_list[column_name]
-                mask = data_out[column_name] > max_num
-                #merged_result.loc[mask, column_name] = max_num
-                data_out[column_name][mask] = np.nan#max_num
                 mask = data_out[column_name] < min_num
                 #merged_result.loc[mask, column_name] = min_num
-                data_out[column_name][mask] = np.nan#min_num
-            
+                data_out[column_name][mask] = np.nan #min_num
+
+            if column_name in max_list.keys():
+                max_num = max_list[column_name]
+                mask = data_out[column_name] > max_num
+                data_out[column_name][mask] = np.nan #max_num
+
         return data_out
 
     def _anomal_value_remove(self, data, anomal_value_list):
@@ -67,7 +69,6 @@ class UnCertainOutlierRemove():
     def outlier_detection_two_step_neighbor(self, data):
         first_ratio =self.param['neighbor'][0]
         second_ratio = self.param['neighbor'][1]
-        print(first_ratio, second_ratio)
         column_list = data.columns
         data_out1 = data.copy()
         for column_name in column_list:
@@ -82,6 +83,7 @@ class UnCertainOutlierRemove():
             print(data_2[column_name])
             data_1_index = data_1[data_1[column_name] > First_gap].index.tolist()
             data_2_index = data_2[data_2[column_name] > Second_gap].index.tolist()
+
             noise_index = set(data_1_index)&set(data_2_index)
             print(noise_index)
             for noise in noise_index:
