@@ -8,6 +8,7 @@ class SerialImputation():
         self.fillNAMethods = ['bfill','ffill']
         self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
         self.orderIntMethods = [ 'polynomial', 'spline']
+        self.britsMethods = ['brits']
 
     def getDataWithSerialImputation(self, data, imputation_param):
         result = data.copy()
@@ -69,6 +70,9 @@ class SerialImputation():
             result = basicMethod.fillNAMethod(data, method, max_limit)
         elif method in self.orderIntMethods:
             result = basicMethod.orderIntMethod(data, method, max_limit)
+        elif method in self.britsMethods:
+            from KETIPrePartialDataPreprocessing.data_imputation.brits import main 
+            result = main.brits_training(data)
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
@@ -77,6 +81,8 @@ class SerialImputation():
         DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(result, column_name, NaNInfoOverThresh, max_limit)
         return DataWithMaskedNaN
 
+# 
+class 
 # from sklearn.impute import SimpleImputer, KNNImputer, IterativeImputer
 # from sklearn.experimental import enable_iterative_imputer
 

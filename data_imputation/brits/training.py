@@ -24,27 +24,26 @@ import Brits_model
 
 device = torch.device("cuda")
 
-def training(data, model_address):
+def training(data, data_iter, json_path, model_address, model_name):
     # TODO
     # model training
-    epoch = 100
+    epoch = 500
+    #epoch = 100
     learning_rate = 0.01
 
     # setting
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     torch.random.manual_seed(0)
     np.random.seed(0)
-
+    
     length = len(data)
     model = Brits_model.Brits_i(108, 1, 0, length, device).to(device)
     # Brits_model.Brits_i(hidden_state_dim, impute_weight, label_weight, length, device)
-    Brits_model.makedata(data)
+    
+    #Brits_model.makedata(data, json_path)
     
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     
-    # data.json 파일 불러오기
-    data_iter = Brits_model.get_loader('./data_imputation/brits/brits_json/data.json', batch_size=64)  
-
     model.train()
     
     progress = tqdm(range(epoch))
@@ -58,6 +57,6 @@ def training(data, model_address):
         loss_graphic.append(total_loss.tolist())
         progress.set_description("loss: {:0.4f}".format(total_loss / len(data_iter)))
 
-    #torch.save(model, model_address)
+    torch.save(model.state_dict(), model_address + '/' + model_name)
 
     return model

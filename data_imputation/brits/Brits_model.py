@@ -39,7 +39,7 @@ def parse_rec(values, masks, evals, eval_masks, dir_):
     return rec
 
 # csv를 논문의 brits모델에 사용하기 위하여 json화
-def makedata(df):
+def makedata(df, json_path):
     column = df.columns[0]
     mean = df[column].mean()
     std = df[column].std()
@@ -55,7 +55,7 @@ def makedata(df):
     rec['forward'] = parse_rec(values, masks, evals, eval_masks, dir_='forward')
     rec['backward'] = parse_rec(values[::-1], masks[::-1], evals[::-1], eval_masks[::-1], dir_='backward')
     rec = json.dumps(rec)
-    with open('./data_imputation/brits/brits_json/data.json', "w") as fs:
+    with open(json_path, "w") as fs:
         fs.write(rec)
 
 
