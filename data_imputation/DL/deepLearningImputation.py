@@ -1,4 +1,3 @@
-
 class DLImputation():
     def __init__ (self, data, method, parameter):
         self.method = method
@@ -16,5 +15,4 @@ class DLImputation():
         print("brits_training")
         from KETIPrePartialDataPreprocessing.data_imputation.DL.brits import inference
         result = inference.BritsInference(data, parameter).get_result()
-        
         return result
