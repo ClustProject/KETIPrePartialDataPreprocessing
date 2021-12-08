@@ -82,7 +82,7 @@ class SerialImputation():
         return DataWithMaskedNaN
 
 # 
-class 
+#class 
 # from sklearn.impute import SimpleImputer, KNNImputer, IterativeImputer
 # from sklearn.experimental import enable_iterative_imputer
 
