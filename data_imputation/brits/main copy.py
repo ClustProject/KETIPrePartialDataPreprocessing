@@ -10,7 +10,6 @@ import copy
 sys.path.append("../")
 sys.path.append("../..")
 
-dbname, msname, columnName
 if __name__ == "__main__":
     db_name = 'air_indoor_경로당'
     ms_name = 'ICL1L2000234'
@@ -19,7 +18,9 @@ if __name__ == "__main__":
     column_name = 'in_temp'
     deepLearningModel = 'brits'
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-
+    """
+    
+    """
     from KETIPrePartialDataPreprocessing import main
     training_data = main.inputControl(inputType)[:input_limit]
     training_data = training_data[[column_name]]
@@ -59,4 +60,5 @@ if __name__ == "__main__":
     for i in range(len(nan_data)):
         if nan_data.iloc[i] == True:
             test_data[column_name].iloc[i] = to_csv_data[i]
+    
     test_data.to_csv("./test_imputed_data2.csv", index=True)
