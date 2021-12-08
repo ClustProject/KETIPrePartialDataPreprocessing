@@ -8,7 +8,7 @@ class SerialImputation():
         self.fillNAMethods = ['bfill','ffill']
         self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
         self.orderIntMethods = [ 'polynomial', 'spline']
-        self.britsMethods = ['brits']
+        self.deepMethods = ['brits']
 
     def getDataWithSerialImputation(self, data, imputation_param):
         result = data.copy()
@@ -47,6 +47,7 @@ class SerialImputation():
         min_limit = method_set['min']
         max_limit = method_set['max']
         method = method_set['method']
+        parameter = method_set['parameter']
         print(method)
         # Get Input Nan Locatoin Info
         from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
@@ -70,9 +71,9 @@ class SerialImputation():
             result = basicMethod.fillNAMethod(data, method, max_limit)
         elif method in self.orderIntMethods:
             result = basicMethod.orderIntMethod(data, method, max_limit)
-        elif method in self.britsMethods:
-            from KETIPrePartialDataPreprocessing.data_imputation.brits import main 
-            result = main.brits_training(data)
+        elif method in self.deepMethods:
+            from KETIPrePartialDataPreprocessing.data_imputation.DL import deepLearningImputation 
+            result = deepLearningImputation.DLImputation(data, method, parameter).getResult()
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")

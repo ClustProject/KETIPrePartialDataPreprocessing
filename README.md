@@ -55,7 +55,7 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
      imputation_param = {
         "serialImputation":{
             "flag":True,
-            "imputation_method":[{"min":0,"max":10,"method":"linear"},{"min":11,"max":20,"method":"mean"}],
+            "imputation_method":[{"min":0,"max":10,"method":"linear" , "parameter":{}},{"min":11,"max":20,"method":"mean" , "parameter":{}}],
             "totalNanLimit":70
         }
     }

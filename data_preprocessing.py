@@ -72,7 +72,7 @@ if __name__ == '__main__':
     imputation_param = {
         "serialImputation":{
             "flag":True,
-            "imputation_method":[{"min":0,"max":2,"method":"mean"}],
+            "imputation_method":[{"min":0,"max":2,"method":"mean" , "parameter":{}}],
             "totalNanLimit":90
         }
     }
