@@ -4,6 +4,7 @@ import sys
 import os
 import torch
 import torch.optim as optim
+import numpy as np
 from tqdm import tqdm
 from KETIPrePartialDataPreprocessing.data_imputation.DL.brits import Brits_model
 
@@ -21,14 +22,15 @@ class BritsTraining():
         torch.random.manual_seed(0)
         np.random.seed(0)
         
+        Brits_model.makedata(self.inputData, self.json_path)
+        data_iter = Brits_model.get_loader(self.json_path, batch_size=64)
         length = len(self.inputData)
         model = Brits_model.Brits_i(108, 1, 0, length, device).to(device)
+        
         # Brits_model.Brits_i(hidden_state_dim, impute_weight, label_weight, length, device)
 
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
         model.train()
-        
-        data_iter = Brits_model.get_loader(self.json_path, batch_size=64)
 
         progress = tqdm(range(epoch))
         loss_graphic = []

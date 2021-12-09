@@ -3,29 +3,33 @@ import os
 from KETIPrePartialDataPreprocessing.data_imputation.DL.brits import Brits_model
 import copy 
 import numpy as np
+import training
 from sklearn.preprocessing import StandardScaler
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 class BritsInference():
     def __init__(self, data, parameter):
         self.inputData = data
-        self.model_path = parameter['mode_address'][0]
-        self.json_path = parameter['mode_address'][1]
+        self.model_path = parameter['model_address'][0]
+        self.json_path = parameter['model_address'][1]
         self.get_model()
 
     def get_model(self):
-        if os.path.isfile(self.model_path):
+        if os.path.isfile(self.model_path) and os.path.isfile(self.json_path):
             print(self.model_path)
             print(self.json_path)
+            
         else:
             print("no_file")
+            training()
+
 
     def get_result(self):
 
-        loaded_model = Brits_model.Brits_i(108, 1, 0, len(self.data), device).to(device)
+        loaded_model = Brits_model.Brits_i(108, 1, 0, len(self.inputData), device).to(device)
         loaded_model.load_state_dict(copy.deepcopy(torch.load(self.model_path, device)))
         
         data_iter = Brits_model.get_loader(self.json_path, batch_size=64)
-        result = BritsInference.predict_result(loaded_model, data_iter, device, self.data)
+        result = BritsInference.predict_result(loaded_model, data_iter, device, self.inputData)
         return result
 
     def evaluate(self, model, data_iter, device):
