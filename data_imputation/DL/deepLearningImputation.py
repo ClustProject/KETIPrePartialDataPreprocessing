@@ -21,7 +21,7 @@ class DLImputation():
         result = pd.DataFrame()
         for split_data in dataset:
             from KETIPrePartialDataPreprocessing.data_imputation.DL.brits import inference
-            result_split = inference.BritsInference(split_data, parameter).get_result()
+            result_split = inference.BritsInference(split_data, parameter['model_address']).get_result()
             result = pd.concat([result, result_split])
         return result
 

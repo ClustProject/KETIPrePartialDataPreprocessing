@@ -25,17 +25,16 @@ if __name__ == '__main__':
     }
     outlier_param  = {
         "certainOutlierToNaN":{"flag":True},
-        "uncertainOutlierToNaN":{"flag":True,"param":{"neighbor":[0.5,0.6]}},
+        "uncertainOutlierToNaN":{"flag":True,"param":{"neighbor":[0.5, 0.6]}},
         "data_type":"air"
     }
-    model_file = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234','in_temp.pth')
-    json_file = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234','in_temp.json')
+    column_name ='in_temp'
+    model_folder = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234', column_name)
     imputation_param = {
     "serialImputation":{
         "flag":True,
         "imputation_method":[{"min":0,"max":2,"method":"linear", "parameter":{}}, 
-                             {"min":3,"max":6,"method":"brits", "parameter":{"model_address":[model_file, json_file]}}],
-        "totalNanLimit":90}
+                             {"min":3,"max":6,"method":"brits", "parameter":{"model_address":model_folder}}],"totalNanLimit":90}
     }
     process_param = {'refine_param':refine_param, 'outlier_param':outlier_param, 'imputation_param':imputation_param}
     ###
