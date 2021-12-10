@@ -6,19 +6,11 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 class BritsInference():
-    def __init__(self, data, parameter):
+    def __init__(self, data, model_folder):
         self.inputData = data
-        self.model_path = os.path.join(parameter['model_address'], 'brits.pth')
-        self.json_path = os.path.join(parameter['model_address'], 'brits.json')
-    #     self.get_model()
-
-    # def get_model(self):
-    #     if os.path.isfile(self.model_path):
-    #         print(self.model_path)
-    #         print(self.json_path)  
-
-    #     else:
-    #         print("no_file")
+        self.model_path = os.path.join(model_folder, 'in_temp.pth')
+        self.json_path = os.path.join(model_folder, 'in_temp.json')
+ 
 
     def get_result(self):
         loaded_model = Brits_model.Brits_i(108, 1, 0, len(self.inputData), device).to(device)
