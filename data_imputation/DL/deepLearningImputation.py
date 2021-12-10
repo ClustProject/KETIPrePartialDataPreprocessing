@@ -14,8 +14,9 @@ class DLImputation():
         return result
 
     def _britsImputation(self, data, parameter):
-        print("brits_training")
+        print("birts_imputation")
         column_name = data.columns[0]
+        print(data)
         dataset = [data[[column_name]][i:i+1000] for i in range(0, len(data), 1000)]
         result = pd.DataFrame()
         for split_data in dataset:

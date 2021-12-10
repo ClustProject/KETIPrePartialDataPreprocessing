@@ -8,8 +8,8 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 class BritsInference():
     def __init__(self, data, parameter):
         self.inputData = data
-        self.model_path = parameter['model_address'][0]
-        self.json_path = parameter['model_address'][1]
+        self.model_path = os.path.join(parameter['model_address'], 'brits.pth')
+        self.json_path = os.path.join(parameter['model_address'], 'brits.json')
     #     self.get_model()
 
     # def get_model(self):
