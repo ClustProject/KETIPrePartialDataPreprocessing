@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"path": "../KETIAppDataServer"
+		},
+		{
+			"path": "../KETIAppMachineLearning"
+		},
+		{
+			"path": "../KETIAppMetaServer"
+		},
+		{
+			"path": "../KETIPreDataIngestion"
+		},
+		{
+			"path": "../KETIPreDataIntegration"
+		},
+		{
+			"path": "../KETIPreDataSelection"
+		},
+		{
+			"path": "../KETIPreDataTransformation"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../KETIToolDataExploration"
+		},
+		{
+			"path": "../KETIToolMetaManager"
+		}
+	]
+}

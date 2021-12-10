@@ -11,11 +11,11 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 > If you want to change db and measurement name or add another data ingestion methods, modify data_manager/multipleDataSourceIngestion.py
 
 ## 2. data_preprocessing.py
-### 2-1. function ByAllMethod(input_data, refine_param, outlier_param, imputation_param)
+### 2-1. function allPartialProcessing(input_data, refine_param, outlier_param, imputation_param)
 > This function gets cleaner data by all possible data preprocessing modules from KETIPrePartialDataPreprocessing packages.
 > Refinging, Outlier Detction, Imputation
 
-### 2-2. function MultipleDatasetByAllMethod(multiple_dataset, process_param)
+### 2-2. function MultipleDatasetallPartialProcessing(multiple_dataset, process_param)
 > This function make multiple-Datasets through All preprocessing method.
 
 ### 2-2. DataPreprocessing (class)

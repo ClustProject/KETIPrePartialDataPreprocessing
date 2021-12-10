@@ -1,8 +1,6 @@
 
-import sys
-import os
-sys.path.append("../")
-sys.path.append("../..")
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 def inputControl(inputType):
     from KETIPrePartialDataPreprocessing.data_manager.multipleDataSourceIngestion import getData
@@ -22,46 +20,31 @@ if __name__ == '__main__':
     ### Parameter Test
     inputType ='influx' # or file
     refine_param = {
-        "removeDuplication":{
-            "flag":True
-        },
-        "staticFrequency":{
-            "flag":True
-        }
+        "removeDuplication":{"flag":True},
+        "staticFrequency":{"flag":True}
     }
-
     outlier_param  = {
-        "certainOutlierToNaN":{
-            "flag":True
-        },
-        "uncertainOutlierToNaN":{
-            "flag":True,
-            "param":{
-                "neighbor":[
-                    0.5,
-                    0.6
-                ]
-            }
-        },
+        "certainOutlierToNaN":{"flag":True},
+        "uncertainOutlierToNaN":{"flag":True,"param":{"neighbor":[0.5,0.6]}},
         "data_type":"air"
     }
+    model_file = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234','in_temp.pth')
+    json_file = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234','in_temp.json')
     imputation_param = {
     "serialImputation":{
         "flag":True,
-        "imputation_method":[
-            {
-                "min":0,
-                "max":50,
-                "method":"linear"
-            }
-        ],
-        "totalNanLimit":70
+        "imputation_method":[{"min":0,"max":2,"method":"linear", "parameter":{}}, 
+                             {"min":3,"max":6,"method":"brits", "parameter":{"model_address":[model_file, json_file]}}],
+        "totalNanLimit":90}
     }
-}
+    process_param = {'refine_param':refine_param, 'outlier_param':outlier_param, 'imputation_param':imputation_param}
     ###
     ### input
     inputType ='file' # or file    
     input_data = inputControl(inputType)
     ###
     from KETIPrePartialDataPreprocessing import data_preprocessing
-    output = data_preprocessing.ByAllMethod(input_data, refine_param, outlier_param, imputation_param)
+    
+    partialP = data_preprocessing.packagedPartialProcessing(process_param)
+    output = partialP.allPartialProcessing(input_data)
+

@@ -28,32 +28,33 @@ class DataPreprocessing():
         return self.imputedData
 
     # Add New Function
-    
-# Data Cleaning Class
-# Init -> SetData -> data Cleaning
-def ByAllMethod(input_data, refine_param, outlier_param, imputation_param):
 
-    MDP = DataPreprocessing()
-    ###########
-    refined_data = MDP.get_refinedData(input_data, refine_param)
-    ###########
-    datawithMoreCertainNaN, datawithMoreUnCertainNaN = MDP.get_outlierToNaNData(refined_data, outlier_param)
-    ###########
-    imputed_data = MDP.get_imputedData(datawithMoreUnCertainNaN, imputation_param)
-    ###########
-    result ={'original':input_data, 'refined_data':refined_data, 'datawithMoreCertainNaN':datawithMoreCertainNaN,
-    'datawithMoreUnCertainNaN':datawithMoreUnCertainNaN, 'imputed_data':imputed_data}
-    return result
 
- ## Get Multiple output
-def MultipleDatasetByAllMethod(multiple_dataset, process_param):
-    output={}
-    refine_param = process_param['refine_param']
-    outlier_param = process_param['outlier_param']
-    imputation_param = process_param['imputation_param']
-    for key in list(multiple_dataset.keys()):
-        output[key] = ByAllMethod(multiple_dataset[key], refine_param, outlier_param, imputation_param)
-    return output
+class packagedPartialProcessing():
+    def __init__(self, process_param):
+        self.refine_param = process_param['refine_param']
+        self.outlier_param = process_param['outlier_param']
+        self.imputation_param = process_param['imputation_param']
+     
+    def allPartialProcessing(self, input_data):
+        MDP = DataPreprocessing()
+        ###########
+        refined_data = MDP.get_refinedData(input_data, self.refine_param)
+        ###########
+        datawithMoreCertainNaN, datawithMoreUnCertainNaN = MDP.get_outlierToNaNData(refined_data, self.outlier_param)
+        ###########
+        imputed_data = MDP.get_imputedData(datawithMoreUnCertainNaN, self.imputation_param)
+        ###########
+        result ={'original':input_data, 'refined_data':refined_data, 'datawithMoreCertainNaN':datawithMoreCertainNaN,
+        'datawithMoreUnCertainNaN':datawithMoreUnCertainNaN, 'imputed_data':imputed_data}
+        return result
+
+    ## Get Multiple output
+    def MultipleDatasetallPartialProcessing(self, multiple_dataset):
+        output={}
+        for key in list(multiple_dataset.keys()):
+            output[key] = self.allPartialProcessing(multiple_dataset[key], self.refine_param, self.outlier_param, self.imputation_param)
+        return output
 
 if __name__ == '__main__':
     ### Parameter Test

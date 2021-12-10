@@ -43,12 +43,13 @@ class SerialImputation():
         return dfResult
 
     def imputeDataByMethod(self, method_set, data):
+        print(method_set)
         
         min_limit = method_set['min']
         max_limit = method_set['max']
         method = method_set['method']
         parameter = method_set['parameter']
-        print(method)
+        
         # Get Input Nan Locatoin Info
         from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
         column_name= data.columns[0]
