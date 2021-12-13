@@ -53,7 +53,7 @@ class packagedPartialProcessing():
     def MultipleDatasetallPartialProcessing(self, multiple_dataset):
         output={}
         for key in list(multiple_dataset.keys()):
-            output[key] = self.allPartialProcessing(multiple_dataset[key], self.refine_param, self.outlier_param, self.imputation_param)
+            output[key] = self.allPartialProcessing(multiple_dataset[key])
         return output
 
 if __name__ == '__main__':
