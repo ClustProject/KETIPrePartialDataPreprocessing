@@ -29,7 +29,7 @@ if __name__ == '__main__':
         "data_type":"air"
     }
     column_name ='in_temp'
-    model_folder = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234', column_name)
+    model_folder = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234')
     imputation_param = {
     "serialImputation":{
         "flag":True,
