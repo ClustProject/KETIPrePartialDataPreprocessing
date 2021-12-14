@@ -9,7 +9,7 @@ class SerialImputation():
         self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
         self.orderIntMethods = [ 'polynomial', 'spline']
         self.deepMethods = ['brits']
-
+    """
     def getDataWithSerialImputation(self, data, imputation_param):
         result = data.copy()
         self.imputation_param = imputation_param
@@ -18,6 +18,40 @@ class SerialImputation():
             column_data = self.columnImputation(column_data, column, imputation_param)
             result[column] = column_data
         return result
+    """
+    def getDataWithSerialImputation(self, data, imputation_param):
+        result = data.copy()
+        imputation_method = imputation_param['imputation_method']
+        totalNanLimit = imputation_param['totalNanLimit']
+        # if total column NaN number is less tan limit, Impute it according to the parameter  
+        result= result.dropna(thresh=totalNanLimit, axis=1)
+        result = self.dfImputation(result, imputation_param)
+
+        for column in data.columns:
+            if column in result.columns:
+                data.loc[:, column] = result[column]
+        return result
+
+    def dfImputation(self, data, imputation_param):
+
+        imputation_method = imputation_param['imputation_method']
+        totalNanLimit = imputation_param['totalNanLimit']
+        nan_data_summary = round(data.isna().sum()/len(data), 2)
+        print("===== NaN data Ratio summary ======")
+        print(nan_data_summary)
+
+        DataWithMaskedNaN = data.copy()
+        for method_set in imputation_method:
+            max_limit =method_set['max']
+            from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
+            NaNInfoOverThresh= nanMasking.getConsecutiveNaNInfoOverThresh(data, max_limit)
+            # Missing Data Imputation
+            print(data.isna().sum())
+            data = self.imputeDataByMethod(method_set, data)
+            print(data.isna().sum())
+            DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(data, NaNInfoOverThresh, max_limit)
+
+        return DataWithMaskedNaN
 
     def columnImputation(self, column_data, column, imputation_param):
             self.columnNaNCount={}
@@ -49,21 +83,21 @@ class SerialImputation():
         max_limit = method_set['max']
         method = method_set['method']
         parameter = method_set['parameter']
-        
+        """      
         # Get Input Nan Locatoin Info
         from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
         column_name= data.columns[0]
-        NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, column_name, max_limit))
+        NaNInfoOverThresh = list(nanMasking.getConsecutiveNaNInfoOverThresh(data, max_limit))
         column_data = data[column_name].values
         column_data = column_data.reshape(-1, 1)
-
+        """
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
         if method in self.ScikitLearnMethods:
             # use numpy ndarray input (column_data)
-            result = basicMethod.ScikitLearnMethod(column_data, method, max_limit)
+            result = basicMethod.ScikitLearnMethod(data, method, max_limit)
             result = self.makeDF(data, result)
         elif method in self.simpleMethods:
-            result = basicMethod.simpleMethod(column_data, method, max_limit)
+            result = basicMethod.simpleMethod(data, method, max_limit)
             result = self.makeDF(data, result)
         elif method in self.simpleIntMethods:
             # use dataframe (data)
@@ -78,23 +112,8 @@ class SerialImputation():
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
-
+        """
         # Data Masking
-        DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(result, column_name, NaNInfoOverThresh, max_limit)
-        return DataWithMaskedNaN
-
-# 
-#class 
-# from sklearn.impute import SimpleImputer, KNNImputer, IterativeImputer
-# from sklearn.experimental import enable_iterative_imputer
-
-# temp_miss = temp_miss.assign(temp_na_mean = lambda x: SimpleImputer(strategy='mean').fit_transform(x[['temp']]),
-#                                temp_na_median = lambda x: SimpleImputer(strategy='median').fit_transform(x[['temp']]),
-#                                temp_na_most_frequent = lambda x: SimpleImputer(strategy='most_frequent').fit_transform(x[['temp']]),
-#                                temp_na_last = lambda x: x['temp'].fillna(method='f   fill'),
-#                                temp_na_next = lambda x: x['temp'].fillna(method='bfill'),
-#                                temp_na_last_next = lambda x: x[['temp_na_last', 'temp_na_next']].mean(axis=1),
-#                                temp_na_knn = lambda x: KNNImputer(n_neighbors=3, weights='distance').fit_transform(x[['temp']])[:, 0],
-#                                temp_na_iterative = lambda x: IterativeImputer().fit_transform(x[['temp']])[:, 0],
-#                                temp_na_zero = lambda x: SimpleImputer(fill_value=0.0, strategy='constant').fit_transform(x[['temp']])
-#                                )
+        DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(result, NaNInfoOverThresh, max_limit)
+        """
+        return result        
