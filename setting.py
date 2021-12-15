@@ -10,7 +10,7 @@ self.deepMethods = ['brits']
 """
 model_folder = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234')
 
-refine_param = {"removeDuplication":{"flag":True}, "staticFrequency":{"flag":True, "frequency":"60S"}}
+refine_param = {"removeDuplication":{"flag":True}, "staticFrequency":{"flag":True, "frequency":None}}
 
 # frequency: freqDateOffset|str|None
 outlier_param  = {
@@ -22,8 +22,8 @@ outlier_param  = {
 imputation_param = {
 "serialImputation":{
     "flag":True,
-    "imputation_method":[{"min":0,"max":10,"method":"brits", "parameter":{}}
-                            #{"min":3,"max":6,"method":"brits", "parameter":{"model_address":model_folder}}
+    "imputation_method":[{"min":0,"max":3,"method":"mean", "parameter":{}}, 
+                            {"min":4,"max":6,"method":"brits", "parameter":{"model_address":model_folder}}
     ],"totalNanLimit":20}
 }
 

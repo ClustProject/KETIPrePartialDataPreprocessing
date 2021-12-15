@@ -30,7 +30,7 @@ class DataPreprocessing():
     def get_imputedData(self, data, imputation_param):
         if imputation_param['serialImputation']['flag'] == True:
             from KETIPrePartialDataPreprocessing.data_imputation import Imputation
-            self.imputedData = Imputation.SerialImputation().getDataWithSerialImputation(data, imputation_param['serialImputation'])
+            self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(data, imputation_param['serialImputation'])
         else:
             self.imputedData = data.copy()
         return self.imputedData

@@ -29,7 +29,7 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 ```json
          refine_param = {
         "removeDuplication":{"flag":True},
-        "staticFrequency":{"flag":True}
+        "staticFrequency":{"flag":True, "frequency":None}
     }
 ```
 1) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.duplicate_data_remove: Remove duplicated data

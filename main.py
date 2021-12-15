@@ -20,9 +20,6 @@ def inputControl(inputType):
 if __name__ == '__main__':
     ### Parameter Test
     inputType ='influx' # or file
-    
-    ### input
-    inputType ='file' # or file    
     input_data = inputControl(inputType)
     ### test
     from KETIPrePartialDataPreprocessing import data_preprocessing
