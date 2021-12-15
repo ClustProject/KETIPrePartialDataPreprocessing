@@ -54,7 +54,7 @@ class SerialImputation():
 
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
         from KETIPrePartialDataPreprocessing.data_imputation.DL import deepLearningImputation 
-        basicImpute = basicMethod.BasicImputation(data, method, max)
+        basicImpute = basicMethod.BasicImputation(data, method, max_limit)
         if method in self.ScikitLearnMethods:
             result = basicImpute.ScikitLearnMethod()       
         elif method in self.simpleMethods:

@@ -25,4 +25,3 @@ if __name__ == '__main__':
     from KETIPrePartialDataPreprocessing import data_preprocessing
     partialP = data_preprocessing.packagedPartialProcessing(setting.process_param)
     output = partialP.allPartialProcessing(input_data)
-

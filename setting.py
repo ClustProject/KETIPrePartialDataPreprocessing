@@ -22,8 +22,9 @@ outlier_param  = {
 imputation_param = {
 "serialImputation":{
     "flag":True,
-    "imputation_method":[{"min":0,"max":3,"method":"mean", "parameter":{}}, 
-                            {"min":4,"max":6,"method":"brits", "parameter":{"model_address":model_folder}}
+    "imputation_method":[{"min":0,"max":3,"method":"linear", "parameter":{}}, 
+                            #{"min":4,"max":6,"method":"mean", "parameter":{"model_address":model_folder}}
+                            {"min":4,"max":6,"method":"mean", "parameter":{}}
     ],"totalNanLimit":20}
 }
 
