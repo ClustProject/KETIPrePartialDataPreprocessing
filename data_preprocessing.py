@@ -38,10 +38,22 @@ class DataPreprocessing():
 
 class packagedPartialProcessing(DataPreprocessing):
     def __init__(self, process_param):
+        self.process_param = process_param
         self.refine_param = process_param['refine_param']
         self.outlier_param = process_param['outlier_param']
         self.imputation_param = process_param['imputation_param']
-     
+    
+    def PartialProcessing(self, input_data, flag):
+        if flag == 'refine':
+            result = self.get_refinedData(input_data, self.refine_param)
+        elif flag =='outlierToNaN':
+            result = self.get_outlierToNaNData(input_data, self.outlier_param)
+        elif flag == 'imputation':
+            result = self.get_imputedData(input_data, self.imputation_param)
+        elif flag == 'all':
+            result = self.allPartialProcessing(input_data)
+        return result
+
     def allPartialProcessing(self, input_data):
         ###########
         refined_data = self.get_refinedData(input_data, self.refine_param)
@@ -71,8 +83,7 @@ if __name__ == '__main__':
     from KETIPrePartialDataPreprocessing import main
     input_data = main.inputControl(inputType)
     ### function test
-    MDP = DataPreprocessing()
-    #result = MDP.get_refinedData(input_data, setting.refine_param)
-    result = MDP.get_imputedData(input_data, setting.imputation_param)
-
+    flag = 'imputation' #'outlierToNaN','refine' ,'all'
+    result = packagedPartialProcessing(setting.process_param).PartialProcessing(input_data, flag)
+    print(result)
     ###
