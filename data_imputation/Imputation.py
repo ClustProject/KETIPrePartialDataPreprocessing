@@ -17,11 +17,10 @@ class SerialImputation():
         # if total column NaN number is less tan limit, Impute it according to the parameter  
         result= result.dropna(thresh=totalNanLimit, axis=1)
         result = self.dfImputation(result, imputation_param)
-
         for column in data.columns:
             if column in result.columns:
                 data.loc[:, column] = result[column]
-        return result
+        return data
 
     def printNaNDataSummary(self, data):
         nan_data_summary = round(data.isna().sum()/len(data), 2)
