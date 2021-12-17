@@ -16,13 +16,13 @@ class ImputationTraining():
             column_data = df[[column_name]]
             model = self.columnDataTrainer(column_data)
             model_name = self.getModelAdd(db_name, ms_name, column_name)
-            self.model_store(model_name, model)
+            self.storeModel(model_name, model)
 
     def getModelAdd(self, db_name, ms_name, column_name):
         model_name = os.path.add(self.root_dir, db_name, ms_name, column_name,'dfdf')
         return model_name
 
-    def model_store(self, model_name, model):
+    def storeModel(self, model_name, model):
         pass
 
     def columnDataTrainer(self,colum_data):
