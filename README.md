@@ -32,7 +32,7 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
         "staticFrequency":{"flag":True, "frequency":None}
     }
 ```
-1) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.duplicate_data_remove: Remove duplicated data
+1) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.RemoveDuplicateData: Remove duplicated data
 2) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.make_static_frequency: Let the original data have a static frequency
 - output: datafrmae type
 

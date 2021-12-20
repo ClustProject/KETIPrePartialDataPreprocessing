@@ -4,6 +4,12 @@ sys.path.append("../")
 sys.path.append("../..")
 
 class DataPreprocessing():
+    '''It has interfaces of Data Preprocessing.
+    
+    **Data Preprocessing Modules**::
+
+            ``Refined Data``, ``Outlier Remove``, ``Missing Data Imputation``
+    '''
     def __init__(self):
         pass
     
@@ -12,12 +18,12 @@ class DataPreprocessing():
         result = data.copy()
         if refine_param['removeDuplication']['flag']== True:
             from KETIPrePartialDataPreprocessing.data_refine import redundancy
-            result = redundancy.ExcludeRedundancy(result).get_result()
+            result = redundancy.ExcludeRedundancy().get_result(result)
 
         if refine_param['staticFrequency']['flag'] == True:
             from KETIPrePartialDataPreprocessing.data_refine import frequency
             inferred_freq = refine_param['staticFrequency']['frequency']
-            result = frequency.FrequencyRefine(result, inferred_freq).get_result()   
+            result = frequency.FrequencyRefine().get_RefinedData(result, inferred_freq)   
 
         self.refinedData = result
         return self.refinedData
