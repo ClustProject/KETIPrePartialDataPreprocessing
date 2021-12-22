@@ -6,17 +6,16 @@ class FrequencyRefine():
 
     def get_RefinedData(self, data, freq=None):
         """ This function makes new data with the static description frequency according to the freq parameter status. 
-
-        :param data: DataFrame
-        :param freq: [None| DateOffset or str] Frequency of refined output data. If None, this class infers the data frequency and redefines it. 
+        :param data: input data
+        :type data: DataFrame 
+        :param freq: Frequency of output data. If None, this module infers the data frequency and redefines it.
+        :type freq: [None| DateOffset|str], optional
         
-        :return: NewDataframe output
+        :return: NewDataframe output with the specific description frequency.
+        :rtype: DataFrame
         
         example
             >>> output = FrequencyRefine().get_RefinedData(data, None)
-
-        
-
         """
         self.data = data
         self.freq = freq
@@ -29,42 +28,50 @@ class FrequencyRefine():
     def get_RefinedDatawithInferredFreq(self, data):
         """ This function generates data with inferred static inference frequency.
 
-        :param data: DataFrame
+        :param data: input data
+        :type data: DataFrame 
 
         :return: NewDataframe output, inferred_frequency
-
+        :rtype: DataFrame, DateOffset
+        
         example
             >>> output, new_frequency = FrequencyRefine().get_RefinedDatawithInferredFreq(data)
         """
         
         inffered_freq = self.get_frequencyWith3DataPoints(data)
-        self.output = self.make_static_frequency(data, inffered_freq)
+        self.output = self.make_staticFrequencyData(data, inffered_freq)
         return self.output, inffered_freq
     
     def get_RefinedDatawithStaticFreq(self, data, freq):
         """ This function generates data with the static inference frequency.
 
-        :param data: DataFrame
+        :param data: input data
+        :type data: DataFrame 
         :param freq: frequency of data to be newly 
+        :type freq: DateOffset 
         
         :return: NewDataframe output
+        :rtype: DataFrame
 
         example
             >>> output = FrequencyRefine().get_RefinedDatawithStaticFreq(data, '30S')
         """
-        self.output = self.make_static_frequency(data, freq)
+        self.output = self.make_staticFrequencyData(data, freq)
         return self.output
 
-    def make_static_frequency(self, data, freq):
+    def make_staticFrequencyData(self, data, freq):
         """ This function makes data with static frequency.
 
-        :param data: DataFrame
+        :param data: input data
+        :type data: DataFrame
         :param freq: frequency of data to be newly generated
+        :type freq: DateOffset
 
         :return: NewDataframe output
+        :rtype: DataFrame
 
         example
-            >>> output = FrequencyRefine().make_static_frequency(data, '30S')
+            >>> output = FrequencyRefine().make_staticFrequencyData(data, '30S')
         """
         data_staticFrequency = data.copy()
         data_staticFrequency = data_staticFrequency.sort_index()
@@ -73,11 +80,13 @@ class FrequencyRefine():
         return data_staticFrequency
     
     def get_frequencyWith3DataPoints(self, data):
-        """ this function finds inferred frequency of input data
+        """ this function inferrs description frequency of input data
 
-        :param data: [datafrmae]
+        :param data: input data
+        :type data: DataFrame
 
         :return: estimated_freq
+        :rtype: DateOffset
 
         example
             >>> estimated_freq  = FrequencyRefine().get_frequencyWith3DataPoints(data)
@@ -101,7 +110,9 @@ class FrequencyRefine():
         else:
             estimated_freq = None
         
-        ### None 일 경우에 그래도 estimated frequency가 나오도록만 해놨음 TODO
+        # TODO Modify it 
+        # if etstmated_freq is None, it infers using only two data points.
+        
         if not estimated_freq:
             estimated_freq = (data.index[1]-data.index[0])
 

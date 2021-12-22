@@ -5,11 +5,13 @@ class ExcludeRedundancy():
         pass
     
     def get_result(self, data):
-        """ Get Clean Data without redundency.
+        """ Get Clean Data without redundency using all data preprocessing functions.
 
-        :param data: DataFrame
+        :param data: input data
+        :type data: DataFrame 
 
-        :return: NewDataframe output
+        :return: output data
+        :rtype: DataFrame
 
         example
             >>> output = ExcludeRedundancy().get_result(data)
@@ -18,16 +20,18 @@ class ExcludeRedundancy():
         return self.result
 
     def RemoveDuplicateData(self, data):
-        """ Remove Duplicate Data (by column and row)
+        """ Return clean data removing duplicate row and/or column
 
-        :param data: DataFrame
+        :param data: input data
+        :type data: DataFrame 
 
-        :return: NewDataframe output
+        :return: output data
+        :rtype: DataFrame
 
         example
             >>> output = ExcludeRedundancy().RemoveDuplicateData(data)
         """
-        ## Delete duplicated column, and row by index.
+        ## 
         # duplicated column remove
         data = data.loc[:, ~data.columns.duplicated()]
         

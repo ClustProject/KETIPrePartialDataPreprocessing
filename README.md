@@ -33,7 +33,7 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
     }
 ```
 1) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.RemoveDuplicateData: Remove duplicated data
-2) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.make_static_frequency: Let the original data have a static frequency
+2) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.make_staticFrequencyData: Let the original data have a static frequency
 - output: datafrmae type
 
 ### 2-2-2. get_outlierToNaNData(self, data, outlier_param)
