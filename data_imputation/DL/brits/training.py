@@ -6,22 +6,42 @@ import torch
 import torch.optim as optim
 import numpy as np
 from tqdm import tqdm
-from KETIPrePartialDataPreprocessing.data_imputation.DL.brits import Brits_model
+
+sys.path.append(".")
+sys.path.append("..")
+sys.path.append("../..")
+sys.path.append("../../..")
+sys.path.append("../../../..")
+
+from KETIPrePartialDataPreprocessing.data_imputation.DL.brits import Brits_model, training
+from KETIPrePartialDataPreprocessing.data_imputation.DL.DLImputationTraining import ImputationTraining as IT
+
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+                                                                                                                                             
+class britsImputationTraining(IT):
+    def __init__(self, column_data, json_path, data_len):
+        self.column_data = column_data
+        self.json_path = json_path
+        self.data_len = data_len
+
+    def columnDataTrainer(self):
+        Brits = training.BritsTraining(self.column_data, self.json_path)
+        print(self.column_data)
+        model = Brits.train()
+        return model
 
 class BritsTraining():
-    def __init__(self, data, parameter):
-        self.inputData = data
-        self.model_path = parameter['mode_address'][0]
-        self.json_path = parameter['mode_address'][1]
-        self.get_model()
+    def __init__(self, data, json_path):
+        self.inputData = data[:1000]
+        self.json_path = json_path
 
     def train(self, epoch=100, learning_rate=0.01):
         # setting
         torch.random.manual_seed(0)
         np.random.seed(0)
-        
+        print(self.inputData)
+     
         Brits_model.makedata(self.inputData, self.json_path)
         data_iter = Brits_model.get_loader(self.json_path, batch_size=64)
         length = len(self.inputData)
@@ -43,5 +63,8 @@ class BritsTraining():
             loss_graphic.append(total_loss.tolist())
             progress.set_description("loss: {:0.4f}".format(total_loss / len(data_iter)))
 
-        torch.save(model.state_dict(), self.model_path)
+        #### model save
+
+        # torch.save(model.state_dict(), self.model_path)
+        
         return model
