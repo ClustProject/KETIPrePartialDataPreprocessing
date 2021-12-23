@@ -44,19 +44,19 @@ class SerialImputation():
         return data
 
     def dropOverNaNThresh(self, data, totalNonNanRatio):
-        """ This function cleans the data by applying several missing data handling methods.
+        """ This function removes any column that does not meet the qualifications (total Non-Nan Ratio).
 
         :param data: input data
         :type data: DataFrame 
         :param totalNonNanRatio: total NaN Ratio (%). If the ratio of non-NaN values is less than or equal to the Ratio value, column data is removed.
         :type totalNonNanRatio: float(%)
         
-        :return: NewDataframe output
+        :return: NewDataframe excluding columns that do not meet the qualifications
         :rtype: DataFrame
         
         example
-            >>> imputation_param = {'serialImputation': {'flag': True, 'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
-            >>> output = SerialImputation().get_dataWithSerialImputationMethods(data, imputation_param)
+            >>> totalNonNanRatio = 80 # %
+            >>> output = SerialImputation().dropOverNaNThresh(data, imputation_param)
         """
         totalNonNanNum = int(totalNonNanRatio/100 * len(data)) 
         result= data.dropna(thresh = totalNonNanNum, axis=1)
@@ -64,6 +64,14 @@ class SerialImputation():
         return result
 
     def printNaNDataSummary(self, data):
+        """ Print Summary of data NaN status 
+
+        :param data: input data
+        :type data: DataFrame 
+        
+        example
+            >>> output = SerialImputation().printNaNDataSummary(data)
+        """
         nan_data_summary = round(data.isna().sum()/len(data), 2)
         print("===== NaN data Ratio summary ======")
         print(nan_data_summary)
@@ -87,6 +95,20 @@ class SerialImputation():
         return DataWithMaskedNaN
 
     def imputeDataByMethod(self, method_set, data):
+        """ This function imputes data depending on method_set. (min, max, method, method_parameter)
+
+        :param method_set: method information
+        :type method_set: json
+        :param data: input data
+        :type data: DataFrame
+        
+        :return: NewDataframe after imputation
+        :rtype: DataFrame
+        
+        example
+            >>> method_set = {'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}
+            >>> output = SerialImputation().imputeDataByMethod(method_set, data)
+        """
         
         min_limit = method_set['min']
         max_limit = method_set['max']
