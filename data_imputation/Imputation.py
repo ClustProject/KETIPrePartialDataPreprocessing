@@ -78,6 +78,20 @@ class SerialImputation():
 
 
     def dfImputation(self, data, imputation_param):
+        """ This function returns final imputed data after imputation and filtering by max NaN limit.
+
+        :param data: input_data
+        :type data: DataFrame
+        :param imputation_param: imputation_param
+        :type imputation_param: json
+        
+        :return: NewDataframe after imputation and nan limit masking
+        :rtype: DataFrame
+        
+        example
+            >>> output = SerialImputation().dfImputation(data, imputation_param)
+        """
+
         imputation_method = imputation_param['imputation_method']
         totalNonNanRatio = imputation_param['totalNonNanRatio']
         self.printNaNDataSummary(data)
