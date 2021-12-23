@@ -2,7 +2,11 @@ import numpy as np
 import pandas as pd
   
 class SerialImputation():
+    """ This class applies a number of imputation techniques in series.
+    """
     def __init__ (self):
+        """ Define Imputation Methods
+        """
         self.ScikitLearnMethods =['KNN','MICE']
         self.simpleMethods =['most_frequent', 'mean', 'median', ' constant']
         self.fillNAMethods = ['bfill','ffill']
@@ -11,11 +15,27 @@ class SerialImputation():
         self.deepMethods = ['brits']
  
     def get_dataWithSerialImputationMethods(self, data, imputation_param):
+        """ This function cleans the data by applying several missing data handling methods.
+
+        :param data: input data
+        :type data: DataFrame 
+        :param imputation_param: parameter of imputation
+        :type imputation_param: json
+        
+        :return: NewDataframe output
+        :rtype: DataFrame
+        
+        example
+            >>> imputation_param = {'serialImputation': {'flag': True, 'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
+            >>> output = SerialImputation().get_dataWithSerialImputationMethods(data, imputation_param)
+        """
         result = data.copy()
         imputation_method = imputation_param['imputation_method']
         totalNonNanRatio = imputation_param['totalNonNanRatio']
         # if total column NaN number is less tan limit, Impute it according to the parameter  
         result = self.dropOverNaNThresh(result, totalNonNanRatio)
+        print("after Drop NaN Data")
+
         result = self.dfImputation(result, imputation_param)
         
         for column in data.columns:
@@ -24,9 +44,22 @@ class SerialImputation():
         return data
 
     def dropOverNaNThresh(self, data, totalNonNanRatio):
+        """ This function cleans the data by applying several missing data handling methods.
+
+        :param data: input data
+        :type data: DataFrame 
+        :param totalNonNanRatio: total NaN Ratio (%). If the ratio of non-NaN values is less than or equal to the Ratio value, column data is removed.
+        :type totalNonNanRatio: float(%)
+        
+        :return: NewDataframe output
+        :rtype: DataFrame
+        
+        example
+            >>> imputation_param = {'serialImputation': {'flag': True, 'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
+            >>> output = SerialImputation().get_dataWithSerialImputationMethods(data, imputation_param)
+        """
         totalNonNanNum = int(totalNonNanRatio/100 * len(data)) 
         result= data.dropna(thresh = totalNonNanNum, axis=1)
-        print(result)
         print("totalNonNanNum:", totalNonNanNum)
         return result
 

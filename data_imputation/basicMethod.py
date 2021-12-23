@@ -8,7 +8,11 @@ from sklearn.impute import IterativeImputer
 from sklearn.impute import KNNImputer
 
 class BasicImputation():
+    """ This class supports basic imputation methods.
+    """
     def __init__(self, data, method, max):
+        """ Set data, imputation method, max value and related values
+        """
         self.method = method
         self.data = data
         self.max = max
@@ -20,6 +24,8 @@ class BasicImputation():
         return dfResult
 
     def ScikitLearnMethod(self):
+        """ Get imputed data from scikit library methods. (KNN, MICE)
+        """
         data = self.data
         # TODO Extend parameter
         if self.method =='KNN':
@@ -37,19 +43,27 @@ class BasicImputation():
         return result
 
     def simpleMethod(self):
+        """ Get imputed data from scikit SimpleImputer methods
+        """
         series_result = SimpleImputer(strategy=self.method, missing_values = np.nan).fit_transform(self.data)
         result = self.makeDF(series_result)
         return result
 
     def fillNAMethod(self):
+        """ Get imputed data from fillNA methods
+        """
         result = self.data.fillna(method=self.method, limit=self.max)
         return result
 
     def simpleIntMethod(self):
+        """ Get imputed data from simple other methods
+        """
         result = self.data.interpolate(method=self.method, limit = self.max, limit_direction='both')
         return result
 
     def orderIntMethod(self):
+        """ Get imputed data from interpolation methods
+        """
         result = self.data.interpolate(method=self.method, limit = self.max, order = 2, limit_direction='both')
         return result
 
