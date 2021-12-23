@@ -22,8 +22,8 @@ class DataPreprocessing():
         :param refine_param: refine_param
         :type refine_param: json
         
-        :return: New refined DataFrame output
-        :rtype: DataFrame
+        :return data : New refined DataFrame output
+        :return data: DataFrame
         
         It refines data adaptively depending on flag status. (removeDuplication, staticFrequency)
         example

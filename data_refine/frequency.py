@@ -6,12 +6,13 @@ class FrequencyRefine():
 
     def get_RefinedData(self, data, freq=None):
         """ This function makes new data with the static description frequency according to the freq parameter status. 
+        
         :param data: input data
         :type data: DataFrame 
         :param freq: Frequency of output data. If None, this module infers the data frequency and redefines it.
         :type freq: [None| DateOffset|str], optional
         
-        :return: NewDataframe output with the specific description frequency.
+        :return: NewDataframe output with static description frequency without redunency 
         :rtype: DataFrame
         
         example
