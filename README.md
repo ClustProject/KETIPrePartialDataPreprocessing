@@ -32,8 +32,8 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
         "staticFrequency":{"flag":True, "frequency":None}
     }
 ```
-1) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.duplicate_data_remove: Remove duplicated data
-2) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.make_static_frequency: Let the original data have a static frequency
+1) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.RemoveDuplicateData: Remove duplicated data
+2) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.make_staticFrequencyData: Let the original data have a static frequency
 - output: datafrmae type
 
 ### 2-2-2. get_outlierToNaNData(self, data, outlier_param)
@@ -56,7 +56,7 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
         "serialImputation":{
             "flag":True,
             "imputation_method":[{"min":0,"max":10,"method":"linear" , "parameter":{}},{"min":11,"max":20,"method":"mean" , "parameter":{}}],
-            "totalNanLimit":70
+            "totalNonNanRatio":80
         }
     }
 ```

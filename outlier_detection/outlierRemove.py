@@ -2,9 +2,12 @@ import numpy as np
 import pandas as pd
 
 class CertainOutlierRemove():
-    # Let Certain Outlier from DataFrame Data to NaN
-    # This function makes more Nan according to the data status.
+    '''Let Certain Outlier from DataFrame Data to NaN. This function makes more Nan according to the data status.
+    
+    **Data Preprocessing Modules**::
 
+            ``Sensor Min Max Check``, ``Remove no numeric data``
+    '''
     def __init__(self, data, min_max_limit):
         self.data = data
         self.min_max_limit = min_max_limit
