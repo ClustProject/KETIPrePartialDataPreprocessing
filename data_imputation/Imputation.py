@@ -13,14 +13,22 @@ class SerialImputation():
     def get_dataWithSerialImputationMethods(self, data, imputation_param):
         result = data.copy()
         imputation_method = imputation_param['imputation_method']
-        totalNanLimit = imputation_param['totalNanLimit']
+        totalNonNanRatio = imputation_param['totalNonNanRatio']
         # if total column NaN number is less tan limit, Impute it according to the parameter  
-        result= result.dropna(thresh=totalNanLimit, axis=1)
+        result = self.dropOverNaNThresh(result, totalNonNanRatio)
         result = self.dfImputation(result, imputation_param)
+        
         for column in data.columns:
             if column in result.columns:
                 data.loc[:, column] = result[column]
         return data
+
+    def dropOverNaNThresh(self, data, totalNonNanRatio):
+        totalNonNanNum = int(totalNonNanRatio/100 * len(data)) 
+        result= data.dropna(thresh = totalNonNanNum, axis=1)
+        print(result)
+        print("totalNonNanNum:", totalNonNanNum)
+        return result
 
     def printNaNDataSummary(self, data):
         nan_data_summary = round(data.isna().sum()/len(data), 2)
@@ -30,7 +38,7 @@ class SerialImputation():
 
     def dfImputation(self, data, imputation_param):
         imputation_method = imputation_param['imputation_method']
-        totalNanLimit = imputation_param['totalNanLimit']
+        totalNonNanRatio = imputation_param['totalNonNanRatio']
         self.printNaNDataSummary(data)
 
         DataWithMaskedNaN = data.copy()
@@ -39,6 +47,7 @@ class SerialImputation():
             from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
             NaNInfoOverThresh= nanMasking.getConsecutiveNaNInfoOverThresh(data, max_limit)
             # Missing Data Imputation
+            
             data = self.imputeDataByMethod(method_set, data)
             DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(data, NaNInfoOverThresh, max_limit)
         self.printNaNDataSummary(DataWithMaskedNaN)
@@ -50,6 +59,7 @@ class SerialImputation():
         max_limit = method_set['max']
         method = method_set['method']
         parameter = method_set['parameter']
+
 
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
         from KETIPrePartialDataPreprocessing.data_imputation.DL import deepLearningImputation 
@@ -69,4 +79,5 @@ class SerialImputation():
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
+
         return result        

@@ -25,7 +25,7 @@ imputation_param = {
     "imputation_method":[{"min":0,"max":3,"method":"KNN", "parameter":{}}, 
                             #{"min":4,"max":6,"method":"brits", "parameter":{"model_address":model_folder}}
                             {"min":4,"max":6,"method":"mean", "parameter":{}}
-    ],"totalNanLimit":20}
+    ],"totalNonNanRatio":80}
 }
 
 process_param = {'refine_param':refine_param, 'outlier_param':outlier_param, 'imputation_param':imputation_param}
