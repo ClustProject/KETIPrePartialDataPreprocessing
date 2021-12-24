@@ -11,6 +11,8 @@ class MinMaxLimitValueSet():
                                         '2ndPanSpeed':200, 'UpperPanSpeed':200, 'out_pressure':2000,
                                         "in_pm01_raw":1000, "in_pm25_raw":1000, "in_pm10_raw":1000,
                                         "temp":80, "in_humi":100, "co2":99999, "voc":99999,  # in_temp to temp
+                                        'in_temp':100,'in_cici_humi':100,'in_cici_noise':100, 'in_cici_temp':100, 'in_cici_voc':100,
+                                        'in_voc':99999,
                                         "in_noise":5000, "in_pm10":99999, "in_pm25":99999, "in_pm01":99999, 'pm10':9999, "in_co2":99999,
                                         "cici_pm10":100, "cici_pm25":100, "cici_temp":100, "cici_humi":100, 
                                         "cici_noise":100, "cici":100, "ciai":100, 'cici_voc':100, 'cici_co2':100,
@@ -23,6 +25,8 @@ class MinMaxLimitValueSet():
                                         'RichHumidity':0, 'comp_temp':-20, 'comp_humid':0, '2ndPanSpeed':0, 'UpperPanSpeed':0, 'out_pressure':0, 
                                         "in_pm01_raw":0, "in_pm25_raw":0, "in_pm10_raw":0,
                                         "temp":-40, "in_humi":0, "co2":0, "voc":0,  #in_temp to temp
+                                        'in_temp':-100,'in_cici_humi': 0, 'in_cici_noise':0,'in_cici_temp':0, 'in_cici_voc':0,
+                                        'in_voc':0,
                                         "in_noise":0, "in_pm10":0, "in_pm25":0, "in_pm01":0, "pm10":0, "in_co2":0,
                                         "cici_pm10":0, "cici_pm25":0, "cici_temp":0, "cici_humi":0, "in_cici_co2":0, 
                                         "cici_noise":0, "cici":0, "ciai":0, 'cici_voc':0, 'cici_co2':0,
