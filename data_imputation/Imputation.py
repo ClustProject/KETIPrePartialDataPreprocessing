@@ -36,7 +36,10 @@ class SerialImputation():
         result = self.dropOverNaNThresh(result, totalNonNanRatio)
         print("after Drop NaN Data")
 
-        result = self.dfImputation(result, imputation_param)
+        if not result.empty:
+            result = self.dfImputation(result, imputation_param)
+        else:
+            result =data.copy()
         
         for column in data.columns:
             if column in result.columns:
@@ -60,7 +63,7 @@ class SerialImputation():
         """
         totalNonNanNum = int(totalNonNanRatio/100 * len(data)) 
         result= data.dropna(thresh = totalNonNanNum, axis=1)
-        print("totalNonNanNum:", totalNonNanNum)
+       
         return result
 
     def printNaNDataSummary(self, data):
@@ -131,7 +134,7 @@ class SerialImputation():
 
 
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
-        from KETIPrePartialDataPreprocessing.data_imputation.DL import deepLearningImputation 
+        from KETIPrePartialDataPreprocessing.data_imputation.DL import DLImputation 
         basicImpute = basicMethod.BasicImputation(data, method, max_limit)
         if method in self.ScikitLearnMethods:
             result = basicImpute.ScikitLearnMethod()       
@@ -144,7 +147,7 @@ class SerialImputation():
         elif method in self.orderIntMethods:
             result = basicImpute.orderIntMethod()
         elif method in self.deepMethods:
-            result = deepLearningImputation.DLImputation(data, method, parameter).getResult()
+            result = DLImputation.DLImputation(data, method, parameter).getResult()
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")

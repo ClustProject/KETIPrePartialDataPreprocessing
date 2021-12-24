@@ -40,7 +40,7 @@ class DataPreprocessing():
         if refine_param['staticFrequency']['flag'] == True:
             from KETIPrePartialDataPreprocessing.data_refine import frequency
             inferred_freq = refine_param['staticFrequency']['frequency']
-            result = frequency.FrequencyRefine().get_RefinedData(result, inferred_freq)   
+            result = frequency.FrequencyRefine().get_RefinedData(result, inferred_freq)
 
         self.refinedData = result
         return self.refinedData
@@ -86,11 +86,11 @@ class DataPreprocessing():
             >>> imputation_param = {'serialImputation': {'flag': True, 'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
             >>> output = DataPreprocessing().get_imputedData(data, outlier_param)
         """
+        self.imputedData = data.copy()
         if imputation_param['serialImputation']['flag'] == True:
             from KETIPrePartialDataPreprocessing.data_imputation import Imputation
-            self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(data, imputation_param['serialImputation'])
-        else:
-            self.imputedData = data.copy()
+            self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(self.imputedData, imputation_param['serialImputation'])
+
         return self.imputedData
     # Add New Function
 
@@ -183,8 +183,7 @@ if __name__ == '__main__':
     ###
     ### input data 
     inputType ='file' # or file    
-    from KETIPrePartialDataPreprocessing import main
-    input_data = main.inputControl(inputType)
+    input_data = setting.inputControl(inputType)
     ### function test
     flag = 'imputation' #'outlierToNaN','refine' ,'all'
     result = packagedPartialProcessing(setting.process_param).PartialProcessing(input_data, flag)

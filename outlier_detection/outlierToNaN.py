@@ -6,7 +6,7 @@ class OutlierToNaN():
         self.limit_min_max = self.dataRangeInfoManager(self.outlier_param['data_type'])
 
     def dataRangeInfoManager(self, data_type):
-        from KETIPrePartialDataPreprocessing.data_manager import dataRangeInfo_manager
+        from KETIPrePartialDataPreprocessing.dataTest import dataRangeInfo_manager
         limit_min_max = dataRangeInfo_manager.MinMaxLimitValueSet().get_data_min_max_limitSet(data_type)
         return limit_min_max
 
@@ -21,7 +21,7 @@ class OutlierToNaN():
     def getDataWithCertainNaN(self, data):
         if self.outlier_param['certainOutlierToNaN']['flag'] ==True:  
             from KETIPrePartialDataPreprocessing.outlier_detection import outlierRemove
-            datawithMoreCertainNaN = outlierRemove.CertainOutlierRemove(data, self.limit_min_max).getDataWitoutCertainOutlier()  
+            datawithMoreCertainNaN = outlierRemove.CertainOutlierRemove().getDataWitoutCertainOutlier(data, self.limit_min_max)  
             print("getDataWithCertainNaN")
         else:
             datawithMoreCertainNaN = data.copy()
@@ -32,7 +32,7 @@ class OutlierToNaN():
             print("getDataWithUncertainNaN")
             from KETIPrePartialDataPreprocessing.outlier_detection import outlierRemove
             param = self.outlier_param['uncertainOutlierToNaN']['param']
-            datawithMoreUnCertainNaN = outlierRemove.UnCertainOutlierRemove(data, param).get_neighbor_error_detected_data()
+            datawithMoreUnCertainNaN = outlierRemove.UnCertainOutlierRemove().get_neighbor_error_detected_data(data, param)
         else:
             datawithMoreUnCertainNaN = data.copy()
         return datawithMoreUnCertainNaN

@@ -6,26 +6,56 @@ class CertainOutlierRemove():
     
     **Data Preprocessing Modules**::
 
-            ``Sensor Min Max Check``, ``Remove no numeric data``
+            Sensor Min Max Check, Remove no numeric data
     '''
-    def __init__(self, data, min_max_limit):
-        self.data = data
-        self.min_max_limit = min_max_limit
-    
-    def getDataWitoutCertainOutlier(self):
-        #Main Function
-        # - Delete duplicated data
-        # - Delete Out of range error 
+    def __init__(self):
+        """ Set anomal value list 
+        """
+        # TODO JW min_max 통과하는 모듈도 업그레이드 해야함
+        # TODO anomal_value_list 외부에서 통과되도록
+        # 0 은 사실 Anomaly가 아님.. ㅠㅜ
+        #self.anomal_value_list = [99.9, 199.9, 299.9, 9999, -99.9, -199.9, -299.9, -9999]
+        self.anomal_value_list=[99.9]
 
-        data_out = self.data.copy()
-        data_out = self._out_of_range_error_remove (data_out, self.min_max_limit)
-        anomal_value_list = [99.9, 199.9, 299.9, 9999, -99.9, -199.9, -299.9, -9999]
-        # TODO JW anomal_value_list 관련 향후 수정/업그레이드 해야 함 
-        data_out = self._anomal_value_remove(data_out, anomal_value_list)
+    
+    def getDataWitoutCertainOutlier(self, data, min_max_limit):
+        """ Remove out-of-range errors and outliers. change error values to NaN
+
+        :param data: input data
+        :type data: DataFrame 
+        :param min_max_limit: min_max_limit information
+        :type min_max_limit: json
+
+        :return: New Dataframe having more (or same) NaN
+        :rtype: DataFrame
+
+        **Two Outlier Detection Modules**::
+            - remove _out_of_range_error
+            - Delete Out of range error
+        
+        example
+            >>> output = CertainOutlierRemove().getDataWitoutCertainOutlier(daata, min_max_limit)     
+        """
+        data_out = data.copy()
+        data_out = self.remove_out_of_range_error (data_out, min_max_limit)
+        data_out = self.remove_anomal_values(data_out, self.anomal_value_list)
         return data_out
         
 
-    def _out_of_range_error_remove (self, data, min_max_limit):
+    def remove_out_of_range_error (self, data, min_max_limit):
+        """ Remove out-of-range errors. change error values to NaN
+
+        :param data: input data
+        :type data: DataFrame 
+        :param min_max_limit: min_max_limit information
+        :type min_max_limit: json
+        
+        :return: New Dataframe having more (or same) NaN
+        :rtype: DataFrame
+        
+        example
+            >>> output = CertainOutlierRemove().remove_out_of_range_error(data, min_max_limit)     
+        """
         data_out = data.copy()
         column_list = data.columns
         max_list = min_max_limit['max_num']
@@ -35,42 +65,84 @@ class CertainOutlierRemove():
             if column_name in min_list.keys():
                 min_num = min_list[column_name]
                 mask = data_out[column_name] < min_num
-                #merged_result.loc[mask, column_name] = min_num
-                data_out[column_name][mask] = np.nan #min_num
+                data_out.loc[mask, column_name]  = np.nan 
 
             if column_name in max_list.keys():
                 max_num = max_list[column_name]
                 mask = data_out[column_name] > max_num
-                data_out[column_name][mask] = np.nan #max_num
+                data_out.loc[mask, column_name]  = np.nan 
 
         return data_out
 
-    def _anomal_value_remove(self, data, anomal_value_list):
-        # 특정 이상치 nan 처리 
+    def remove_anomal_values(self, data, anomal_value_list):
+        """ Remove anomal values. change error values to NaN
+
+        :param data: input data
+        :type data: DataFrame 
+
+        :param anomal_value_list: anomal_value_list information
+        :type anomal_value_list: json
+        
+        :return: New Dataframe having more (or same) NaN
+        :rtype: DataFrame
+        
+        example
+            >>> output = CertainOutlierRemove().remove_anomal_values(data, anomal_value_list)     
+        """
         anomal_data = anomal_value_list 
         for index in anomal_data:
             data = data.replace(index, np.NaN)
         return data
 
 class UnCertainOutlierRemove():
-    def __init__(self, data, param):
-        #first_ratio=0.05
-        self.data = data      
-        self.param = param
+    '''Let UnCertain Outlier from DataFrame Data to NaN. This function makes more Nan according to the data status.
     
-    def get_neighbor_error_detected_data(self):
-        data_out = self.data.copy()
-        for feature in data_out.columns:
-            test_data= data_out[[feature]].copy()
-            #test_data = self.outlier_extream_value_analysis(sample_data, test_data, 10) 
-            test_data= self.outlier_detection_two_step_neighbor(test_data)
-            data_out[[feature]] = test_data  
-        
+    **Data Preprocessing Modules**::
+
+            neighbor_error_detected_data
+    '''
+    def __init__(self):
+        pass
+    
+    def get_neighbor_error_detected_data(self, data, param):
+        """ NaN processing for unusual outliers compared to the surrounding values.
+
+        :param data: input data
+        :type data: DataFrame 
+        :param param: parameter of uncertain outlier detection
+        :type param: json
+
+        :return: New Dataframe having more (or same) NaN
+        :rtype: DataFrame
+
+        example
+            >>> output = UnCertainOutlierRemove().get_neighbor_error_detected_data(data, param)
+
+        """
+        neighbor_param = param['neighbor']
+        data_out = data.copy()
+        data_out= self.outlier_detection_two_step_neighbor(data, neighbor_param)
         return data_out
 
-    def outlier_detection_two_step_neighbor(self, data):
-        first_ratio =self.param['neighbor'][0]
-        second_ratio = self.param['neighbor'][1]
+    def outlier_detection_two_step_neighbor(self, data, neihbor_param):
+        """ NaN processing for unusual outliers compared to the surrounding values.
+
+        :param data: input data
+        :type data: DataFrame 
+        :param neihbor_param: param
+        :type neihbor_param: array
+
+        :return: New Dataframe having more (or same) NaN
+        :rtype: DataFrame
+
+        example
+            >>> neighbor_param = [0.5, 0.6]
+            >>> output = UnCertainOutlierRemove().outlier_detection_two_step_neighbor(data, neighbor_param)
+
+        """
+        first_ratio =neihbor_param[0]
+        second_ratio = neihbor_param[1]
+
         column_list = data.columns
         data_out1 = data.copy()
         for column_name in column_list:
@@ -90,8 +162,9 @@ class UnCertainOutlierRemove():
                 data_out1.iloc[pos].loc[column_name] = data_out1.iloc[pos-1].loc[column_name]
         return data_out1
     
-    
+    """
     def outlier_extream_value_analysis(self, sample, data, extream):
+        
         data_out= data.copy()
         for feature in data_out.columns:
             test_data = data_out[[feature]].copy()
@@ -109,19 +182,5 @@ class UnCertainOutlierRemove():
             data_out[[feature]] = test_data
         
         return data_out
-
-#Hample Detection
-"""
-    def HampelDetection(self, data, window_size=7, n_sigma=3):
-        n = len(data)
-        k = 1.4826 # scale factor for Gaussian distribution
-        for column in data.columns:
-            data = data.reset_index(drop=True)
-            for i in range((window_size),(n - window_size)):
-                x0 = np.nanmedian(data[column][(i - window_size):(i + window_size)])
-                S0 = k * np.nanmedian(np.abs(data[column][(i - window_size):(i + window_size)] - x0))
-                if (np.abs(data[column][i] - x0) > n_sigma * S0):
-                    data[column][i] = np.nan
-        data.set_index('time') # 'DB time column 이름이 time인 경우'
-        return data
-"""
+    """
+    

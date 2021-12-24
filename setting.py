@@ -9,7 +9,6 @@ self.deepMethods = ['brits']
 
 """
 model_folder = os.path.join(os.getcwd(),'data_imputation','DL','brits', 'model', 'air_indoor_경로당', 'ICL1L2000234')
-
 refine_param = {"removeDuplication":{"flag":True}, "staticFrequency":{"flag":True, "frequency":None}}
 
 # frequency: freqDateOffset|str|None
@@ -22,10 +21,24 @@ outlier_param  = {
 imputation_param = {
 "serialImputation":{
     "flag":True,
-    "imputation_method":[{"min":0,"max":3,"method":"KNN", "parameter":{}}, 
+    "imputation_method":[{"min":0,"max":3,"method":"linear", "parameter":{}}, 
                             #{"min":4,"max":6,"method":"brits", "parameter":{"model_address":model_folder}}
-                            {"min":4,"max":6,"method":"mean", "parameter":{}}
-    ],"totalNonNanRatio":80}
+                            {"min":4,"max":100,"method":"mean", "parameter":{}}
+    ],"totalNonNanRatio":60}
 }
 
 process_param = {'refine_param':refine_param, 'outlier_param':outlier_param, 'imputation_param':imputation_param}
+
+def inputControl(inputType):
+    from KETIPrePartialDataPreprocessing.dataTest.multipleSourceIngestion import getData
+    dataC = getData()
+    if inputType=="file":
+        BASE_DIR = os.getcwd()
+        input_file = os.path.join(BASE_DIR, 'sampleData', 'data_miss_original.csv')
+        input_data = dataC.getFileInput(input_file, 'timedate')
+    elif inputType =="influx":
+        db_name  = 'air_indoor_경로당'
+        ms_name = 'ICL1L2000235' 
+        input_data = dataC.getInfluxInput(db_name, ms_name)
+
+    return input_data
