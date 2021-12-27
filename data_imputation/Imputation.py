@@ -103,7 +103,7 @@ class SerialImputation():
         for method_set in imputation_method:
             max_limit =method_set['max']
             from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
-            NaNInfoOverThresh= nanMasking.getConsecutiveNaNInfoOverThresh(data, max_limit)
+            NaNInfoOverThresh= nanMasking.getConsecutiveNaNInfoOvermaxNaNNumLimit(data, max_limit)
             # Missing Data Imputation
             
             data = self.imputeDataByMethod(method_set, data)
