@@ -66,11 +66,13 @@ if __name__ == '__main__':
     bind_params = {'end_time':last, 'start_time': first}
 
 
-    ## train for Measurment
+    
+    mode_list = ['DB_Training', 'DB_Training']
+    mode = mode_list[0]
 
-    # imT.trainerForMS(db_name, ms_name, bind_params)
-
-
-    ## train for Database
-
-    imT.trainerForDB(db_name, bind_params)
+    if mode == 'MS_Training':
+        ## train for Measurment
+        imT.trainerForMS(db_name, ms_name, bind_params)
+    else mode == 'DB_Training':
+        ## train for Database
+        imT.trainerForDB(db_name, bind_params)
