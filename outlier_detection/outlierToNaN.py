@@ -6,7 +6,7 @@ class OutlierToNaN():
         self.limit_min_max = self.dataRangeInfoManager(self.outlier_param['data_type'])
 
     def dataRangeInfoManager(self, data_type):
-        from KETIPrePartialDataPreprocessing.data_manager import dataRangeInfo_manager
+        from KETIPrePartialDataPreprocessing.dataTest import dataRangeInfo_manager
         limit_min_max = dataRangeInfo_manager.MinMaxLimitValueSet().get_data_min_max_limitSet(data_type)
         return limit_min_max
 
