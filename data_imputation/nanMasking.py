@@ -1,7 +1,7 @@
 import numpy as np
 
 def getConsecutiveNaNInfoOvermaxNaNNumLimit(data, maxNaNNumLimit):
-    """ This function get NaN data distribution information related to especially consecutive NaN
+    """ This function get NaN data distribution information related to especially consecutive NaN.
 
         :param data: input_data
         :type data: DataFrame
