@@ -3,6 +3,8 @@ class OutlierToNaN():
         self.outlier_param = outlier_param
         # Uncertain Remove 에 대한 조절 파라미터 필요 # input parameter로 받아야 함
         # 지금은 강제 True 설정 더 정교해야 Uncertain에 대해서 잘 control 가능해 보임
+
+        # dataRangeInfoManager 대신에 limit_min_max 값을  outlier_param의 값으로 받아들이도록 수정해야 함.
         self.limit_min_max = self.dataRangeInfoManager(self.outlier_param['data_type'])
 
     def dataRangeInfoManager(self, data_type):
