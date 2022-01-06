@@ -14,11 +14,11 @@ class ImputationTraining():
         self.DBClient = dbClient
         self.root_dir = rootDir
 
-    def trainerForDB(self, db_name, bind_param):
+    def trainerForDB(self, db_name, bind_params):
         self.db_name = db_name
         self.MSList = self.DBClient.measurement_list(self.db_name)
         for ms_name in self.MSList:
-            self.trainerForMS(db_name, ms_name, bind_param)
+            self.trainerForMS(db_name, ms_name, bind_params)
 
     def trainerForMS(self, db_name, ms_name, bind_params):
         df = self.DBClient.get_data_by_time(bind_params, db_name, ms_name)
@@ -47,7 +47,7 @@ class ImputationTraining():
 
 
 if __name__ == '__main__':
-    print(sys.path)
+    #print(sys.path)
     from KETIPreDataIngestion.KETI_setting import influx_setting_KETI as ins
     from KETIPreDataIngestion.data_influx import influx_Client
 
@@ -65,14 +65,12 @@ if __name__ == '__main__':
     last = DBClient.get_last_time(db_name, ms_name)
     bind_params = {'end_time':last, 'start_time': first}
 
-
-    
     mode_list = ['DB_Training', 'DB_Training']
-    mode = mode_list[0]
+    mode = mode_list[0] ## mode select
 
     if mode == 'MS_Training':
         ## train for Measurment
         imT.trainerForMS(db_name, ms_name, bind_params)
-    else mode == 'DB_Training':
+    elif mode == 'DB_Training':
         ## train for Database
         imT.trainerForDB(db_name, bind_params)

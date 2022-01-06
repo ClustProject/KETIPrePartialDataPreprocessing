@@ -20,10 +20,10 @@ from KETIPrePartialDataPreprocessing.data_imputation.DL.DLImputationTraining imp
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
                                                                                                                                              
 class britsImputationTraining(IT):
-    def __init__(self, column_data, json_path, data_len):
+    def __init__(self, column_data, json_path):
         self.column_data = column_data
         self.json_path = json_path
-        self.data_len = data_len
+
 
     def columnDataTrainer(self):
         Brits = training.BritsTraining(self.column_data, self.json_path)
@@ -35,7 +35,7 @@ class BritsTraining():
     def __init__(self, data, json_path):
         self.inputData = data[:1000]
         self.json_path = json_path
-
+ 
     def train(self, epoch=100, learning_rate=0.01):
         # setting
         torch.random.manual_seed(0)
@@ -65,6 +65,6 @@ class BritsTraining():
 
         #### model save
 
-        # torch.save(model.state_dict(), self.model_path)
+        # torch.save    (model.state_dict(), self.model_path)
         
         return model
