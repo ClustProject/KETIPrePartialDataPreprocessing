@@ -65,7 +65,7 @@ if __name__ == '__main__':
     last = DBClient.get_last_time(db_name, ms_name)
     bind_params = {'end_time':last, 'start_time': first}
 
-    mode_list = ['DB_Training', 'DB_Training']
+    mode_list = ['MS_Training', 'DB_Training']
     mode = mode_list[0] ## mode select
 
     if mode == 'MS_Training':
