@@ -1,7 +1,7 @@
-import numpy as np
+ import numpy as np
 import pandas as pd
 
-class CertainOutlierRemove():
+class CertainErrorRemove():
     '''Let Certain Outlier from DataFrame Data to NaN. This function makes more Nan according to the data status.
     
     **Data Preprocessing Modules**::
@@ -18,7 +18,7 @@ class CertainOutlierRemove():
         self.anomal_value_list=[99.9]
 
     
-    def getDataWitoutCertainOutlier(self, data, min_max_limit):
+    def getDataWitoutcertainError(self, data, min_max_limit):
         """ Remove out-of-range errors and outliers. change error values to NaN
 
         :param data: input data
@@ -34,7 +34,7 @@ class CertainOutlierRemove():
             - Delete Out of range error
         
         example
-            >>> output = CertainOutlierRemove().getDataWitoutCertainOutlier(daata, min_max_limit)     
+            >>> output = CertainErrorRemove().getDataWitoutcertainError(daata, min_max_limit)     
         """
         data_out = data.copy()
         data_out = self.remove_out_of_range_error (data_out, min_max_limit)
@@ -54,7 +54,7 @@ class CertainOutlierRemove():
         :rtype: DataFrame
         
         example
-            >>> output = CertainOutlierRemove().remove_out_of_range_error(data, min_max_limit)     
+            >>> output = CertainErrorRemove().remove_out_of_range_error(data, min_max_limit)     
         """
         data_out = data.copy()
         column_list = data.columns
@@ -87,14 +87,14 @@ class CertainOutlierRemove():
         :rtype: DataFrame
         
         example
-            >>> output = CertainOutlierRemove().remove_anomal_values(data, anomal_value_list)     
+            >>> output = CertainErrorRemove().remove_anomal_values(data, anomal_value_list)     
         """
         anomal_data = anomal_value_list 
         for index in anomal_data:
             data = data.replace(index, np.NaN)
         return data
 
-class UnCertainOutlierRemove():
+class unCertainErrorRemove():
     '''Let UnCertain Outlier from DataFrame Data to NaN. This function makes more Nan according to the data status.
     
     **Data Preprocessing Modules**::
@@ -116,15 +116,15 @@ class UnCertainOutlierRemove():
         :rtype: DataFrame
 
         example
-            >>> output = UnCertainOutlierRemove().get_neighbor_error_detected_data(data, param)
+            >>> output = unCertainErrorRemove().get_neighbor_error_detected_data(data, param)
 
         """
         neighbor_param = param['neighbor']
         data_out = data.copy()
-        data_out= self.outlier_detection_two_step_neighbor(data, neighbor_param)
+        data_out= self.error_detection_two_step_neighbor(data, neighbor_param)
         return data_out
 
-    def outlier_detection_two_step_neighbor(self, data, neihbor_param):
+    def error_detection_two_step_neighbor(self, data, neihbor_param):
         """ NaN processing for unusual outliers compared to the surrounding values.
 
         :param data: input data
@@ -137,7 +137,7 @@ class UnCertainOutlierRemove():
 
         example
             >>> neighbor_param = [0.5, 0.6]
-            >>> output = UnCertainOutlierRemove().outlier_detection_two_step_neighbor(data, neighbor_param)
+            >>> output = unCertainErrorRemove().error_detection_two_step_neighbor(data, neighbor_param)
 
         """
         first_ratio =neihbor_param[0]

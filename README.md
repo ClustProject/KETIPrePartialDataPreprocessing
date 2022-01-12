@@ -36,12 +36,12 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 2) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.make_staticFrequencyData: Let the original data have a static frequency
 - output: datafrmae type
 
-### 2-2-2. get_outlierToNaNData(self, data, outlier_param)
-- outlierToNaN.OutlierToNaN:Let outliered data be.
+### 2-2-2. get_errorToNaNData(self, data, outlier_param)
+- errorToNaN.errorToNaN:Let outliered data be.
 ```json
     outlier_param  = {
-        "certainOutlierToNaN":{"flag":True},
-        "uncertainOutlierToNaN":{
+        "certainErrorToNaN":{"flag":True},
+        "unCertainErrorToNaN":{
             "flag":True,
             "param":{"neighbor":[0.5,0.6]}
         },

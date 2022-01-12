@@ -1,4 +1,4 @@
-class OutlierToNaN():
+class errorToNaN():
     def __init__(self, outlier_param):
         self.outlier_param = outlier_param
         # Uncertain Remove 에 대한 조절 파라미터 필요 # input parameter로 받아야 함
@@ -14,27 +14,27 @@ class OutlierToNaN():
 
     def getDataWithNaN(self, data):
         # Make Outlier to Nan according to the parameter
-        # CertainOutlierToNaN == True : clean only certain outlier data.
-        # UncertainOUtlierToNaN == Ture : clean uncertain outlier data.
+        # certainErrorToNaN == True : clean only certain outlier data.
+        # unCertainErrorToNaN == Ture : clean uncertain outlier data.
         datawithMoreCertainNaN = self.getDataWithCertainNaN(data)
         datawithMoreUnCertainNaN = self.getDataWithUncertainNaN(datawithMoreCertainNaN)
         return datawithMoreCertainNaN, datawithMoreUnCertainNaN
 
     def getDataWithCertainNaN(self, data):
-        if self.outlier_param['certainOutlierToNaN']['flag'] ==True:  
-            from KETIPrePartialDataPreprocessing.outlier_detection import certainOutlier
-            datawithMoreCertainNaN = certainOutlier.CertainOutlierRemove(data, self.limit_min_max).getDataWitoutCertainOutlier()  
+        if self.outlier_param['certainErrorToNaN']['flag'] ==True:  
+            from KETIPrePartialDataPreprocessing.error_detection import certainError
+            datawithMoreCertainNaN = certainError.CertainErrorRemove(data, self.limit_min_max).getDataWitoutcertainError()  
             print("getDataWithCertainNaN")
         else:
             datawithMoreCertainNaN = data.copy()
         return datawithMoreCertainNaN
     
     def getDataWithUncertainNaN(self, data):    
-        if self.outlier_param['uncertainOutlierToNaN']['flag'] == True:
+        if self.outlier_param['unCertainErrorToNaN']['flag'] == True:
             print("getDataWithUncertainNaN")
-            from KETIPrePartialDataPreprocessing.outlier_detection import unCertainOutlier
-            param = self.outlier_param['uncertainOutlierToNaN']['param']
-            datawithMoreUnCertainNaN = unCertainOutlier.UnCertainOutlierRemove(data, param).get_neighbor_error_detected_data()
+            from KETIPrePartialDataPreprocessing.error_detection import unCertainError
+            param = self.outlier_param['unCertainErrorToNaN']['param']
+            datawithMoreUnCertainNaN = unCertainError.unCertainErrorRemove(data, param).get_neighbor_error_detected_data()
         else:
             datawithMoreUnCertainNaN = data.copy()
         return datawithMoreUnCertainNaN

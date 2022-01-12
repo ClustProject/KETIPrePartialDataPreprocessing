@@ -1,6 +1,6 @@
 
 
-class UnCertainOutlierRemove():
+class unCertainErrorRemove():
     def __init__(self, data, param):
         #first_ratio=0.05
         self.data = data      

@@ -45,7 +45,7 @@ class DataPreprocessing():
         self.refinedData = result
         return self.refinedData
     
-    def get_outlierToNaNData(self, data, outlier_param):
+    def get_errorToNaNData(self, data, outlier_param):
         
         """ Get data with more NaN. This module finds fake data generated due to network errors, etc. and converts it to NaN.
 
@@ -62,13 +62,13 @@ class DataPreprocessing():
             ``datawithMoreCertainNaN``, ``datawithMoreUnCertainNaN``
         
         example
-            >>> outlier_param = {'certainOutlierToNaN': {'flag': True}, 'uncertainOutlierToNaN': {'flag': True, 'param': {'neighbor': [0.5, 0.6]}}, 'data_type': 'air'}
-            >>> output = DataPreprocessing().get_outlierToNaNData(data, outlier_param)
+            >>> outlier_param = {'certainErrorToNaN': {'flag': True}, 'unCertainErrorToNaN': {'flag': True, 'param': {'neighbor': [0.5, 0.6]}}, 'data_type': 'air'}
+            >>> output = DataPreprocessing().get_errorToNaNData(data, outlier_param)
             
         """
 
-        from KETIPrePartialDataPreprocessing.outlier_detection import outlierToNaN
-        self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = outlierToNaN.OutlierToNaN(outlier_param).getDataWithNaN(data)
+        from KETIPrePartialDataPreprocessing.error_detection import errorToNaN
+        self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = errorToNaN.errorToNaN(outlier_param).getDataWithNaN(data)
         return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
 
     def get_imputedData(self, data, imputation_param):
@@ -126,8 +126,8 @@ class packagedPartialProcessing(DataPreprocessing):
         """
         if flag == 'refine':
             result = self.get_refinedData(input_data, self.refine_param)
-        elif flag =='outlierToNaN':
-            result = self.get_outlierToNaNData(input_data, self.outlier_param)
+        elif flag =='errorToNaN':
+            result = self.get_errorToNaNData(input_data, self.outlier_param)
         elif flag == 'imputation':
             result = self.get_imputedData(input_data, self.imputation_param)
         elif flag == 'all':
@@ -150,7 +150,7 @@ class packagedPartialProcessing(DataPreprocessing):
         ###########
         refined_data = self.get_refinedData(input_data, self.refine_param)
         ###########
-        datawithMoreCertainNaN, datawithMoreUnCertainNaN = self.get_outlierToNaNData(refined_data, self.outlier_param)
+        datawithMoreCertainNaN, datawithMoreUnCertainNaN = self.get_errorToNaNData(refined_data, self.outlier_param)
         ###########
         imputed_data = self.get_imputedData(datawithMoreUnCertainNaN, self.imputation_param)
         ###########
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     inputType ='file' # or file    
     input_data = setting.inputControl(inputType)
     ### function test
-    flag = 'imputation' #'outlierToNaN','refine' ,'all'
+    flag = 'errorToNaN' #'errorToNaN','refine' ,'all'
     result = packagedPartialProcessing(setting.process_param).PartialProcessing(input_data, flag)
     print(result)
     ###

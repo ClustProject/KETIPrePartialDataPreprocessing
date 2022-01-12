@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-class CertainOutlierRemove():
+class CertainErrorRemove():
     '''Let Certain Outlier from DataFrame Data to NaN. This function makes more Nan according to the data status.
     
     **Data Preprocessing Modules**::
@@ -13,7 +13,7 @@ class CertainOutlierRemove():
         self.data = data
         self.min_max_limit = min_max_limit
     
-    def getDataWitoutCertainOutlier(self):
+    def getDataWitoutcertainError(self):
         #Main Function
         # - Delete duplicated data
         # - Delete Out of range error 

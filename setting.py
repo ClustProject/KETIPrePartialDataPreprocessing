@@ -13,8 +13,8 @@ refine_param = {"removeDuplication":{"flag":True}, "staticFrequency":{"flag":Tru
 
 # frequency: freqDateOffset|str|None
 outlier_param  = {
-    "certainOutlierToNaN":{"flag":True},
-    "uncertainOutlierToNaN":{"flag":True,"param":{"neighbor":[0.5, 0.6]}},
+    "certainErrorToNaN":{"flag":True},
+    "unCertainErrorToNaN":{"flag":True,"param":{"neighbor":[0.5, 0.6]}},
     "data_type":"air"
 }
 
