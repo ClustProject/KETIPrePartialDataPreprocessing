@@ -56,7 +56,7 @@ if __name__ == '__main__':
     mode = mode_list[0] ## mode select
     model_purpose = model_purpose_list[0]
     model_method = model_method_list[0]
-    rootDir = os.path.join('Users', 'bunnyjw','Git', 'DL', 'Models', model_purpose, model_method)
+    rootDir = os.path.join('/Users', 'bunnyjw','Git', 'DL', 'Models', model_purpose, model_method)
     ###########################################
 
     trainInfluxData(model_method, mode)
