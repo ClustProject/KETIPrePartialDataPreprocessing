@@ -22,28 +22,27 @@ class ImputationTraining():
 
     def trainerForMS(self, db_name, ms_name, bind_params):
         df = self.DBClient.get_data_by_time(bind_params, db_name, ms_name)
-        print(df)
         for column_name in df.columns:
             column_data = df[[column_name]]
-            self.model_folder = self.getModelAdd(db_name, ms_name, '')
-            self.model_addr = self.getModelAdd(db_name, ms_name, column_name)
+            model_name = self.trainSaveModel(column_data, column_name)
+            print(model_name, " saved")
 
-            model_name = self.model_addr + '.pth'
-            json_name = self.model_addr  + '.json'
+    def trainSaveModel(self, df, df_name): 
+        self.model_folder = os.path.join(self.root_dir, db_name, ms_name) 
 
-            if not os.path.exists(self.model_folder):
-                os.makedirs(self.model_folder)
+        if not os.path.exists(self.model_folder):
+            os.makedirs(self.model_folder) 
 
-            T = training.britsImputationTraining(column_data, json_name)
-            model = T.columnDataTrainer()
-            self.storeModel(model_name, model)
+        self.model_addr = os.path.join(self.root_dir, db_name, ms_name, df_name)
+        model_name = self.model_addr + '.pth'
+        json_name = self.model_addr  + '.json'
 
-    def getModelAdd(self, db_name, ms_name, column_name):
-        model_folder = os.path.join(self.root_dir, db_name, ms_name, column_name)
-        return model_folder
-
-    def storeModel(self, model_name, model):
+        T = training.britsImputationTraining(df, json_name)
+        model = T.columnDataTrainer()
         torch.save(model.state_dict(), model_name)
+        return model_name
+         
+        
 
 
 if __name__ == '__main__':
@@ -51,10 +50,7 @@ if __name__ == '__main__':
     from KETIPreDataIngestion.KETI_setting import influx_setting_KETI as ins
     from KETIPreDataIngestion.data_influx import influx_Client
 
-    DBClient = influx_Client.influxClient(ins)
-    rootDir = os.path.join(os.getcwd(), 'KETIPrePartialDataPreprocessing', 'data_imputation', 'DL', 'brits', 'model')
-    
-    imT = ImputationTraining(DBClient, rootDir)
+    DBClient = influx_Client.influxClient(ins.CLUSTDataServer)
     
     # Example 1 
     # db_name = 'air_indoor_경로당'
@@ -63,14 +59,21 @@ if __name__ == '__main__':
     ms_name = 'ICL1L2000017'
     first = DBClient.get_first_time(db_name, ms_name)
     last = DBClient.get_last_time(db_name, ms_name)
+    print(first, last)
+    
+    first ='2020-06-18'
+    last ='2020-06-19'
+
+    rootDir = os.path.join(os.getcwd(), 'data_imputation', 'DL', 'brits', 'model')
     bind_params = {'end_time':last, 'start_time': first}
 
     mode_list = ['MS_Training', 'DB_Training']
     mode = mode_list[0] ## mode select
-
+    imT = ImputationTraining(DBClient, rootDir)
     if mode == 'MS_Training':
         ## train for Measurment
         imT.trainerForMS(db_name, ms_name, bind_params)
     elif mode == 'DB_Training':
         ## train for Database
         imT.trainerForDB(db_name, bind_params)
+    

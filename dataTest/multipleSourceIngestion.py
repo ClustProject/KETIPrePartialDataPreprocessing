@@ -16,7 +16,7 @@ class getData():
         from KETIPreDataIngestion.data_influx import influx_Client
        
         ##
-        DBClient = influx_Client.influxClient(ins)
+        DBClient = influx_Client.influxClient(ins.CLUSTDataServer)
         db_list = DBClient.get_DBList() # 나중에 DB 이름 바꾸고 싶을때 여기 체크 가능
         ms_list = DBClient.measurement_list(db_name) # MS 이름 바꾸고 싶을때 여기 체크 가능
 
