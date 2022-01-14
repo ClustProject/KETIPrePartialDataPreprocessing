@@ -21,7 +21,10 @@ class DLImputation():
             result = self.data
         return result
 
-    
+
+
+## Define each DL imputation interface
+
 def britsColumnImputation(data, parameter, column_name):
     model_address = parameter['model_address']
     if os.path.isdir(model_address):

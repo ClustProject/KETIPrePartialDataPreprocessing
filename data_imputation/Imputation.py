@@ -134,7 +134,7 @@ class SerialImputation():
 
 
         from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
-        from KETIPrePartialDataPreprocessing.data_imputation.DL import DLImputation 
+        from KETIPrePartialDataPreprocessing.data_imputation import DLMethod 
         basicImpute = basicMethod.BasicImputation(data, method, max_limit)
         if method in self.ScikitLearnMethods:
             result = basicImpute.ScikitLearnMethod()       
@@ -147,7 +147,7 @@ class SerialImputation():
         elif method in self.orderIntMethods:
             result = basicImpute.orderIntMethod()
         elif method in self.deepMethods:
-            result = DLImputation.DLImputation(data, method, parameter).getResult()
+            result = DLMethod.DLImputation(data, method, parameter).getResult()
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
