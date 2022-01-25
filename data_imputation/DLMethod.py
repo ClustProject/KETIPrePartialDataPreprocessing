@@ -8,14 +8,12 @@ class DLImputation():
 
     def getResult(self):
         result = self.data.copy()
-
         ### Brits
         if self.method == 'brits':
             print("birts_imputation")
             for column_name in self.data.columns:
                result = britsColumnImputation(self.data[[column_name]], self.parameter, column_name)
                result[column_name] = result
-               
         ### Define Another Imputation 
         else:
             result = self.data
@@ -32,7 +30,8 @@ def britsColumnImputation(data, parameter, column_name):
         dataset = [data[[column_name]][i:i+1000] for i in range(0, len(data), 1000)]
         result = pd.DataFrame()
         for split_data in dataset:
-            result_split = inference.BritsInference(split_data, model_address, column_name).get_result()
+            #result_split = inference.BritsInference(split_data, model_address, column_name).get_result()
+            result_split = BritsInference(split_data, model_address, column_name).get_result()
             result = pd.concat([result, result_split])
     else:
         result = data.copy()

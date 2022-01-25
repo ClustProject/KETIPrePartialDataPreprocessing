@@ -8,6 +8,7 @@ self.orderIntMethods = [ 'polynomial', 'spline']
 self.deepMethods = ['brits']
 
 """
+
 model_folder = os.path.join('/Users', 'bunnyjw','Git', 'DL','Models','brits', 'air_indoor_요양원', 'ICL1L2000017')
 refine_param = {"removeDuplication":{"flag":True}, "staticFrequency":{"flag":True, "frequency":None}}
 
