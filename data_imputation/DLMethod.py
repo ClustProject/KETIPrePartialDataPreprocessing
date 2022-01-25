@@ -28,7 +28,7 @@ class DLImputation():
 def britsColumnImputation(data, parameter, column_name):
     model_address = parameter['model_address']
     if os.path.isdir(model_address):
-        from KETIToolDL.imputation.brits import inference
+        from KETIToolDL.PredictionTool.Brits import inference
         dataset = [data[[column_name]][i:i+1000] for i in range(0, len(data), 1000)]
         result = pd.DataFrame()
         for split_data in dataset:
