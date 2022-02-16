@@ -1,4 +1,5 @@
 import os
+
 """
 self.ScikitLearnMethods =['KNN','MICE']
 self.simpleMethods =['most_frequent', 'mean', 'median', ' constant']
@@ -6,10 +7,10 @@ self.fillNAMethods = ['bfill','ffill']
 self.simpleIntMethods= ['linear', 'time', 'nearest', 'zero', 'slinear','quadratic', 'cubic', 'barycentric']
 self.orderIntMethods = [ 'polynomial', 'spline']
 self.deepMethods = ['brits']
-
 """
 
-model_folder = os.path.join('/Users', 'bunnyjw','Git', 'DL','Models','brits', 'air_indoor_요양원', 'ICL1L2000017')
+
+BritsModelFolder = os.path.join('c:', os.sep,'Users', 'bunny','Code_CLUST', 'KETIToolDL','DL','Models','air_indoor_요양원', 'ICL1L2000011', 'in_ciai', 'brits')
 refine_param = {"removeDuplication":{"flag":True}, "staticFrequency":{"flag":True, "frequency":None}}
 
 # frequency: freqDateOffset|str|None
@@ -23,9 +24,9 @@ imputation_param = {
 "serialImputation":{
     "flag":True,
     "imputation_method":[{"min":0,"max":1,"method":"linear", "parameter":{}}, 
-                            {"min":2,"max":3,"method":"brits", "parameter":{"model_address":model_folder}},
+                            {"min":2,"max":3,"method":"brits", "parameter":{"model_address":BritsModelFolder, "model_fileName":["model.json", "model.pth" ]}},
                             {"min":4,"max":100,"method":"mean", "parameter":{}}
-    ],"totalNonNanRatio":60}
+    ],"totalNonNanRatio":80}
 }
 
 process_param = {'refine_param':refine_param, 'outlier_param':outlier_param, 'imputation_param':imputation_param}
