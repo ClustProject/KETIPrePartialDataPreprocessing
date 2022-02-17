@@ -10,9 +10,8 @@ self.orderIntMethods = [ 'polynomial', 'spline']
 self.deepMethods = ['brits']
 """
 
-
-#BritsModelFolder = os.path.join('c:', os.sep,'Users', 'bunny','Code_CLUST', 'KETIToolDL','DL','Models','air_indoor_요양원', 'ICL1L2000011', 'in_ciai', 'brits')
-BritsModelFolder = os.path.join("DL", "Models",'brits','air_indoor_요양원', "ICL1L2000011",'in_ciai')
+BritsModelFolder = os.path.join('c:', os.sep,'Users', 'bunny','Code_CLUST', 'KETIToolDL','DL','Models', 'brits','air_indoor_요양원', 'ICL1L2000011', 'in_ciai')
+#BritsModelFolder = os.path.join("DL", "Models",'brits','air_indoor_요양원', "ICL1L2000011",'in_ciai')
 refine_param = {"removeDuplication":{"flag":True}, "staticFrequency":{"flag":True, "frequency":None}}
 
 # frequency: freqDateOffset|str|None
@@ -26,7 +25,7 @@ imputation_param = {
 "serialImputation":{
     "flag":True,
     "imputation_method":[{"min":0,"max":1,"method":"linear", "parameter":{}}, 
-                            {"min":2,"max":3,"method":"brits", "parameter":{"model_address":BritsModelFolder, "model_fileName":["model.json", "model.pth" ]}},
+                            {"min":2,"max":3,"method":"brits", "parameter":{"model_address":BritsModelFolder}},
                             {"min":4,"max":100,"method":"mean", "parameter":{}}
     ],"totalNonNanRatio":80}
 }
