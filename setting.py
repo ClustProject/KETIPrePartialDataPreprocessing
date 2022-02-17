@@ -1,4 +1,5 @@
 import os
+from tkinter import Y
 
 """
 self.ScikitLearnMethods =['KNN','MICE']
@@ -10,7 +11,8 @@ self.deepMethods = ['brits']
 """
 
 
-BritsModelFolder = os.path.join('c:', os.sep,'Users', 'bunny','Code_CLUST', 'KETIToolDL','DL','Models','air_indoor_요양원', 'ICL1L2000011', 'in_ciai', 'brits')
+#BritsModelFolder = os.path.join('c:', os.sep,'Users', 'bunny','Code_CLUST', 'KETIToolDL','DL','Models','air_indoor_요양원', 'ICL1L2000011', 'in_ciai', 'brits')
+BritsModelFolder = os.path.join("DL", "Models",'brits','air_indoor_요양원', "ICL1L2000011",'in_ciai')
 refine_param = {"removeDuplication":{"flag":True}, "staticFrequency":{"flag":True, "frequency":None}}
 
 # frequency: freqDateOffset|str|None
