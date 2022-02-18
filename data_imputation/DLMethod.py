@@ -1,15 +1,13 @@
 import pandas as pd
 import os
-from KETIToolDL import modelSetting as ms
+from KETIToolDL import modelSetting
 class DLImputation():
     def __init__ (self, data, method, parameter):
         self.method = method
         self.parameter = parameter
         self.data = data
         ####
-        self.ModelRootPath = ms.model_rootPath
         self.trainDataPath =parameter['trainDataPath']
-        self.ModelFileNames = ms.modelParameterInfoList[method]['model_fileName']
         
     def getResult(self):
         result = self.data.copy()
@@ -18,46 +16,26 @@ class DLImputation():
             print("brits_imputation")
             for column_name in self.data.columns:
                 self.trainDataPath.append(column_name)
-                model_path =self.getModelPath(self.trainDataPath)
-                result = britsColumnImputation(self.data[[column_name]], column_name, model_path)
+                from KETIToolDL.ModelTool import modelFileManager
+                PathInfo = modelFileManager.setPathInfo(self.method, modelSetting, self.trainDataPath)
+                modelFilePath = modelFileManager.setModelFilesName(PathInfo)
+                result = britsColumnImputation(self.data[[column_name]], column_name, modelFilePath)
                 result[column_name] = result
         ### Define Another Imputation 
         else:
             result = self.data
         return result
 
-    def getModelPath(self, trainDataPath):
+    def getModelPath(self, modelSetting, trainDataPath):
         PathInfo={}
-        PathInfo['ModelRootPath'] = self.ModelRootPath
-        PathInfo['ModelInfoPath'] = [self.method]
-        PathInfo['TrainDataPath'] =trainDataPath
-        model_fileNames = self.ModelFileNames
-
-        model_folder =self.getModelFolder(PathInfo)
-        model_path=[]
-        for i, model_fileName in enumerate(model_fileNames):
-            pathName = os.path.join(model_folder, model_fileName)
-            model_path.append(pathName)
+        PathInfo['ModelRootPath'] = modelSetting.model_rootPath
+        PathInfo['ModelInfoPath'] = modelSetting.modelParameterInfoList[self.method]["model_method"]
+        PathInfo['TrainDataPath'] = trainDataPath
+        PathInfo['ModelFileName'] = modelSetting.modelParameterInfoList[self.method]["model_fileName"]
+        from KETIToolDL.ModelTool import modelFileManager
+        modelFilePath = modelFileManager.setModelFilesName(PathInfo)
             
-        return model_path
-
-    ### Same method of Train
-    def getModelFolder(self, PathInfo):
-        modelFolderpath =''
-        for add_folder in PathInfo['ModelRootPath']:
-            modelFolderpath = os.path.join(modelFolderpath, add_folder)
-        for add_folder in PathInfo['ModelInfoPath']:
-            modelFolderpath = os.path.join(modelFolderpath, add_folder)
-        for add_folder in PathInfo['TrainDataPath']:
-            modelFolderpath = os.path.join(modelFolderpath, add_folder)
-        self._checkModelFolder(modelFolderpath)
-
-        return modelFolderpath
-
-    ### Same method of Train
-    def _checkModelFolder(self, model_path):
-        if not os.path.exists(model_path):
-            os.makedirs(model_path) 
+        return modelFilePath
 
 
 ## Define each DL imputation interface
