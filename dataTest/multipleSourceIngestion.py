@@ -22,7 +22,7 @@ class getData():
 
         feature_list = DBClient.get_fieldList(db_name, ms_name)
         #full_data = DBClient.get_data(db_name, ms_name)
-        full_data = DBClient.get_datafront_by_num("200000", db_name, ms_name)
+        full_data = DBClient.get_datafront_by_num("20000", db_name, ms_name)
         print("Data Length:" ,len(full_data))
         #full_data = full_data.set_index('time')
 

@@ -23,7 +23,8 @@ class errorToNaN():
     def getDataWithCertainNaN(self, data):
         if self.outlier_param['certainErrorToNaN']['flag'] ==True:  
             from KETIPrePartialDataPreprocessing.error_detection import certainError
-            datawithMoreCertainNaN = certainError.CertainErrorRemove(data, self.limit_min_max).getDataWitoutcertainError()  
+            anomal_value_list=[99.9, 199.9, 299.9, 9999, -99.9, -199.9, -299.9, -9999] 
+            datawithMoreCertainNaN = certainError.CertainErrorRemove(data, self.limit_min_max, anomal_value_list).getDataWitoutcertainError()  
             print("getDataWithCertainNaN")
         else:
             datawithMoreCertainNaN = data.copy()

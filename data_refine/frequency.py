@@ -1,4 +1,4 @@
-class FrequencyRefine():
+class RefineFrequency():
     """ Refine Data with the static frequency
     """
     def __init__(self):
@@ -16,7 +16,7 @@ class FrequencyRefine():
         :rtype: DataFrame
         
         example
-            >>> output = FrequencyRefine().get_RefinedData(data, None)
+            >>> output = RefineFrequency().get_RefinedData(data, None)
         """
         self.data = data
         self.freq = freq
@@ -36,7 +36,7 @@ class FrequencyRefine():
         :rtype: DataFrame, DateOffset
         
         example
-            >>> output, new_frequency = FrequencyRefine().get_RefinedDatawithInferredFreq(data)
+            >>> output, new_frequency = RefineFrequency().get_RefinedDatawithInferredFreq(data)
         """
         
         inffered_freq = self.get_frequencyWith3DataPoints(data)
@@ -55,7 +55,7 @@ class FrequencyRefine():
         :rtype: DataFrame
 
         example
-            >>> output = FrequencyRefine().get_RefinedDatawithStaticFreq(data, '30S')
+            >>> output = RefineFrequency().get_RefinedDatawithStaticFreq(data, '30S')
         """
         self.output = self.make_staticFrequencyData(data, freq)
         return self.output
@@ -72,7 +72,7 @@ class FrequencyRefine():
         :rtype: DataFrame
 
         example
-            >>> output = FrequencyRefine().make_staticFrequencyData(data, '30S')
+            >>> output = RefineFrequency().make_staticFrequencyData(data, '30S')
         """
         data_staticFrequency = data.copy()
         data_staticFrequency = data_staticFrequency.sort_index()
@@ -90,7 +90,7 @@ class FrequencyRefine():
         :rtype: DateOffset
 
         example
-            >>> estimated_freq  = FrequencyRefine().get_frequencyWith3DataPoints(data)
+            >>> estimated_freq  = RefineFrequency().get_frequencyWith3DataPoints(data)
         
         """
         if len(data)> 3:

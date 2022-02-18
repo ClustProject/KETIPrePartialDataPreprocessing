@@ -8,27 +8,43 @@ class DataPreprocessing():
     
     **Data Preprocessing Modules**::
 
-            ``Refine Data``, ``Remove Outlier``, ``Impute Missing Data``
+            Refine Data, Remove Outlier, Impute Missing Data
     '''
     
     def __init__(self):
         pass
     
     def get_refinedData(self, data, refine_param):
-        """ Get refined data with static frequency, without redundency data
+        """
+        This function gets refined data with static frequency, without redundency data. 
+        It refines data adaptively depending on flag status. (removeDuplication, staticFrequency)
+        "removeDuplication" :It removes duplicated data.
+        "staticFrequency" :The data will have a constant timestamp index. 
 
-        :param data: input data
-        :type data: DataFrame 
-        :param refine_param: refine_param
-        :type refine_param: json
+        Example
+        -------
+        >>> from pycaret.datasets import get_data
+        >>> juice = get_data('juice')
+        >>> from pycaret.classification import *
+        >>> exp_name = setup(data = juice,  target = 'Purchase')
         
+        data: DataFrame
+            input data
+        refine_param: json
+            refine_param['removeDuplication']={'flag':(Boolean)} 
+
+            refine_param['staticFrequency'] ={'flag':(Boolean), 'frequency':[None|timeinfo]}
+
+            refine_param['ststicFreeuncy']['frequnecy'] == None -> infer original frequency and make static time stamp.
+        
+    
         :return data : New refined DataFrame output
         :return data: DataFrame
-        
-        It refines data adaptively depending on flag status. (removeDuplication, staticFrequency)
+
         example
-            >>> refine_param = {'removeDuplication': {'flag': True}, 'staticFrequency': {'flag': True, 'frequency': None}}
-            >>> #refine_param = {'removeDuplication': {'flag': True}, 'staticFrequency': {'flag': True, 'frequency': '30S'}}
+            >>> data = input_data
+            >>> from KETIPrePartialDataPreprocessing.data_preprocessing import DataPreprocessing
+            >>> refine_param = {'removeDuplication': {'flag': True}, 'staticFrequency': {'flag': True, 'frequency': '1H'}}
             >>> output = DataPreprocessing().get_refinedData(data, refine_param)
 
         """
@@ -40,38 +56,45 @@ class DataPreprocessing():
         if refine_param['staticFrequency']['flag'] == True:
             from KETIPrePartialDataPreprocessing.data_refine import frequency
             inferred_freq = refine_param['staticFrequency']['frequency']
-            result = frequency.FrequencyRefine().get_RefinedData(result, inferred_freq)
+            result = frequency.RefineFrequency().get_RefinedData(result, inferred_freq)
 
         self.refinedData = result
         return self.refinedData
     
     def get_errorToNaNData(self, data, outlier_param):
-        
-        """ Get data with more NaN. This module finds fake data generated due to network errors, etc. and converts it to NaN.
 
-        :param data: input data
-        :type data: DataFrame 
-        :param refine_param: outlier_param
-        :type refine_param: json
-        
-        :return: New Dataframe having more (or same) NaN
-        :rtype: DataFrame
+        """
+        This function gets data with more NaN. This function converts data identified as errors to NaN. This module finds fake data generated due to network errors, etc., and converts it to NaN.
+
+        Example
+        -------
+        >>> outlier_param = {'certainErrorToNaN': {'flag': True}, 'unCertainErrorToNaN': {'flag': True, 'param': {'neighbor': [0.5, 0.6]}},'data_type': 'air'}
+        >>> datawithMoreCertainNaN, datawithMoreUnCertainNaN = DataPreprocessing().get_errorToNaNData(data, outlier_param)
+
+        data: dataFrame
+            input data
+        outlier_param: json
+            outlier Param
+
+        return: dataFrame
+            result
 
         **Two Outlier Detection Modules**::
 
-            ``datawithMoreCertainNaN``, ``datawithMoreUnCertainNaN``
+            datawithMoreCertainNaN, datawithMoreUnCertainNaN
         
-        example
-            >>> outlier_param = {'certainErrorToNaN': {'flag': True}, 'unCertainErrorToNaN': {'flag': True, 'param': {'neighbor': [0.5, 0.6]}}, 'data_type': 'air'}
-            >>> output = DataPreprocessing().get_errorToNaNData(data, outlier_param)
+        ``datawithMoreCertainNaN``: Clear Error to NaN
+
+        ``datawithMoreUnCertainNaN``: UnClear Error to NaN
+
+        
             
         """
-
         from KETIPrePartialDataPreprocessing.error_detection import errorToNaN
         self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = errorToNaN.errorToNaN(outlier_param).getDataWithNaN(data)
         return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
 
-    def get_imputedData(self, data, imputation_param):
+    def get_imputedData(self, data, imputation_param, TrainDataPath):
         """ Get imputed data
 
         :param data: input data
@@ -84,14 +107,15 @@ class DataPreprocessing():
         
         example
             >>> imputation_param = {'serialImputation': {'flag': True, 'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
-            >>> output = DataPreprocessing().get_imputedData(data, outlier_param)
+            >>> output = DataPreprocessing().get_imputedData(data, outlier_param, TrainDataPath)
         """
         self.imputedData = data.copy()
         if imputation_param['serialImputation']['flag'] == True:
             from KETIPrePartialDataPreprocessing.data_imputation import Imputation
-            self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(self.imputedData, imputation_param['serialImputation'])
+            self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(self.imputedData, imputation_param['serialImputation'], TrainDataPath)
 
         return self.imputedData
+
     # Add New Function
 
 class packagedPartialProcessing(DataPreprocessing):
@@ -109,7 +133,7 @@ class packagedPartialProcessing(DataPreprocessing):
         self.outlier_param = process_param['outlier_param']
         self.imputation_param = process_param['imputation_param']
     
-    def PartialProcessing(self, input_data, flag):
+    def PartialProcessing(self, input_data, flag, TrainDataPath=None):
         """ Produces only one clean data with one preprocessing module.
 
         :param input_data: input data
@@ -129,12 +153,12 @@ class packagedPartialProcessing(DataPreprocessing):
         elif flag =='errorToNaN':
             result = self.get_errorToNaNData(input_data, self.outlier_param)
         elif flag == 'imputation':
-            result = self.get_imputedData(input_data, self.imputation_param)
+            result = self.get_imputedData(input_data, self.imputation_param, TrainDataPath)
         elif flag == 'all':
             result = self.allPartialProcessing(input_data)
         return result
 
-    def allPartialProcessing(self, input_data):
+    def allPartialProcessing(self, input_data, TrainDataPath):
         """ Produces partial Processing data depending on process_param
 
         :param input_data: input data
@@ -152,7 +176,7 @@ class packagedPartialProcessing(DataPreprocessing):
         ###########
         datawithMoreCertainNaN, datawithMoreUnCertainNaN = self.get_errorToNaNData(refined_data, self.outlier_param)
         ###########
-        imputed_data = self.get_imputedData(datawithMoreUnCertainNaN, self.imputation_param)
+        imputed_data = self.get_imputedData(datawithMoreUnCertainNaN, self.imputation_param, TrainDataPath)
         ###########
         result ={'original':input_data, 'refined_data':refined_data, 'datawithMoreCertainNaN':datawithMoreCertainNaN,
         'datawithMoreUnCertainNaN':datawithMoreUnCertainNaN, 'imputed_data':imputed_data}
@@ -176,16 +200,3 @@ class packagedPartialProcessing(DataPreprocessing):
             output[key] = self.allPartialProcessing(multiple_dataset[key])
         return output
 
-
-if __name__ == '__main__':
-    ### Parameter Test
-    import setting
-    ###
-    ### input data 
-    inputType ='file' # or file    
-    input_data = setting.inputControl(inputType)
-    ### function test
-    flag = 'errorToNaN' #'errorToNaN','refine' ,'all'
-    result = packagedPartialProcessing(setting.process_param).PartialProcessing(input_data, flag)
-    print(result)
-    ###

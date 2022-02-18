@@ -1,6 +1,11 @@
-
-
+import numpy as np
 class unCertainErrorRemove():
+    '''Let UnCertain Outlier from DataFrame Data to NaN. This function makes more Nan according to the data status.
+    
+    **Data Preprocessing Modules**::
+
+            neighbor_error_detected_data
+    '''
     def __init__(self, data, param):
         #first_ratio=0.05
         self.data = data      
@@ -73,3 +78,4 @@ class unCertainErrorRemove():
         data.set_index('time') # 'DB time column 이름이 time인 경우'
         return data
 """
+
