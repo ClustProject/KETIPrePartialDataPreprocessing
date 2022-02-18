@@ -14,7 +14,7 @@ class SerialImputation():
         self.orderIntMethods = [ 'polynomial', 'spline']
         self.deepMethods = ['brits']
  
-    def get_dataWithSerialImputationMethods(self, data, imputation_param,trainDataPath):
+    def get_dataWithSerialImputationMethods(self, data, imputation_param):
         """ This function cleans the data by applying several missing data handling methods.
 
         :param data: input data
@@ -27,17 +27,17 @@ class SerialImputation():
         
         example
             >>> imputation_param = {'serialImputation': {'flag': True, 'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
-            >>> output = SerialImputation().get_dataWithSerialImputationMethods(data, imputation_param, trainDataPath)
+            >>> output = SerialImputation().get_dataWithSerialImputationMethods(data, imputation_param)
         """
         result = data.copy()
         imputation_method = imputation_param['imputation_method']
         totalNonNanRatio = imputation_param['totalNonNanRatio']
+
         # if total column NaN number is less tan limit, Impute it according to the parameter  
         result = self.dropOverNaNThresh(result, totalNonNanRatio)
         print("after Drop NaN Data")
-
         if not result.empty:
-            result = self.dfImputation(result, imputation_param, trainDataPath)
+            result = self.dfImputation(result, imputation_method)
         else:
             result =data.copy()
         
@@ -80,25 +80,22 @@ class SerialImputation():
         print(nan_data_summary)
 
 
-    def dfImputation(self, data, imputation_param, trainDataPath):
+    def dfImputation(self, data, imputation_method):
         """ This function returns final imputed data after imputation and filtering by max NaN limit.
 
         :param data: input_data
         :type data: DataFrame
-        :param imputation_param: imputation_param
-        :type imputation_param: json
+        :param imputation_param: imputation_method
+        :type imputation_method: json
         
         :return: NewDataframe after imputation and nan limit masking
         :rtype: DataFrame
         
         example
-            >>> output = SerialImputation().dfImputation(data, imputation_param, trainDataPath)
+            >>> output = SerialImputation().dfImputation(data, imputation_param)
         """
-
-        imputation_method = imputation_param['imputation_method']
-        totalNonNanRatio = imputation_param['totalNonNanRatio']
+        
         self.printNaNDataSummary(data)
-
         DataWithMaskedNaN = data.copy()
         for method_set in imputation_method:
             max_limit =method_set['max']
@@ -106,12 +103,12 @@ class SerialImputation():
             NaNInfoOverThresh= nanMasking.getConsecutiveNaNInfoOvermaxNaNNumLimit(data, max_limit)
             # Missing Data Imputation
             
-            data = self.imputeDataByMethod(method_set, data, trainDataPath)
+            data = self.imputeDataByMethod(method_set, data)
             DataWithMaskedNaN = nanMasking.setNaNSpecificDuration(data, NaNInfoOverThresh, max_limit)
         self.printNaNDataSummary(DataWithMaskedNaN)
         return DataWithMaskedNaN
 
-    def imputeDataByMethod(self, method_set, data, trainDataPath):
+    def imputeDataByMethod(self, method_set, data):
         """ This function imputes data depending on method_set. (min, max, method, method_parameter)
 
         :param method_set: method information
@@ -124,7 +121,7 @@ class SerialImputation():
         
         example
             >>> method_set = {'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}
-            >>> output = SerialImputation().imputeDataByMethod(method_set, data, trainDataPath)
+            >>> output = SerialImputation().imputeDataByMethod(method_set, data,)
         """
         
         min_limit = method_set['min']
@@ -147,28 +144,26 @@ class SerialImputation():
         elif method in self.orderIntMethods:
             result = basicImpute.orderIntMethod()
         elif method in self.deepMethods:
-            result = DLMethod.DLImputation(data, method, parameter, trainDataPath).getResult()
+            result = DLMethod.DLImputation(data, method, parameter).getResult()
         else:
             result = data.copy()
             print("Couldn't find a proper imputation method.")
 
         return result        
 
-
-
 import sys, os
 sys.path.append("../")
 sys.path.append("../..")
-from KETIPrePartialDataPreprocessing import setting
+from KETIPrePartialDataPreprocessing import data_preprocessing
 
 if __name__ == '__main__':
     ### input data preparation
     inputType ='influx' # or file
-    input_data = setting.inputControl(inputType)
+    input_data = data_preprocessing.inputControl(inputType)
     imputation_param = {'serialImputation': {'flag': True, 
     'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, 
     {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
     
     trainDataPath=['air_indoor_경로당', 'ICL1L2000235' ]
-    imputedData = SerialImputation().get_dataWithSerialImputationMethods(input_data, imputation_param['serialImputation'], trainDataPath)
+    imputedData = SerialImputation().get_dataWithSerialImputationMethods(input_data, imputation_param['serialImputation'])
 

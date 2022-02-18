@@ -94,7 +94,7 @@ class DataPreprocessing():
         self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = errorToNaN.errorToNaN(outlier_param).getDataWithNaN(data)
         return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
 
-    def get_imputedData(self, data, imputation_param, TrainDataPath):
+    def get_imputedData(self, data, imputation_param):
         """ Get imputed data
 
         :param data: input data
@@ -107,12 +107,12 @@ class DataPreprocessing():
         
         example
             >>> imputation_param = {'serialImputation': {'flag': True, 'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
-            >>> output = DataPreprocessing().get_imputedData(data, outlier_param, TrainDataPath)
+            >>> output = DataPreprocessing().get_imputedData(data, outlier_param)
         """
         self.imputedData = data.copy()
         if imputation_param['serialImputation']['flag'] == True:
             from KETIPrePartialDataPreprocessing.data_imputation import Imputation
-            self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(self.imputedData, imputation_param['serialImputation'], TrainDataPath)
+            self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(self.imputedData, imputation_param['serialImputation'])
 
         return self.imputedData
 
@@ -128,12 +128,11 @@ class packagedPartialProcessing(DataPreprocessing):
         :type process_param: json 
 
         '''
-        self.process_param = process_param
         self.refine_param = process_param['refine_param']
         self.outlier_param = process_param['outlier_param']
         self.imputation_param = process_param['imputation_param']
     
-    def PartialProcessing(self, input_data, flag, TrainDataPath=None):
+    def PartialProcessing(self, input_data, flag):
         """ Produces only one clean data with one preprocessing module.
 
         :param input_data: input data
@@ -153,12 +152,12 @@ class packagedPartialProcessing(DataPreprocessing):
         elif flag =='errorToNaN':
             result = self.get_errorToNaNData(input_data, self.outlier_param)
         elif flag == 'imputation':
-            result = self.get_imputedData(input_data, self.imputation_param, TrainDataPath)
+            result = self.get_imputedData(input_data, self.imputation_param)
         elif flag == 'all':
             result = self.allPartialProcessing(input_data)
         return result
 
-    def allPartialProcessing(self, input_data, TrainDataPath):
+    def allPartialProcessing(self, input_data):
         """ Produces partial Processing data depending on process_param
 
         :param input_data: input data
@@ -173,10 +172,13 @@ class packagedPartialProcessing(DataPreprocessing):
         """
         ###########
         refined_data = self.get_refinedData(input_data, self.refine_param)
+        print("Refining-----End")
         ###########
         datawithMoreCertainNaN, datawithMoreUnCertainNaN = self.get_errorToNaNData(refined_data, self.outlier_param)
+        print("OutlierProcessing-----End")
         ###########
-        imputed_data = self.get_imputedData(datawithMoreUnCertainNaN, self.imputation_param, TrainDataPath)
+        imputed_data = self.get_imputedData(datawithMoreUnCertainNaN, self.imputation_param)
+        print("Imputation-----End")
         ###########
         result ={'original':input_data, 'refined_data':refined_data, 'datawithMoreCertainNaN':datawithMoreCertainNaN,
         'datawithMoreUnCertainNaN':datawithMoreUnCertainNaN, 'imputed_data':imputed_data}
@@ -200,3 +202,13 @@ class packagedPartialProcessing(DataPreprocessing):
             output[key] = self.allPartialProcessing(multiple_dataset[key])
         return output
 
+def inputControl(inputType, db_name=None, ms_name=None):
+    from KETIPreDataIngestion.dataIngestion import DataIngestionByInputType
+    dataC = DataIngestionByInputType()
+    if inputType=="file":
+        BASE_DIR = os.getcwd()
+        input_file = os.path.join(BASE_DIR, 'sampleData', 'data_miss_original.csv')
+        input_data = dataC.getFileInput(input_file, 'timedate')
+    elif inputType =="influx":
+        input_data = dataC.getInfluxInput(db_name, ms_name, "2000")
+    return input_data
