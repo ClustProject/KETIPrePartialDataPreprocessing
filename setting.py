@@ -34,12 +34,12 @@ imputation_param = {
 process_param = {'refine_param':refine_param, 'outlier_param':outlier_param, 'imputation_param':imputation_param}
 
 def inputControl(inputType, db_name=None, ms_name=None):
-    from KETIPrePartialDataPreprocessing.dataTest.multipleSourceIngestion import getData
-    dataC = getData()
+    from KETIPreDataIngestion.dataIngestion import DataIngestionByInputType
+    dataC = DataIngestionByInputType()
     if inputType=="file":
         BASE_DIR = os.getcwd()
         input_file = os.path.join(BASE_DIR, 'sampleData', 'data_miss_original.csv')
         input_data = dataC.getFileInput(input_file, 'timedate')
     elif inputType =="influx":
-        input_data = dataC.getInfluxInput(db_name, ms_name)
+        input_data = dataC.getInfluxInput(db_name, ms_name, "2000")
     return input_data
