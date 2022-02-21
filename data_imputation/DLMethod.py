@@ -21,7 +21,6 @@ class DLImputation():
                 ## Path
                 from KETIToolDL.ModelTool import modelFileManager
                 modelFilePath = modelFileManager.getmodelFilePath(trainDataPath, self.method)
-
                 result = britsColumnImputation(self.data[[column_name]], column_name, modelFilePath)
                 result[column_name] = result
         ### Define Another Imputation 
@@ -31,7 +30,6 @@ class DLImputation():
 
 
 ## Define each DL imputation interface
-
 def britsColumnImputation(data, column_name, modelPath):
     print(modelPath[0])
     if os.path.isfile(modelPath[0]):
@@ -43,7 +41,6 @@ def britsColumnImputation(data, column_name, modelPath):
         for split_data in dataset:
             print(len(split_data))
             result_split = inference.BritsInference(split_data, column_name, modelPath).get_result()
-            #result_split = BritsInference(split_data, column_name).get_result()
             result = pd.concat([result, result_split])
     else:
         result = data.copy()
