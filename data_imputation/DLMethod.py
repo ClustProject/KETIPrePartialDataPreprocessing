@@ -19,8 +19,8 @@ class DLImputation():
                 trainDataPath = self.trainDataPath
                 trainDataPath.append(column_name)
                 ## Path
-                from KETIToolDL.ModelTool import modelFileManager
-                modelFilePath = modelFileManager.getmodelFilePath(trainDataPath, self.method)
+                from KETIToolDL import generalModelInfo
+                modelFilePath = generalModelInfo.getmodelFilePath(trainDataPath, self.method)
                 result = britsColumnImputation(self.data[[column_name]], column_name, modelFilePath)
                 result[column_name] = result
         ### Define Another Imputation 
