@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from KETIToolDL import modelSetting
+
 class DLImputation():
     def __init__ (self, data, method, parameter):
         self.method = method
@@ -8,17 +8,20 @@ class DLImputation():
         self.data = data
         ####
         self.trainDataPath =parameter['trainDataPath']
-        
+
     def getResult(self):
         result = self.data.copy()
         ### Brits
         if self.method == 'brits':
             print("brits_imputation")
+            
             for column_name in self.data.columns:
-                self.trainDataPath.append(column_name)
+                trainDataPath = self.trainDataPath
+                trainDataPath.append(column_name)
+                ## Path
                 from KETIToolDL.ModelTool import modelFileManager
-                PathInfo = modelFileManager.setPathInfo(self.method, modelSetting, self.trainDataPath)
-                modelFilePath = modelFileManager.setModelFilesName(PathInfo)
+                modelFilePath = modelFileManager.getmodelFilePath(trainDataPath, self.method)
+
                 result = britsColumnImputation(self.data[[column_name]], column_name, modelFilePath)
                 result[column_name] = result
         ### Define Another Imputation 
@@ -26,21 +29,11 @@ class DLImputation():
             result = self.data
         return result
 
-    def getModelPath(self, modelSetting, trainDataPath):
-        PathInfo={}
-        PathInfo['ModelRootPath'] = modelSetting.model_rootPath
-        PathInfo['ModelInfoPath'] = modelSetting.modelParameterInfoList[self.method]["model_method"]
-        PathInfo['TrainDataPath'] = trainDataPath
-        PathInfo['ModelFileName'] = modelSetting.modelParameterInfoList[self.method]["model_fileName"]
-        from KETIToolDL.ModelTool import modelFileManager
-        modelFilePath = modelFileManager.setModelFilesName(PathInfo)
-            
-        return modelFilePath
-
 
 ## Define each DL imputation interface
 
 def britsColumnImputation(data, column_name, modelPath):
+    print(modelPath[0])
     if os.path.isfile(modelPath[0]):
         from KETIToolDL.PredictionTool.Brits import inference
         n =300

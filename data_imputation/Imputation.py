@@ -154,12 +154,13 @@ class SerialImputation():
 import sys, os
 sys.path.append("../")
 sys.path.append("../..")
-from KETIPrePartialDataPreprocessing import data_preprocessing
+
 
 if __name__ == '__main__':
     ### input data preparation
     inputType ='influx' # or file
-    input_data = data_preprocessing.inputControl(inputType)
+    from KETIPreDataIngestion import dataIngestion
+    input_data = dataIngestion.inputControl(inputType)
     imputation_param = {'serialImputation': {'flag': True, 
     'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, 
     {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
