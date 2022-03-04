@@ -151,20 +151,26 @@ class SerialImputation():
 
         return result        
 
-import sys, os
-sys.path.append("../")
-sys.path.append("../..")
+
 
 
 if __name__ == '__main__':
+    import sys, os
+    sys.path.append(".")
+    sys.path.append("../")
+    sys.path.append("../..")
+    sys.path.append("../../..")
+
     ### input data preparation
     inputType ='influx' # or file
     from KETIPreDataIngestion import dataIngestion
-    input_data = dataIngestion.inputControl(inputType)
+
+    DB = 'air_indoor_경로당'
+    MS = 'ICL1L2000235' 
+    input_data = dataIngestion.inputControl(inputType, DB, MS)
     imputation_param = {'serialImputation': {'flag': True, 
     'imputation_method': [{'min': 0, 'max': 3, 'method': 'KNN', 'parameter': {}}, 
     {'min': 4, 'max': 6, 'method': 'mean', 'parameter': {}}], 'totalNonNanRatio': 80}}
     
-    trainDataPath=['air_indoor_경로당', 'ICL1L2000235' ]
     imputedData = SerialImputation().get_dataWithSerialImputationMethods(input_data, imputation_param['serialImputation'])
 
