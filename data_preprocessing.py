@@ -20,13 +20,6 @@ class DataPreprocessing():
         It refines data adaptively depending on flag status. (removeDuplication, staticFrequency)
         "removeDuplication" :It removes duplicated data.
         "staticFrequency" :The data will have a constant timestamp index. 
-
-        Example
-        -------
-        >>> from pycaret.datasets import get_data
-        >>> juice = get_data('juice')
-        >>> from pycaret.classification import *
-        >>> exp_name = setup(data = juice,  target = 'Purchase')
         
         data: DataFrame
             input data
@@ -41,11 +34,12 @@ class DataPreprocessing():
         :return data : New refined DataFrame output
         :return data: DataFrame
 
-        example
+       Example
+        -------
             >>> data = input_data
             >>> from KETIPrePartialDataPreprocessing.data_preprocessing import DataPreprocessing
             >>> refine_param = {'removeDuplication': {'flag': True}, 'staticFrequency': {'flag': True, 'frequency': '1H'}}
-            >>> output = DataPreprocessing().get_refinedData(data, refine_param)
+            >>> output = DataPreprocessing().get_refinedData(data, refine_param) 
 
         """
         result = data.copy()
