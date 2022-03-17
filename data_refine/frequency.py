@@ -76,6 +76,7 @@ class RefineFrequency():
         """
         data_staticFrequency = data.copy()
         data_staticFrequency = data_staticFrequency.sort_index()
+        data_staticFrequency = data_staticFrequency.resample(freq).mean()
         data_staticFrequency = data_staticFrequency.asfreq(freq=freq)
         
         return data_staticFrequency

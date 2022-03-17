@@ -22,8 +22,8 @@ class unCertainErrorRemove():
         return data_out
         
     def removeByNeighborOutlierDetection(self, data):
-        first_ratio =self.param['neighbor'][0]
-        second_ratio = self.param['neighbor'][1]
+        first_ratio =self.param['neighbor']
+        second_ratio =first_ratio + 0.1
         column_list = data.columns
         data_out1 = data.copy()
         for column_name in column_list:

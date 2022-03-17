@@ -62,7 +62,7 @@ class DataPreprocessing():
 
         Example
         -------
-        >>> outlier_param = {'certainErrorToNaN': {'flag': True}, 'unCertainErrorToNaN': {'flag': True, 'param': {'neighbor': [0.5, 0.6]}},'data_type': 'air'}
+        >>> outlier_param = {'certainErrorToNaN': {'flag': True}, 'unCertainErrorToNaN': {'flag': True, 'param': {'neighbor': 0.5}},'data_type': 'air'}
         >>> datawithMoreCertainNaN, datawithMoreUnCertainNaN = DataPreprocessing().get_errorToNaNData(data, outlier_param)
 
         data: dataFrame

@@ -43,7 +43,7 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
         "certainErrorToNaN":{"flag":True},
         "unCertainErrorToNaN":{
             "flag":True,
-            "param":{"neighbor":[0.5,0.6]}
+            "param":{"neighbor":0.5}
         },
         "data_type":"air"
     }
