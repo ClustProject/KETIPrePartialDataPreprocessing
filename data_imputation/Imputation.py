@@ -35,7 +35,7 @@ class SerialImputation():
 
         # if total column NaN number is less tan limit, Impute it according to the parameter  
         result = self.dropOverNaNThresh(result, totalNonNanRatio)
-        print("after Drop NaN Data")
+        #print("after Drop NaN Data")
         if not result.empty:
             result = self.dfImputation(result, imputation_method)
         else:
@@ -76,8 +76,8 @@ class SerialImputation():
             >>> output = SerialImputation().printNaNDataSummary(data)
         """
         nan_data_summary = round(data.isna().sum()/len(data), 2)
-        print("===== NaN data Ratio summary ======")
-        print(nan_data_summary)
+        #print("===== NaN data Ratio summary ======")
+        #print(nan_data_summary)
 
 
     def dfImputation(self, data, imputation_method):
@@ -95,7 +95,7 @@ class SerialImputation():
             >>> output = SerialImputation().dfImputation(data, imputation_param)
         """
         
-        self.printNaNDataSummary(data)
+        #self.printNaNDataSummary(data)
         DataWithMaskedNaN = data.copy()
         for method_set in imputation_method:
             max_limit =method_set['max']

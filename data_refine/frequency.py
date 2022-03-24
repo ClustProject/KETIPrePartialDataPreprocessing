@@ -57,6 +57,7 @@ class RefineFrequency():
         example
             >>> output = RefineFrequency().get_RefinedDatawithStaticFreq(data, '30S')
         """
+        
         self.output = self.make_staticFrequencyData(data, freq)
         return self.output
 
@@ -78,7 +79,6 @@ class RefineFrequency():
         data_staticFrequency = data_staticFrequency.sort_index()
         data_staticFrequency = data_staticFrequency.resample(freq).mean()
         data_staticFrequency = data_staticFrequency.asfreq(freq=freq)
-        
         return data_staticFrequency
     
     def get_frequencyWith3DataPoints(self, data):

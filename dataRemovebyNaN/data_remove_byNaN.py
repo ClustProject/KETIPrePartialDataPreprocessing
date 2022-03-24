@@ -7,24 +7,24 @@ class DataRemoveByNaNStatus():
     def __init__(self):
         pass
     ## Select one remove method : (time, ratio, num)
-    def removeNaNData(self, data, NanLImitProcessingInfo):
-        type = NanLImitProcessingInfo['type']
+    def removeNaNData(self, data, NanInfoForClenData):
+        type = NanInfoForClenData['type']
         # 0,0 일 경우 NaN 이 하나 이상일 경우 모두 삭제
         if type=='time':
             #ConsecutiveNanLimitTime_second =   60 *60
             #totalNaNLimitTime_second =  1 * 60
-            ConsecutiveNanLimitTime_second = NanLImitProcessingInfo['ConsecutiveNanLimit']
-            totalNaNLimitTime_second =NanLImitProcessingInfo['totalNaNLimit']
+            ConsecutiveNanLimitTime_second = NanInfoForClenData['ConsecutiveNanLimit']
+            totalNaNLimitTime_second =NanInfoForClenData['totalNaNLimit']
             data = self.removeNaNDataByTime(data, ConsecutiveNanLimitTime_second, totalNaNLimitTime_second)
             
         elif type =='num':
-            ConsecutiveNanLimitNum = NanLImitProcessingInfo['ConsecutiveNanLimit']
-            totalNanLimitNum =NanLImitProcessingInfo['totalNaNLimit']
+            ConsecutiveNanLimitNum = NanInfoForClenData['ConsecutiveNanLimit']
+            totalNanLimitNum =NanInfoForClenData['totalNaNLimit']
             data = self.removeNaNDataByNum(data, ConsecutiveNanLimitNum, totalNanLimitNum)
             
         elif type=='ratio':
-            ConsecutiveNanLimitNum = NanLImitProcessingInfo['ConsecutiveNanLimit']
-            totalNanLimitNum =NanLImitProcessingInfo['totalNaNLimit']
+            ConsecutiveNanLimitNum = NanInfoForClenData['ConsecutiveNanLimit']
+            totalNanLimitNum =NanInfoForClenData['totalNaNLimit']
             data = self.removeNaNDataByRatio(data, ConsecutiveNanLimitNum, totalNanLimitNum)    
         return data
     
