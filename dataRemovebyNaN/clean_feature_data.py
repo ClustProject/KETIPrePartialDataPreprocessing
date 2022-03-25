@@ -37,87 +37,6 @@ class CleanFeatureData:
         self.query_start_time = query_start_time
         self.query_end_time = query_end_time
 
-    
-    def getDataWithFullDuration(self, data):
-        # Make Data with Full Duration (query_start_time - to - query_end_time)
-        if len(data)>0:
-            #2. Make Full Data(query Start ~ end) with NaN
-            data.index = data.index.tz_localize(None)
-            new_idx = pd.date_range(start = self.query_start_time, end = (self.query_end_time- self.resample_freq), freq = self.resample_freq)
-            new_data = pd.DataFrame(index= new_idx)
-            new_data.index.name ='time' 
-            data = new_data.join(data) 
-        return data
-
-    def getPreprocessedData(self, data):
-        """
-        This function produced cleaner data with parameter
-
-        :param data: input Data to be handled
-        :type data: dataFrame with only one feature
-
-        :returns: refinedData
-        :rtype: dataFrame
-
-        :returns: dataWithMoreNaN
-        :rtype: dataFrame
-        """
-        refined_data = pd.DataFrame()
-        datawithMoreUnCertainNaN = pd.DataFrame()
-        if len(data)>0:
-            #1. Preprocessing (Data Refining/Static Frequency/OutlierDetection)
-            MDP = data_preprocessing.DataPreprocessing()
-            refined_data = MDP.get_refinedData(data, self.refine_param)
-            datawithMoreCertainNaN, datawithMoreUnCertainNaN = MDP.get_errorToNaNData(refined_data, self.outlier_param)
-            data = datawithMoreUnCertainNaN
-
-        return refined_data, datawithMoreUnCertainNaN
-
-        
-    def getNaNRemovedData(self, data,NanInfoForClenData):
-        NaNRemovedData = None
-        DRN = data_remove_byNaN.DataRemoveByNaNStatus()
-        NaNRemovedData = DRN.removeNaNData(data, NanInfoForClenData)
-        return NaNRemovedData
-
-    
-    def getDataByQuality(self, data, NanInfoForClenData):
-        """
-        This function selects only data that meet the conditions(NaNInfoForCleanData)
-
-        :param data: input Data to be handled
-        :type data: dataFrame with only one feature
-        :param NanInfoForClenData:  selection condition
-        :type NanInfoForClenData: dictionary
-
-        :returns: NaNRemovedData
-        :rtype: data removed NaN data
-
-        :returns: ImputedData
-        :rtype: data with imputed values
-
-        :returns: finalFlag
-        :rtype: -1: no data, 0:useless data, 1:useful data
-        """
-        # finalFlag -1, no data
-        # finalFlag  0, useless data
-        # finalFlag  1, useful data with good quality
-        NaNRemovedData = pd.DataFrame()
-        ImputedData = pd.DataFrame()
-        if len(data) > 0:
-            NaNRemovedData = self.getNaNRemovedData(data, NanInfoForClenData)
-            for feature in data.columns:
-                if feature in NaNRemovedData.columns:
-                    finalFlag = 1 #Data: Yes, Quality: Yes
-                    MDP = data_preprocessing.DataPreprocessing()
-                    ImputedData = MDP.get_imputedData(data, self.imputation_param)
-                else:
-                    finalFlag=0       
-        else:
-            finalFlag = -1    #Data: No
-            
-        return NaNRemovedData, ImputedData, finalFlag
-    
     def getMultipleCleanDataSetsByFeature(self, dataSet, NanInfoForClenData) :
         self.refinedDataSet={}
         self.refinedDataSetName={}
@@ -144,8 +63,8 @@ class CleanFeatureData:
                         self.refinedDataSet[feature].append(refinedData[[feature]])
                         self.refinedDataSetName[feature].append(ms_name)
                         if finalFlag[feature] == 1:
-                            self.NaNRemovedDataSet[feature].append(NaNRemovedData[feature])
-                            self.ImputedDataSet[feature].append(ImputedData[feature])
+                            self.NaNRemovedDataSet[feature].append(NaNRemovedData[[feature]])
+                            self.ImputedDataSet[feature].append(ImputedData[[feature]])
                             self.ImputedDataSetName[feature].append(ms_name)
                         
         """
@@ -168,29 +87,70 @@ class CleanFeatureData:
 
         :returns: refinedData
         :rtype: dataframe
-
         :returns: NaNRemovedData
-        :rtype: dictionary with dataFrame
-
+        :rtype: dataFrame
         :returns: ImputedData
-        :rtype: dictionary with dataFrame
-
+        :rtype: dataFrame
         :returns: finalFlag
-        :rtype: -1: no data, 0:useless data, 1:useful data
+        :rtype: dictionary (-1: no data, 0:useless data, 1:useful data)
         """
 
-        data = self.getDataWithFullDuration(data)
-        refinedData, DataWithMoreNaN = self.getPreprocessedData(data)
+        data = self._getDataWithFullDuration(data)
+        refinedData, DataWithMoreNaN = self._getPreprocessedData(data)
 
         finalFlag = {}
         NaNRemovedData = {}
         ImputedData = {}
+        DRN = data_remove_byNaN.DataRemoveByNaNStatus()
+        NaNRemovedData = DRN.removeNaNData(DataWithMoreNaN, NanInfoForClenData)
+        ImputedData = NaNRemovedData.copy()
+        
         for feature in self.feature_list:
-            if feature in data.columns:
-                NaNRemovedData[feature], ImputedData[feature], finalFlag[feature] = self.getDataByQuality(DataWithMoreNaN[[feature]], NanInfoForClenData)
+            finalFlag[feature] = -1
+            if (feature in data.columns) and (len(refinedData) >0):
+                finalFlag[feature] = 0
+                if feature in NaNRemovedData.columns:
+                    NaNRemovedData_feature = NaNRemovedData[[feature]]
+                    finalFlag[feature] = 1
+                    MDP = data_preprocessing.DataPreprocessing()
+                    ImputedData[feature] = MDP.get_imputedData(NaNRemovedData_feature, self.imputation_param)
             else:
-                NaNRemovedData[feature]=None
-                ImputedData[feature] = None
                 finalFlag[feature] = -1
         return refinedData, NaNRemovedData, ImputedData, finalFlag
 
+    
+    def _getPreprocessedData(self, data):
+        """
+        This function produced cleaner data with parameter
+
+        :param data: input Data to be handled
+        :type data: dataFrame with only one feature
+
+        :returns: refinedData
+        :rtype: dataFrame
+
+        :returns: dataWithMoreNaN
+        :rtype: dataFrame
+        """
+        refined_data = pd.DataFrame()
+        datawithMoreUnCertainNaN = pd.DataFrame()
+        if len(data)>0:
+            #1. Preprocessing (Data Refining/Static Frequency/OutlierDetection)
+            MDP = data_preprocessing.DataPreprocessing()
+            refined_data = MDP.get_refinedData(data, self.refine_param)
+            datawithMoreCertainNaN, datawithMoreUnCertainNaN = MDP.get_errorToNaNData(refined_data, self.outlier_param)
+            data = datawithMoreUnCertainNaN
+
+        return refined_data, datawithMoreUnCertainNaN
+
+        
+    def _getDataWithFullDuration(self, data):
+        # Make Data with Full Duration (query_start_time - to - query_end_time)
+        if len(data)>0:
+            #2. Make Full Data(query Start ~ end) with NaN
+            data.index = data.index.tz_localize(None)
+            new_idx = pd.date_range(start = self.query_start_time, end = (self.query_end_time- self.resample_freq), freq = self.resample_freq)
+            new_data = pd.DataFrame(index= new_idx)
+            new_data.index.name ='time' 
+            data = new_data.join(data) 
+        return data
