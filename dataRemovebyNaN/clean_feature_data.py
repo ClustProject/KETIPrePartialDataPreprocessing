@@ -162,7 +162,7 @@ class CleanFeatureData:
         This function gets CleanDataSet by Feature
 
         :param data: input Data to be handled
-        :type data: dataFrame with only one feature
+        :type data: dataFrame
         :param NanInfoForClenData:  selection condition
         :type NanInfoForClenData: dictionary
 
