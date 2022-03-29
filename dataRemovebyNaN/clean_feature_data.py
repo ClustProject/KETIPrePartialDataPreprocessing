@@ -10,12 +10,13 @@ from KETIPrePartialDataPreprocessing import data_preprocessing
 # - one dataFrame: getOneCleanDataSetByFeature
 
 class CleanFeatureData:
-    def __init__(self, feature_list, resample_freq):
+    def __init__(self, feature_list, freq_min):
         self.feature_list = feature_list
-        self.resample_freq = resample_freq
+        from datetime import timedelta
+        self.resample_freq = timedelta(minutes = freq_min) 
         self.refine_param = {
             "removeDuplication":{"flag":True},
-            "staticFrequency":{"flag":True, "frequency":resample_freq}
+            "staticFrequency":{"flag":True, "frequency":self.resample_freq}
         }
         self.outlier_param  = {
             "certainErrorToNaN":{"flag":True},
@@ -145,7 +146,7 @@ class CleanFeatureData:
 
         
     def _getDataWithFullDuration(self, data):
-        # Make Data with Full Duration (query_start_time - to - query_end_time)
+        # Make Data with Full Duration [query_start_time ~ query_end_time]
         if len(data)>0:
             #2. Make Full Data(query Start ~ end) with NaN
             data.index = data.index.tz_localize(None)
