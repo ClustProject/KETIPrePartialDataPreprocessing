@@ -97,6 +97,7 @@ class RefineFrequency():
         if len(data)> 3:
             # Simply compare 2 intervals from 3 data points.
             # And get estimated frequency.
+            
             inferred_freq1 = (data.index[1]-data.index[0])
             inferred_freq2 = (data.index[2]-data.index[1])
            
@@ -117,5 +118,5 @@ class RefineFrequency():
         
         if not estimated_freq:
             estimated_freq = (data.index[1]-data.index[0])
-
+    
         return estimated_freq
