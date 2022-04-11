@@ -36,11 +36,8 @@ class CleanFeatureData:
             }
         }
         
-    def setDataDuration(self, query_start_time, query_end_time):
-        self.query_start_time = query_start_time
-        self.query_end_time = query_end_time
 
-    def getMultipleCleanDataSetsByFeature(self, dataSet, NanInfoForCleanData) :
+    def getMultipleCleanDataSetsByFeature(self, dataSet, NanInfoForCleanData, duration=None) :
         """
         refinedDataSet, refinedDataSetName: 간단한 cleaning 진행한 데이터셋
         NaNRemovedDataSet : 품질이 좋지 않은 NaN 값을 다수 포함한 컬럼을 제거한 데이터
@@ -52,9 +49,18 @@ class CleanFeatureData:
         :type dataSet: dictionary
         :param NanInfoForCleanData: selection condition
         :type NanInfoForCleanData: dictionary
+        :param duration:  duration, if set duration, make data with full duration, default=None
+        :type duration: dictionary
 
         :returns: self.refinedDataSet, self.refinedDataSetName, self.NaNRemovedDataSet, self.ImputedDataSetName, self.ImputedDataSet
         :rtype: 
+
+        prameter ``duration`` example
+            docstring::
+                {
+                    'start_time' : "2021-02-01 00:00:00",
+                    'end_time' : "2021-02-04 00:00:00",
+                }
         """
 
         self.refinedDataSet={}
@@ -73,7 +79,7 @@ class CleanFeatureData:
         for ms_name in ms_list:
             print("=======",ms_name,"=======")
             data = dataSet[ms_name]
-            refinedData, NaNRemovedData, ImputedData, finalFlag  = self.getOneCleanDataSetByFeature(data, NanInfoForCleanData)
+            refinedData, NaNRemovedData, ImputedData, finalFlag  = self.getOneCleanDataSetByFeature(data, NanInfoForCleanData, duration)
             for feature in self.feature_list:
                 if feature in data.columns:
                     if finalFlag[feature]==-1:
@@ -88,10 +94,8 @@ class CleanFeatureData:
                     
         return self.refinedDataSet, self.refinedDataSetName, self.NaNRemovedDataSet, self.ImputedDataSetName, self.ImputedDataSet
 
-    # getMultipleCleanDataSetsByFeature() - getOneCleanDataSetByFeature() - _getDataWithFullDuration()
-    # 현재 위의 3개가 연결되어 있음
 
-    def getOneCleanDataSetByFeature(self, data, NanInfoForCleanData) :
+    def getOneCleanDataSetByFeature(self, data, NanInfoForCleanData, duration=None) :
         """
         This function gets CleanDataSet by Feature
 
@@ -99,6 +103,8 @@ class CleanFeatureData:
         :type data: dataFrame
         :param NanInfoForCleanData:  selection condition
         :type NanInfoForCleanData: dictionary
+        :param duration:  duration, if set duration, make data with full duration, default=None
+        :type duration: dictionary
 
         :returns: refinedData
         :rtype: dataframe
@@ -108,10 +114,17 @@ class CleanFeatureData:
         :rtype: dataFrame
         :returns: finalFlag
         :rtype: dictionary (-1: no data, 0:useless data, 1:useful data)
+
+        prameter ``duration`` example
+        docstring::
+            {
+                'start_time' : "2021-02-01 00:00:00",
+                'end_time' : "2021-02-04 00:00:00",
+            }
         """
 
-        # start_time, end_time 문제 - 기간 설정이 고정되어 있는 이슈
-        data = self._getDataWithFullDuration(data)
+        if duration:
+            data = self._setDataWithSameDuration(data, duration)
         refinedData, DataWithMoreNaN = self._getPreprocessedData(data)
 
         finalFlag = {}
@@ -162,12 +175,16 @@ class CleanFeatureData:
 
         
     # self.query_start_time, self.query_end_time 문제 이슈
-    def _getDataWithFullDuration(self, data):
+    def _setDataWithSameDuration(self, data, duration):
         # Make Data with Full Duration [query_start_time ~ query_end_time]
+        
+        start_time =duration['start_time']
+        end_time = duration['end_time']
+        print("setDataWithSameDuration", start_time, end_time)
         if len(data)>0:
             #2. Make Full Data(query Start ~ end) with NaN
             data.index = data.index.tz_localize(None) # 지역정보 없이 시간대만 가져오기
-            new_idx = pd.date_range(start = self.query_start_time, end = (self.query_end_time- self.resample_freq), freq = self.resample_freq)
+            new_idx = pd.date_range(start = start_time, end = (end_time- self.resample_freq), freq = self.resample_freq)
             new_data = pd.DataFrame(index= new_idx)
             new_data.index.name ='time' 
             data = new_data.join(data) # new_data에 data를 덮어쓴다
