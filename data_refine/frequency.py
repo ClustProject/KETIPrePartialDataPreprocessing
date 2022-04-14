@@ -4,6 +4,7 @@ class RefineFrequency():
     def __init__(self):
         pass
 
+
     def get_RefinedData(self, data, freq=None):
         """ This function makes new data with the static description frequency according to the freq parameter status. 
         
@@ -60,6 +61,27 @@ class RefineFrequency():
         
         self.output = self.make_staticFrequencyData(data, freq)
         return self.output
+    
+    def get_RefinedDataSetwithStaticFreq(self, dataSet, freq=None):
+        """ This function makes new dataSet with the static description frequency according to the freq parameter status. 
+        
+        :param data: input data
+        :type data: DataFrameSet (dictionary)
+        :param freq: Frequency of output data. If None, this module infers the data frequency and redefines it.
+        :type freq: [None| DateOffset|str], optional
+        
+        :return: NewDataframeSet output with static description frequency without redunency 
+        :rtype: DataFrameSet (dictionary)
+        
+        example
+            >>> output = RefineFrequency().get_RefinedDataSetwithStaticFreq(dataSet, None)
+        """
+        newDataSet={}
+        for index in dataSet:
+            newDataSet[index] = RefineFrequency().get_RefinedDatawithStaticFreq(dataSet[index], freq)
+
+        return newDataSet
+
 
     def make_staticFrequencyData(self, data, freq):
         """ This function makes data with static frequency.
