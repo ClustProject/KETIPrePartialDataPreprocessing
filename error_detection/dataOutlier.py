@@ -55,13 +55,7 @@ class DataOutlier():
                 'SR_spectral_window_size': 24, # spectral window 크기, int, 데이터 크기에 적합하게 설정
                 'SR_score_window_size': 100}# score window 크기, int, period보다 충분히 큰 size로 설정
         }
-        self.defaultImputationParam = {
-            "serialImputation":{
-                "flag":True,
-                "imputation_method":[{"min":0,"max":10,"method":"KNN", "parameter":{'n_neighbors':3, 'weights':'uniform' , 'metric':'nan_euclidean'}}, 
-                                        {"min":11,"max":100,"method":"linear", "parameter":{}}
-                ],"totalNonNanRatio":10}}
-
+ 
         self.data = raw_data.copy()
         self.imputedData = raw_data.copy()
     
@@ -91,14 +85,22 @@ class DataOutlier():
 
         :return index_list: indices of detected outliers
         :type: json
+
+        '''   example
+         imputation_param = {
+            "serialImputation":{
+                "flag":True,
+                "imputation_method":[{"min":0,"max":1000000,"method":"linear", "parameter":{}}
+                ],"totalNonNanRatio":0}}
+        '''
+
         """ 
-        if imputation_param ==None:
-            self.imputation_param = self.defaultImputationParam
-            print(self.imputation_param)
-        else:
-            self.imputation_param = imputation_param
         self.originNaNIndex = getNaNIndex(self.data)
-        self.imputedData = DataPreprocessing().get_imputedData(self.data, self.imputation_param)
+
+        if imputation_param ==None:
+            self.imputedData = self.data.fillna(method='ffill')
+        else:
+            self.imputedData = DataPreprocessing().get_imputedData(self.data, imputation_param)
         
         return self.imputedData
 
