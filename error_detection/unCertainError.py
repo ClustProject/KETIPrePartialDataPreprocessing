@@ -15,11 +15,41 @@ class unCertainErrorRemove():
         data_out = self.data.copy()
         for feature in data_out.columns:
             test_data= data_out[[feature]].copy()
-            test_data= self.removeByNeighborOutlierDetection(test_data)
+            if 'neighbor' in self.param:
+                test_data= self.removeByNeighborOutlierDetection(test_data)
+                print("neighbor")
+            if 'outlierDetectorConfig' in self.param:
+                outlierDetectorConfig =self.param['outlierDetectorConfig']
+                test_data = self.removeByOutlierDetector(test_data, outlierDetectorConfig)
+                print("OutlierDetector")
             data_out[[feature]] = test_data  
         
         return data_out
         
+    def removeByOutlierDetector(self, data, outlierDetectorConfig):
+        """    
+        :param data: data for outlier Detetcion
+        :type data: dataFrame
+
+        :return result: data without outliered error
+        :type: dataFrame
+
+        Example
+        >>> percentile = 99
+        >>> AlgorithmList =[ 'IF', 'KDE', 'LOF', 'MoG', 'SR']
+        >>> algorithm = AlgorithmList[2]
+        >>> config= {'algorithm': algorithm, 'percentile':percentile}#,'alg_parameter': Parameter[algorithm]
+        """
+        from KETIPrePartialDataPreprocessing.error_detection import dataOutlier
+        
+        data_outlier = dataOutlier.DataOutlier(data)
+        data = data_outlier.refinmentForOutlierDetection()
+        data_imputed = data_outlier.imputationForOutlierDetection()
+        outlierIndex = data_outlier.getOneDetectionResult(data_imputed,outlierDetectorConfig)
+        data = dataOutlier.getMoreNaNDataByNaNIndex(data, data_outlier.originNaNIndex)
+        result = dataOutlier.getMoreNaNDataByNaNIndex(data, outlierIndex)
+
+        return result
     def removeByNeighborOutlierDetection(self, data):
         first_ratio =self.param['neighbor']
         second_ratio =first_ratio + 0.1
