@@ -99,6 +99,7 @@ class DataOutlier():
 
         if imputation_param ==None:
             self.imputedData = self.data.fillna(method='ffill')
+            self.imputedData = self.imputedData.fillna(0)
         else:
             self.imputedData = DataPreprocessing().get_imputedData(self.data, imputation_param)
         
@@ -147,7 +148,6 @@ class DataOutlier():
             else:
                 data_col = data[col].values.reshape(-1, 1)
             indexes = self.getOutIndex(data_col)
-
             indexes = data[col].iloc[indexes].index
             index_list[col] = indexes
 

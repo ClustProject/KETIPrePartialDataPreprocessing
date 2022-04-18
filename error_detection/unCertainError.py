@@ -45,6 +45,7 @@ class unCertainErrorRemove():
         data_outlier = dataOutlier.DataOutlier(data)
         data = data_outlier.refinmentForOutlierDetection()
         data_imputed = data_outlier.imputationForOutlierDetection()
+        print("imputation:", data_imputed.isna().sum())
         outlierIndex = data_outlier.getOneDetectionResult(data_imputed,outlierDetectorConfig)
         data = dataOutlier.getMoreNaNDataByNaNIndex(data, data_outlier.originNaNIndex)
         result = dataOutlier.getMoreNaNDataByNaNIndex(data, outlierIndex)
