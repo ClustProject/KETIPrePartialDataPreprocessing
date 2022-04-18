@@ -15,7 +15,6 @@ class unCertainErrorRemove():
         data_out = self.data.copy()
         for feature in data_out.columns:
             test_data= data_out[[feature]].copy()
-            #test_data = self.outlier_extream_value_analysis(sample_data, test_data, 10) 
             test_data= self.removeByNeighborOutlierDetection(test_data)
             data_out[[feature]] = test_data  
         
@@ -43,7 +42,7 @@ class unCertainErrorRemove():
                 data_out1.iloc[pos].loc[column_name] = data_out1.iloc[pos-1].loc[column_name]
         return data_out1
     
-    
+"""  
     def outlier_extream_value_analysis(self, sample, data, extream):
         data_out= data.copy()
         for feature in data_out.columns:
@@ -64,7 +63,7 @@ class unCertainErrorRemove():
         return data_out
 
 #Hample Detection
-"""
+
     def HampelDetection(self, data, window_size=7, n_sigma=3):
         n = len(data)
         k = 1.4826 # scale factor for Gaussian distribution
