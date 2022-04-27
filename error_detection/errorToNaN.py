@@ -36,7 +36,10 @@ class errorToNaN():
             print("getDataWithUncertainNaN")
             from KETIPrePartialDataPreprocessing.error_detection import unCertainError
             param = self.outlier_param['unCertainErrorToNaN']['param']
-            datawithMoreUnCertainNaN = unCertainError.unCertainErrorRemove(data, param).get_neighbor_error_detected_data()
+            data_outlier = unCertainError.unCertainErrorRemove(data, param)
+            outlierIndex = data_outlier.getNoiseIndex()
+            datawithMoreUnCertainNaN = data_outlier.getDataWithoutUncertainError(outlierIndex)
+
         else:
             datawithMoreUnCertainNaN = data.copy()
         return datawithMoreUnCertainNaN

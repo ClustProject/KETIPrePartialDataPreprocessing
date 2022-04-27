@@ -45,15 +45,17 @@ class DataOutlier():
                 'LOF_neighbors': 5, # 가까운 이웃 개수, int(default: 20)
                 'LOF_algorithm': 'auto', # 가까운 이웃을 정의하기 위한 알고리즘, {‘auto’, ‘ball_tree’, ‘kd_tree’, ‘brute’}(default: ’auto’) 중 택 1
                 'LOF_leaf_size': 30, # tree 알고리즘에서의 leaf node 개수, int(default: 30)
-                'LOF_metric': 'minkowski'}, # 이웃을 정의하기 위한 거리 척도, str or callable(default: ’minkowski’)
+                'LOF_metric': 'minkowski',# 이웃을 정의하기 위한 거리 척도, str or callable(default: ’minkowski’)
+                'LOF_contamination':0.1 # 오염 정도
+                 }, 
             "MoG": {# EM 방법론 반복 횟수, int(default: 100)
                 'MoG_components': 2, # mixture에 활용하는 component의 개수, int(default: 1)
                 'MoG_covariance': 'full', # {‘full’, ‘tied’, ‘diag’, ‘spherical’}(default: ’full’) 중 택 1
                 'MoG_max_iter': 100},
             "SR":{
-                'SR_series_window_size': 24, # series window 크기, int, 데이터 크기에 적합하게 설정
-                'SR_spectral_window_size': 24, # spectral window 크기, int, 데이터 크기에 적합하게 설정
-                'SR_score_window_size': 100}# score window 크기, int, period보다 충분히 큰 size로 설정
+                'SR_series_window_size': 24, # less than period, int, 데이터 크기에 적합하게 설정
+                'SR_spectral_window_size': 24, # as same as period, int, 데이터 크기에 적합하게 설정
+                'SR_score_window_size': 100}# a number enough larger than period, int, period보다 충분히 큰 size로 설정
         }
  
         self.data = raw_data.copy()
@@ -171,14 +173,14 @@ class DataOutlier():
         elif self.algorithm == 'LOF':
             model = LocalOutlierFactor(n_neighbors=self.args['LOF_neighbors'], novelty=True, 
                                        algorithm=self.args['LOF_algorithm'], leaf_size=self.args['LOF_leaf_size'], 
-                                       metric=self.args['LOF_metric']).fit(data_col)
+                                       metric=self.args['LOF_metric'], contamination = 'LOF_contamination').fit(data_col)
             score = - 1.0 * model.score_samples(data_col)
             indexes = np.where(score > np.percentile(score, self.percentile))[0]
         elif self.algorithm == 'MoG':
             model =  GaussianMixture(n_components=self.args['MoG_components'], covariance_type=self.args['MoG_covariance'], 
                                      max_iter=self.args['MoG_max_iter'], random_state=0).fit(data_col)
-            score = - 1.0* model.predict_proba(data_col)
-            indexes = np.where(score[:, 0] > np.percentile(score[:, 0], self.percentile))[0]
+            score = -1.0* model.predict_proba(data_col)
+            indexes = (np.where(score[:, 0] > np.percentile(score[:, 0], self.percentile))[0]) 
         elif self.algorithm == 'KDE':
             model = KernelDensity(kernel=self.args['KDE_kernel'], bandwidth=self.args['KDE_bandwidth'], 
                                   algorithm=self.args['KDE_algorithm'], metric=self.args['KDE_metric'], 

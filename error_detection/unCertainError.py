@@ -1,3 +1,4 @@
+from KETIPrePartialDataPreprocessing.error_detection import dataOutlier
 import numpy as np
 class unCertainErrorRemove():
     '''Let UnCertain Outlier from DataFrame Data to NaN. This function makes more Nan according to the data status.
@@ -7,32 +8,127 @@ class unCertainErrorRemove():
             neighbor_error_detected_data
     '''
     def __init__(self, data, param):
-        #first_ratio=0.05
-        self.data = data      
+  
         self.param = param
+        data_outlier = dataOutlier.DataOutlier(data)
+        self.data = data_outlier.refinmentForOutlierDetection()
     
-    def get_neighbor_error_detected_data(self):
-        data_out = self.data.copy()
-        for feature in data_out.columns:
-            test_data= data_out[[feature]].copy()
-            if 'neighbor' in self.param:
-                test_data= self.removeByNeighborOutlierDetection(test_data)
-                print("neighbor")
-            if 'outlierDetectorConfig' in self.param:
-                outlierDetectorConfig =self.param['outlierDetectorConfig']
-                test_data = self.removeByOutlierDetector(test_data, outlierDetectorConfig)
-                print("OutlierDetector")
-            data_out[[feature]] = test_data  
-        
-        return data_out
-        
-    def removeByOutlierDetector(self, data, outlierDetectorConfig):
+    def getNoiseIndex(self):
         """    
-        :param data: data for outlier Detetcion
-        :type data: dataFrame
+        :return result: Noise Index
+        :type: json
+        """
 
-        :return result: data without outliered error
-        :type: dataFrame
+        if 'outlierDetectorConfig' in self.param:
+            outlierDetectorConfig =self.param['outlierDetectorConfig']
+            self.outlierIndex = self.removeByOutlierDetector(outlierDetectorConfig)
+            print("OutlierDetector")
+        
+        if "IQR" in self.param:
+            outlierDetectorConfig =self.param['IQR']
+            self.outlierIndex = self.removeByIQR(outlierDetectorConfig)
+            print("IQR")
+
+        if "SeasonalDecomposition" in self.param:
+            outlierDetectorConfig =self.param['SeasonalDecomposition']
+            self.outlierIndex = self.getOutlierIndexBySeasonalDecomposition(outlierDetectorConfig)
+            print("SeasonalDecomposition")
+
+        return self.outlierIndex
+
+    def getIntersectionIndex(self, outlierIndex):
+        """    
+        :param outlierIndex: Noise Index
+        :type outlierIndex: json
+
+        :return intersectionIndex: Intersection index by each noise index key
+        :type: list
+        """
+        first_key= list(outlierIndex.keys())[0]
+        intersectionIndex = outlierIndex[first_key]
+        for key, value in outlierIndex.items():
+            intersectionIndex = list(set(intersectionIndex) & set(list(value)))
+        return intersectionIndex
+
+    def removeByIQR(self, param):
+        """    
+        :param param: having 'weight' parameter. weight is IQR duration adjustment parameter.
+        :type weight: json
+
+        :return outlier_index: Intersection index by each noise index key
+        :type: list
+        """
+        df = self.data.copy()
+        weight = param['weight']
+        print(weight)
+        outlier_index={}
+        for column in df.columns:
+            column_x = df[column]
+            # 1/4 분위와 3/4 분위 지점을 np.percentile로 구함
+            quantile_25 = np.nanpercentile(column_x.values, 25)
+            quantile_75 = np.nanpercentile(column_x.values, 75)
+            print(quantile_25, quantile_75)
+
+            # IQR을 구하고 IQR에 1.5를 곱해 최댓값과 최솟값 지점 구함.
+            iqr = quantile_75 - quantile_25
+            iqr_weight = iqr * weight
+            lowest_val = quantile_25 - iqr_weight
+            highest_val = quantile_75 + iqr_weight
+
+            # 최댓값보다 크거나, 최솟값보다 작은 값을 이상치 데이터로 설정하고 Dataframe index 반환
+            outlier_index[column] = column_x[(column_x < lowest_val) | (column_x > highest_val)].index
+            print(lowest_val, highest_val)
+        return outlier_index
+
+    def getOutlierIndexBySeasonalDecomposition(self, outlierDetectorConfig):
+        """    
+        :param outlierDetectorConfig: have period and limit information ex> {"period":60*24, "limit":10}
+        :type outlierDetectorConfig: json
+
+        :return outlier_index: Intersection index by each noise index key
+        :type: list
+        """
+
+        period = outlierDetectorConfig['period']
+        limit = outlierDetectorConfig['limit']
+
+        from statsmodels.tsa.seasonal import seasonal_decompose
+        data_outlier = dataOutlier.DataOutlier(self.data)
+        data_imputed = data_outlier.imputationForOutlierDetection()
+
+        outlier_index={}
+        for feature in data_imputed.columns:
+            result = seasonal_decompose(data_imputed[feature],model='additive', period = period)
+            n = result.seasonal.mean()+result.trend.mean()
+            n = abs(n *limit)
+            print("Limit Num:", n)
+            NoiseIndex = result.resid[abs(result.resid)> n].index
+            outlier_index[feature]= NoiseIndex
+            import matplotlib.pyplot as plt
+            result.plot()
+            plt.show()
+            
+        return outlier_index
+
+    def getDataWithoutUncertainError(self, outlierIndex):
+        """    
+        :param outlierIndex: Noise Index
+        :type outlierIndex: json
+
+        :return outlierIndex: noise index of each column
+        :type: json
+        """
+
+        result = dataOutlier.getMoreNaNDataByNaNIndex(self.data, outlierIndex)
+        return result
+
+    def removeByOutlierDetector(self, outlierDetectorConfig):
+        """    
+        :param outlierDetectorConfig: Config for outlier detection
+        :type outlierDetectorConfig: json
+
+        :return outlierIndex: noise index of each column
+        :type: json
 
         Example
         >>> percentile = 99
@@ -40,22 +136,20 @@ class unCertainErrorRemove():
         >>> algorithm = AlgorithmList[2]
         >>> config= {'algorithm': algorithm, 'percentile':percentile}#,'alg_parameter': Parameter[algorithm]
         """
-        from KETIPrePartialDataPreprocessing.error_detection import dataOutlier
         
-        data_outlier = dataOutlier.DataOutlier(data)
-        data = data_outlier.refinmentForOutlierDetection()
+        data_outlier = dataOutlier.DataOutlier(self.data)
         data_imputed = data_outlier.imputationForOutlierDetection()
-        print("imputation:", data_imputed.isna().sum())
-        outlierIndex = data_outlier.getOneDetectionResult(data_imputed,outlierDetectorConfig)
-        data = dataOutlier.getMoreNaNDataByNaNIndex(data, data_outlier.originNaNIndex)
-        result = dataOutlier.getMoreNaNDataByNaNIndex(data, outlierIndex)
+        outlierIndex = data_outlier.getOneDetectionResult(data_imputed, outlierDetectorConfig)
+ 
+        return outlierIndex
+"""
+    def removeByNeighborOutlierDetection(self, first_ratio):
 
-        return result
-    def removeByNeighborOutlierDetection(self, data):
-        first_ratio =self.param['neighbor']
         second_ratio =first_ratio + 0.1
-        column_list = data.columns
-        data_out1 = data.copy()
+        data_out1 = self.data.copy()
+        column_list = data_out1.columns
+        
+        outlierIndex={}
         for column_name in column_list:
             temp = data_out1[[column_name]]
             data_1 = temp.diff().abs()
@@ -64,48 +158,10 @@ class unCertainErrorRemove():
             First_gap = temp_mean* first_ratio
             Second_gap = temp_mean * second_ratio
             print(First_gap, Second_gap)
-            data_1_index = data_1[data_1[column_name] > First_gap].index.tolist()
-            data_2_index = data_2[data_2[column_name] > Second_gap].index.tolist()
+            data_1_index = list(data_1[data_1[column_name] > First_gap].index)
+            data_2_index = list( data_2[data_2[column_name] > Second_gap].index)
+            data_1_index.extend(data_2_index)
 
-            noise_index = set(data_1_index)&set(data_2_index)
-            for noise in noise_index:
-                pos = data_out1.index.get_loc(noise)
-                data_out1.iloc[pos].loc[column_name] = data_out1.iloc[pos-1].loc[column_name]
-        return data_out1
-    
-"""  
-    def outlier_extream_value_analysis(self, sample, data, extream):
-        data_out= data.copy()
-        for feature in data_out.columns:
-            test_data = data_out[[feature]].copy()
-            sample_data = sample[[feature]].copy()
-            IQR = sample_data.quantile(0.75)-sample_data.quantile(0.25)
-            upper_limit = sample.quantile(0.75)+(IQR*1.5)
-            upper_limit_extream = sample_data.quantile(0.75)+(IQR*extream)
-            lower_limit = sample_data.quantile(0.25)-(IQR*1.5)
-            lower_limit_extream = sample_data.quantile(0.25)-(IQR*extream)
-            test_data[(test_data < lower_limit_extream)] =np.nan
-            test_data[(test_data> upper_limit_extream)] =np.nan
-            
-            test_data = test_data.fillna(method='ffill', limit=1)
-            test_data = test_data.fillna(method='bfill', limit=1)
-            data_out[[feature]] = test_data
-        
-        return data_out
-
-#Hample Detection
-
-    def HampelDetection(self, data, window_size=7, n_sigma=3):
-        n = len(data)
-        k = 1.4826 # scale factor for Gaussian distribution
-        for column in data.columns:
-            data = data.reset_index(drop=True)
-            for i in range((window_size),(n - window_size)):
-                x0 = np.nanmedian(data[column][(i - window_size):(i + window_size)])
-                S0 = k * np.nanmedian(np.abs(data[column][(i - window_size):(i + window_size)] - x0))
-                if (np.abs(data[column][i] - x0) > n_sigma * S0):
-                    data[column][i] = np.nan
-        data.set_index('time') # 'DB time column 이름이 time인 경우'
-        return data
+            outlierIndex[column_name] =data_1_index
+        return outlierIndex
 """
-
