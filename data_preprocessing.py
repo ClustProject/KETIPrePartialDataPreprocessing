@@ -62,7 +62,7 @@ class DataPreprocessing():
 
         Example
         -------
-        >>> outlier_param = {'certainErrorToNaN': {'flag': True}, 'unCertainErrorToNaN': {'flag': True, 'param': {'neighbor': 0.5}},'data_type': 'air'}
+        >>> outlier_param = {'certainErrorToNaN': {'flag': True}, 'unCertainErrorToNaN': {----}}
         >>> datawithMoreCertainNaN, datawithMoreUnCertainNaN = DataPreprocessing().get_errorToNaNData(data, outlier_param)
 
         data: dataFrame
@@ -85,7 +85,8 @@ class DataPreprocessing():
             
         """
         from KETIPrePartialDataPreprocessing.error_detection import errorToNaN
-        self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN = errorToNaN.errorToNaN(outlier_param).getDataWithNaN(data)
+        self.datawithMoreCertainNaN = errorToNaN.errorToNaN().getDataWithCertainNaN(data, outlier_param['certainErrorToNaN'])
+        self.datawithMoreUnCertainNaN = errorToNaN.errorToNaN().getDataWithUncertainNaN(self.datawithMoreCertainNaN, outlier_param['unCertainErrorToNaN'])
         return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
 
     def get_imputedData(self, data, imputation_param):

@@ -192,8 +192,17 @@ class DataOutlier():
             model = IsolationForest(n_estimators=self.args['IF_estimators'], max_samples=self.args['IF_max_samples'], 
                                     contamination=self.args['IF_contamination'], max_features=self.args['IF_max_features'], 
                                     bootstrap=self.args['IF_bootstrap']).fit(data_col)
+            """
             score = - 1.0 * model.score_samples(data_col)
             indexes = np.where(score > np.percentile(score, self.percentile))[0]
+            """
+            #https://partrita.github.io/posts/isolation-forest/
+            model.fit(data_col)
+            score = model.decision_function(data_col)
+            anomaly = model.predict(data_col)
+            indexes = np.where(anomaly == -1)[0]
+            
+
         return indexes
     
 def showResult(data, result, outlierIndex):

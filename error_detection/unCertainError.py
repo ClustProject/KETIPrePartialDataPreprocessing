@@ -17,24 +17,34 @@ class unCertainErrorRemove():
         """    
         :return result: Noise Index
         :type: json
+
+        self.outlierIndex
+        self.mergedOutlierIndex
+
         """
-
-        if 'outlierDetectorConfig' in self.param:
-            outlierDetectorConfig =self.param['outlierDetectorConfig']
-            self.outlierIndex = self.removeByOutlierDetector(outlierDetectorConfig)
-            print("OutlierDetector")
+        outlierDetectorConfigs =self.param['outlierDetectorConfig']
+        MLList = [ 'IF', 'KDE', 'LOF', 'MoG', 'SR']
+        self.outlierIndex={}
+        for outlierDetectorConfig in outlierDetectorConfigs:
+            print(outlierDetectorConfig)
+            algorithm = outlierDetectorConfig['algorithm']
+            print(algorithm)
+            if algorithm in MLList:
+                IndexResult = self.getOutlierIndexByMLOutlierDetector(outlierDetectorConfig)
+            elif algorithm == "IQR" :
+                IndexResult  = self.getOutlierIndexByIQR(outlierDetectorConfig)
+            elif algorithm == "SD":
+                IndexResult  = self.getOutlierIndexBySeasonalDecomposition(outlierDetectorConfig['alg_parameter'])
+            self.outlierIndex[algorithm] = IndexResult 
         
-        if "IQR" in self.param:
-            outlierDetectorConfig =self.param['IQR']
-            self.outlierIndex = self.removeByIQR(outlierDetectorConfig)
-            print("IQR")
-
-        if "SeasonalDecomposition" in self.param:
-            outlierDetectorConfig =self.param['SeasonalDecomposition']
-            self.outlierIndex = self.getOutlierIndexBySeasonalDecomposition(outlierDetectorConfig)
-            print("SeasonalDecomposition")
-
-        return self.outlierIndex
+        self.mergedOutlierIndex={}
+        for column in self.data.columns:
+            self.mergedOutlierIndex[column]= []
+            for outlierDetectorConfig in outlierDetectorConfigs:
+                algorithm = outlierDetectorConfig['algorithm']
+                self.mergedOutlierIndex[column].extend(self.outlierIndex[algorithm][column])
+        
+        return self.mergedOutlierIndex
 
     def getIntersectionIndex(self, outlierIndex):
         """    
@@ -50,7 +60,7 @@ class unCertainErrorRemove():
             intersectionIndex = list(set(intersectionIndex) & set(list(value)))
         return intersectionIndex
 
-    def removeByIQR(self, param):
+    def getOutlierIndexByIQR(self, param):
         """    
         :param param: having 'weight' parameter. weight is IQR duration adjustment parameter.
         :type weight: json
@@ -122,7 +132,7 @@ class unCertainErrorRemove():
         result = dataOutlier.getMoreNaNDataByNaNIndex(self.data, outlierIndex)
         return result
 
-    def removeByOutlierDetector(self, outlierDetectorConfig):
+    def getOutlierIndexByMLOutlierDetector(self, outlierDetectorConfig):
         """    
         :param outlierDetectorConfig: Config for outlier detection
         :type outlierDetectorConfig: json
