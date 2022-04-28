@@ -123,7 +123,10 @@ class packagedPartialProcessing(DataPreprocessing):
         :type process_param: json 
 
         '''
+        
+        
         self.refine_param = process_param['refine_param']
+        print("self.refine_param :: ", self.refine_param)
         self.outlier_param = process_param['outlier_param']
         self.imputation_param = process_param['imputation_param']
     
