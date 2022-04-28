@@ -173,7 +173,7 @@ class DataOutlier():
         elif self.algorithm == 'LOF':
             model = LocalOutlierFactor(n_neighbors=self.args['LOF_neighbors'], novelty=True, 
                                        algorithm=self.args['LOF_algorithm'], leaf_size=self.args['LOF_leaf_size'], 
-                                       metric=self.args['LOF_metric'], contamination = 'LOF_contamination').fit(data_col)
+                                       metric=self.args['LOF_metric'], contamination = self.args['LOF_contamination']).fit(data_col)
             score = - 1.0 * model.score_samples(data_col)
             indexes = np.where(score > np.percentile(score, self.percentile))[0]
         elif self.algorithm == 'MoG':

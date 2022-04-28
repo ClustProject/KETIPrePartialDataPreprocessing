@@ -69,7 +69,7 @@ class unCertainErrorRemove():
         :type: list
         """
         df = self.data.copy()
-        weight = param['weight']
+        weight = param['alg_parameter']['weight']
         print(weight)
         outlier_index={}
         for column in df.columns:
