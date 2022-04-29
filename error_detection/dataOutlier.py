@@ -99,7 +99,7 @@ class DataOutlier():
         """ 
         self.originNaNIndex = getNaNIndex(self.data)
 
-        if imputation_param ==None:
+        if imputation_param == None:
             self.imputedData = self.data.fillna(method='ffill')
             self.imputedData = self.imputedData.fillna(0)
         else:
@@ -180,7 +180,8 @@ class DataOutlier():
             model =  GaussianMixture(n_components=self.args['MoG_components'], covariance_type=self.args['MoG_covariance'], 
                                      max_iter=self.args['MoG_max_iter'], random_state=0).fit(data_col)
             score = -1.0* model.predict_proba(data_col)
-            indexes = (np.where(score[:, 0] > np.percentile(score[:, 0], self.percentile))[0]) 
+            indexes = (np.where(score[:, 0] > np.percentile(score[:, 0], self.percentile))[0])  
+
         elif self.algorithm == 'KDE':
             model = KernelDensity(kernel=self.args['KDE_kernel'], bandwidth=self.args['KDE_bandwidth'], 
                                   algorithm=self.args['KDE_algorithm'], metric=self.args['KDE_metric'], 
