@@ -15,10 +15,11 @@ class errorToNaN():
     def getDataWithCertainNaN(self, data, CertainParam):
         if CertainParam['flag'] ==True:  
             from KETIPrePartialDataPreprocessing.error_detection import certainError
-            anomal_value_list=[99.9, 199.9, 299.9, 9999, -99.9, -199.9, -299.9, -9999] 
-            anomal_value_list=[]
+            anomal_value_list=[99.9, 199.9, 299.9, 9999, -99.9, -199.9, -299.9, -9999, -9999.0] 
+            #anomal_value_list=[]
+
             datawithMoreCertainNaN = certainError.CertainErrorRemove(data, self.limit_min_max, anomal_value_list).getDataWitoutcertainError()  
-            #print("getDataWithCertainNaN")
+            print("getDataWithCertainNaN")
         else:
             datawithMoreCertainNaN = data.copy()
         return datawithMoreCertainNaN
