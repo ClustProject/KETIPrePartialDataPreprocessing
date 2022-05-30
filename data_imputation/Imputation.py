@@ -35,7 +35,6 @@ class SerialImputation():
 
         # if total column NaN number is less tan limit, Impute it according to the parameter  
         result = self.dropOverNaNThresh(result, totalNonNanRatio)
-        print(result)
         
         if not result.empty:
             result = self.dfImputation(result, imputation_method)
@@ -63,7 +62,6 @@ class SerialImputation():
             >>> output = SerialImputation().dropOverNaNThresh(data, imputation_param)
         """
         totalNonNanNum = int(totalNonNanRatio/100 * len(data)) 
-        print(totalNonNanNum)
         result= data.dropna(thresh = totalNonNanNum, axis=1)
        
         return result
@@ -100,7 +98,6 @@ class SerialImputation():
         #self.printNaNDataSummary(data)
         DataWithMaskedNaN = data.copy()
         for method_set in imputation_method:
-            print(method_set)
             max_limit =method_set['max']
             from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
             NaNInfoOverThresh= nanMasking.getConsecutiveNaNInfoOvermaxNaNNumLimit(data, max_limit)
