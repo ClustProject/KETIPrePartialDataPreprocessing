@@ -7,7 +7,7 @@ class DLImputation():
         self.parameter = parameter
         self.data = data
         ####
-        self.trainDataPath =parameter['trainDataPath']
+        self.trainDataPathList =parameter['trainDataPathList']
 
     def getResult(self):
         result = self.data.copy()
@@ -16,12 +16,12 @@ class DLImputation():
             print("brits_imputation")
             
             for column_name in self.data.columns:
-                trainDataPath = self.trainDataPath
-                trainDataPath.append(column_name)
+                trainDataPathList = self.trainDataPathList
+                trainDataPathList.append(column_name)
                 ## Path
                 from KETIToolDL import modelInfo
                 MI = modelInfo.ModelFileManager()
-                modelFilePath = MI.getModelFilePath(trainDataPath, self.method)
+                modelFilePath = MI.getModelFilePath(trainDataPathList, self.method)
                 result = britsColumnImputation(self.data[[column_name]], column_name, modelFilePath)
                 result[column_name] = result
         ### Define Another Imputation 
