@@ -11,7 +11,7 @@ class RefineFrequency():
         :param data: input data
         :type data: DataFrame 
         :param freq: Frequency of output data. If None, this module infers the data frequency and redefines it.
-        :type freq: [None| DateOffset|str], optional
+        :type freq: [None| DateOffset|Timedelta|str]
         
         :return: NewDataframe output with static description frequency without redunency 
         :rtype: DataFrame
@@ -68,7 +68,7 @@ class RefineFrequency():
         :param data: input data
         :type data: DataFrameSet (dictionary)
         :param freq: Frequency of output data. If None, this module infers the data frequency and redefines it.
-        :type freq: [None| DateOffset|str], optional
+        :type freq: DateOffset, Timedelta or str
         
         :return: NewDataframeSet output with static description frequency without redunency 
         :rtype: DataFrameSet (dictionary)
@@ -89,7 +89,7 @@ class RefineFrequency():
         :param data: input data
         :type data: DataFrame
         :param freq: frequency of data to be newly generated
-        :type freq: DateOffset
+        :type freq: DateOffset, Timedelta or str
 
         :return: NewDataframe output
         :rtype: DataFrame
