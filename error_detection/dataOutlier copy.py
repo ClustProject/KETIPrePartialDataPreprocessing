@@ -149,62 +149,62 @@ class DataOutlier():
                 data_col = data[col].values
             else:
                 data_col = data[col].values.reshape(-1, 1)
-            self.model = self.getModel(data_col)
-            indexes = self.getIndexList(data_col, self.model)
+            indexes = self.getOutIndex(data_col)
             indexes = data[col].iloc[indexes].index
             index_list[col] = indexes
 
         return index_list
     
-    def getModel(self, data_col):
+    def getOutIndex(self, data_col):
         """
+        Get the index value of data estimated as outlier
+
         :param data_col: data for each column
         :type: np.array
-        
-        :return model: fitted model of selected outlier detection algorithm
-        :type: model
-        
+
+        :return indexes: indices of detected outliers
+        :type: list
         """
+
         if self.algorithm == 'SR':
             model = anom.Silency(self.args['SR_spectral_window_size'], self.args['SR_series_window_size'],
                                  self.args['SR_score_window_size'])
+            score = model.generate_anomaly_score(data_col)
+            indexes = np.where(score > np.percentile(score, self.percentile))[0]
         elif self.algorithm == 'LOF':
             model = LocalOutlierFactor(n_neighbors=self.args['LOF_neighbors'], novelty=True, 
                                        algorithm=self.args['LOF_algorithm'], leaf_size=self.args['LOF_leaf_size'], 
-                                       metric=self.args['LOF_metric']).fit(data_col)
+                                       metric=self.args['LOF_metric'], contamination = self.args['LOF_contamination']).fit(data_col)
+            score = - 1.0 * model.score_samples(data_col)
+            indexes = np.where(score > np.percentile(score, self.percentile))[0]
         elif self.algorithm == 'MoG':
             model =  GaussianMixture(n_components=self.args['MoG_components'], covariance_type=self.args['MoG_covariance'], 
                                      max_iter=self.args['MoG_max_iter'], random_state=0).fit(data_col)
+            score = -1.0* model.predict_proba(data_col)
+            indexes = (np.where(score[:, 0] > np.percentile(score[:, 0], self.percentile))[0])  
+
         elif self.algorithm == 'KDE':
             model = KernelDensity(kernel=self.args['KDE_kernel'], bandwidth=self.args['KDE_bandwidth'], 
                                   algorithm=self.args['KDE_algorithm'], metric=self.args['KDE_metric'], 
                                   breadth_first=self.args['KDE_breadth_first'], 
                                   leaf_size=self.args['KDE_leaf_size']).fit(data_col)
+            score = - 1.0 * model.score_samples(data_col)
+            indexes = np.where(score > np.percentile(score, self.percentile))[0]
         elif self.algorithm == 'IF':
             model = IsolationForest(n_estimators=self.args['IF_estimators'], max_samples=self.args['IF_max_samples'], 
                                     contamination=self.args['IF_contamination'], max_features=self.args['IF_max_features'], 
                                     bootstrap=self.args['IF_bootstrap']).fit(data_col)
-        return model
-    
-    def getIndexList(self, data_col, model):
-        """
-        :param data_col: data for each column
-        :type: np.array
-        
-        :param model: fitted model of selected outlier detection algorithm
-        :type: model
-        
-        :return indexes: indices of detected outliers
-        :type: list
-        
-        """
-        if self.algorithm == 'SR':
-            score = model.generate_anomaly_score(data_col)
-
-        else:
+            """
             score = - 1.0 * model.score_samples(data_col)
-     
-        indexes = np.where(score > np.percentile(score, self.percentile))[0]
+            indexes = np.where(score > np.percentile(score, self.percentile))[0]
+            """
+            #https://partrita.github.io/posts/isolation-forest/
+            model.fit(data_col)
+            score = model.decision_function(data_col)
+            anomaly = model.predict(data_col)
+            indexes = np.where(anomaly == -1)[0]
+            
+
         return indexes
     
 def showResult(data, result, outlierIndex):
