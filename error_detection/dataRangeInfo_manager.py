@@ -6,7 +6,7 @@ class MinMaxLimitValueSet():
     def get_data_min_max_limitSet(self, type):
         if type =='air':
             #data_clean_partial =  edd.extream_error_deletion(data_raw_partial)
-            data_min_max_limit = {'max_num':{'CO2ppm':10000, 'H2Sppm':100, 'NH3ppm':300, 'OptimalTemperature':45, 
+            data_min_max_limit = {'max_num':{"Humidity" : 100,"Temperature" : 100, 'CO2ppm':10000, 'H2Sppm':100, 'NH3ppm':300, 'OptimalTemperature':45, 
                                         'RichTemperature':45, 'RichHumidity':100, 'comp_temp':45, 'comp_humid':100,
                                         '2ndPanSpeed':200, 'UpperPanSpeed':200, 'out_pressure':2000,
                                         "in_pm01_raw":1000, "in_pm25_raw":1000, "in_pm10_raw":1000,
@@ -21,7 +21,7 @@ class MinMaxLimitValueSet():
                                         "coci_pm10":100, "coci_pm25":100, "coci_temp":100, "coci_humi":100, "coci":100, "coai":100,
                                         "nh3":100, "h2s":100, "o3":2, "co":12.5, "no2":2, "so2":2, "vibration_x":16, "vibration_y":16, 
                                         "vibration_z":16, "vibration_max_x":16, "vibration_max_y":16, "vibration_max_z":16},
-                           'min_num':{'CO2ppm':0, 'H2Sppm':0, 'NH3ppm':0, 'OptimalTemperature':-20, 'RichTemperature':-20, 
+                           'min_num':{"Humidity" : 0, "Temperature" : -100,'CO2ppm':0, 'H2Sppm':0, 'NH3ppm':0, 'OptimalTemperature':-20, 'RichTemperature':-20, 
                                         'RichHumidity':0, 'comp_temp':-20, 'comp_humid':0, '2ndPanSpeed':0, 'UpperPanSpeed':0, 'out_pressure':0, 
                                         "in_pm01_raw":0, "in_pm25_raw":0, "in_pm10_raw":0,
                                         "temp":-40, "in_humi":0, "co2":0, "voc":0,  #in_temp to temp
