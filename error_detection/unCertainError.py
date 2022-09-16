@@ -26,9 +26,7 @@ class unCertainErrorRemove():
         MLList = [ 'IF', 'KDE', 'LOF', 'MoG', 'SR']
         self.outlierIndex={}
         for outlierDetectorConfig in outlierDetectorConfigs:
-            print(outlierDetectorConfig)
             algorithm = outlierDetectorConfig['algorithm']
-            print(algorithm)
             if algorithm in MLList:
                 IndexResult = self.getOutlierIndexByMLOutlierDetector(outlierDetectorConfig)
             elif algorithm == "IQR" :
@@ -70,14 +68,13 @@ class unCertainErrorRemove():
         """
         df = self.data.copy()
         weight = param['alg_parameter']['weight']
-        print(weight)
         outlier_index={}
         for column in df.columns:
             column_x = df[column]
             # 1/4 분위와 3/4 분위 지점을 np.percentile로 구함
             quantile_25 = np.nanpercentile(column_x.values, 25)
             quantile_75 = np.nanpercentile(column_x.values, 75)
-            print(quantile_25, quantile_75)
+            print("===== ",column, "- 25%:", quantile_25, "75%", quantile_75)
 
             # IQR을 구하고 IQR에 1.5를 곱해 최댓값과 최솟값 지점 구함.
             iqr = quantile_75 - quantile_25
@@ -87,7 +84,7 @@ class unCertainErrorRemove():
 
             # 최댓값보다 크거나, 최솟값보다 작은 값을 이상치 데이터로 설정하고 Dataframe index 반환
             outlier_index[column] = column_x[(column_x < lowest_val) | (column_x > highest_val)].index
-            print(lowest_val, highest_val)
+            print("===========IQR Low~High:", lowest_val, "~", highest_val)
         return outlier_index
 
     def getOutlierIndexBySeasonalDecomposition(self, outlierDetectorConfig):
@@ -152,26 +149,3 @@ class unCertainErrorRemove():
         outlierIndex = data_outlier.getOneDetectionResult(data_imputed, outlierDetectorConfig)
  
         return outlierIndex
-"""
-    def removeByNeighborOutlierDetection(self, first_ratio):
-
-        second_ratio =first_ratio + 0.1
-        data_out1 = self.data.copy()
-        column_list = data_out1.columns
-        
-        outlierIndex={}
-        for column_name in column_list:
-            temp = data_out1[[column_name]]
-            data_1 = temp.diff().abs()
-            data_2 = temp.diff(periods=2).abs()
-            temp_mean = temp.mean().values[0]
-            First_gap = temp_mean* first_ratio
-            Second_gap = temp_mean * second_ratio
-            print(First_gap, Second_gap)
-            data_1_index = list(data_1[data_1[column_name] > First_gap].index)
-            data_2_index = list( data_2[data_2[column_name] > Second_gap].index)
-            data_1_index.extend(data_2_index)
-
-            outlierIndex[column_name] =data_1_index
-        return outlierIndex
-"""

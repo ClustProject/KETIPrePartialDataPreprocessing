@@ -126,7 +126,6 @@ class packagedPartialProcessing(DataPreprocessing):
         
         
         self.refine_param = process_param['refine_param']
-        print("self.refine_param :: ", self.refine_param)
         self.outlier_param = process_param['outlier_param']
         self.imputation_param = process_param['imputation_param']
     
@@ -170,13 +169,10 @@ class packagedPartialProcessing(DataPreprocessing):
         """
         ###########
         refined_data = self.get_refinedData(input_data, self.refine_param)
-        print("Refining-----End")
         ###########
         datawithMoreCertainNaN, datawithMoreUnCertainNaN = self.get_errorToNaNData(refined_data, self.outlier_param)
-        print("OutlierProcessing-----End")
         ###########
         imputed_data = self.get_imputedData(datawithMoreUnCertainNaN, self.imputation_param)
-        print("Imputation-----End")
         ###########
         result ={'original':input_data, 'refined_data':refined_data, 'datawithMoreCertainNaN':datawithMoreCertainNaN,
         'datawithMoreUnCertainNaN':datawithMoreUnCertainNaN, 'imputed_data':imputed_data}

@@ -24,7 +24,6 @@ class errorToNaN():
     
     def getDataWithUncertainNaN(self, data, uncertainParam):    
         if uncertainParam['flag'] == True:
-            print("getDataWithUncertainNaN")
             from KETIPrePartialDataPreprocessing.error_detection import unCertainError
             param = uncertainParam['param']
             data_outlier = unCertainError.unCertainErrorRemove(data, param)
