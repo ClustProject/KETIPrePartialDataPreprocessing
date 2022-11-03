@@ -4,7 +4,6 @@ class RefineFrequency():
     def __init__(self):
         pass
 
-
     def get_RefinedData(self, data, freq=None):
         """ This function makes new data with the static description frequency according to the freq parameter status. 
         
