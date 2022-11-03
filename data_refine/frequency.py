@@ -138,7 +138,11 @@ class RefineFrequency():
         # TODO Modify it 
         # if etstmated_freq is None, it infers using only two data points.
         
+        ##TODO:  책임님께 질문 2022.09.29 소.이.
         if not estimated_freq:
-            estimated_freq = (data.index[1]-data.index[0])
+            try:
+                estimated_freq = (data.index[1]-data.index[0])
+            except :
+                print("예외가 발생했습니다. data : ", data)
     
         return estimated_freq
