@@ -29,7 +29,6 @@ class DLImputation():
             result = self.data
         return result
 
-
 ## Define each DL imputation interface
 def britsColumnImputation(data, column_name, modelPath):
     print(modelPath[0])

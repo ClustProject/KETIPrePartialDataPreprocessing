@@ -26,7 +26,6 @@ class CertainErrorRemove():
         data_out = self._anomal_value_remove(data_out, self.anomal_value_list)
         return data_out
         
-
     def _out_of_range_error_remove (self, data, min_max_limit):
         """ Remove out-of-range errors and outliers. change error values to NaN
 
