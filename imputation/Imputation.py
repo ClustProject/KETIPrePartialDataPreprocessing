@@ -99,7 +99,7 @@ class SerialImputation():
         DataWithMaskedNaN = data.copy()
         for method_set in imputation_method:
             max_limit =method_set['max']
-            from KETIPrePartialDataPreprocessing.data_imputation import nanMasking
+            from KETIPrePartialDataPreprocessing.imputation import nanMasking
             NaNInfoOverThresh= nanMasking.getConsecutiveNaNInfoOvermaxNaNNumLimit(data, max_limit)
             # Missing Data Imputation
             
@@ -129,8 +129,8 @@ class SerialImputation():
         method = method_set['method']
         parameter = method_set['parameter']
 
-        from KETIPrePartialDataPreprocessing.data_imputation import basicMethod 
-        from KETIPrePartialDataPreprocessing.data_imputation import DLMethod 
+        from KETIPrePartialDataPreprocessing.imputation import basicMethod 
+        from KETIPrePartialDataPreprocessing.imputation import DLMethod 
         basicImpute = basicMethod.BasicImputation(data, method, max_limit, parameter)
 
         if method in self.ScikitLearnMethods:

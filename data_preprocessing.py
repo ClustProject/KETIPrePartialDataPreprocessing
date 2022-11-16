@@ -44,11 +44,11 @@ class DataPreprocessing():
         """
         result = data.copy()
         if refine_param['removeDuplication']['flag']== True:
-            from KETIPrePartialDataPreprocessing.data_refine import redundancy
+            from KETIPrePartialDataPreprocessing.refinement import redundancy
             result = redundancy.ExcludeRedundancy().get_result(result)
 
         if refine_param['staticFrequency']['flag'] == True:
-            from KETIPrePartialDataPreprocessing.data_refine import frequency
+            from KETIPrePartialDataPreprocessing.refinement import frequency
             inferred_freq = refine_param['staticFrequency']['frequency']
             result = frequency.RefineFrequency().get_RefinedData(result, inferred_freq)
 
@@ -84,7 +84,7 @@ class DataPreprocessing():
         
             
         """
-        from KETIPrePartialDataPreprocessing.error_detection import errorToNaN
+        from KETIPrePartialDataPreprocessing.errorDetection import errorToNaN
         self.datawithMoreCertainNaN = errorToNaN.errorToNaN().getDataWithCertainNaN(data, outlier_param['certainErrorToNaN'])
         self.datawithMoreUnCertainNaN = errorToNaN.errorToNaN().getDataWithUncertainNaN(self.datawithMoreCertainNaN, outlier_param['unCertainErrorToNaN'])
         return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
@@ -106,7 +106,7 @@ class DataPreprocessing():
         """
         self.imputedData = data.copy()
         if imputation_param['serialImputation']['flag'] == True:
-            from KETIPrePartialDataPreprocessing.data_imputation import Imputation
+            from KETIPrePartialDataPreprocessing.imputation import Imputation
             self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(self.imputedData, imputation_param['serialImputation'])
 
         return self.imputedData
