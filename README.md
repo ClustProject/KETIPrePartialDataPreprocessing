@@ -1,5 +1,5 @@
 
-# KETIPrePartialDataPreprocessing
+# Clust.clust.preprocessing
 > Preprocessing module for one single dataset. 
 
 It includes cleaning, imputation, outlier detection modules.
@@ -12,7 +12,7 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
 
 ## 2. DataProcessing.py
 ### 2-1. function all_preprocessing(input_data, refine_param, outlier_param, imputation_param)
-> This function gets cleaner data by all possible data preprocessing modules from KETIPrePartialDataPreprocessing packages.
+> This function gets cleaner data by all possible data preprocessing modules from Clust.clust.preprocessing packages.
 > Refinging, Outlier Detction, Imputation
 
 ### 2-2. function multiDataset_all_preprocessing(multiple_dataset, process_param)
@@ -32,8 +32,8 @@ And It also has dataRemoveByNaN module which remove a part of data according to 
         "staticFrequency":{"flag":True, "frequency":None}
     }
 ```
-1) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.RemoveDuplicateData: Remove duplicated data
-2) KETIPrePartialDataPreprocessing.data_cleaning.RefineData.make_staticFrequencyData: Let the original data have a static frequency
+1) Clust.clust.preprocessing.data_cleaning.RefineData.RemoveDuplicateData: Remove duplicated data
+2) Clust.clust.preprocessing.data_cleaning.RefineData.make_staticFrequencyData: Let the original data have a static frequency
 - output: datafrmae type
 
 ### 2-2-2. get_errorToNaNData(self, data, outlier_param)

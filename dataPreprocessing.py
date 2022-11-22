@@ -37,18 +37,18 @@ class DataPreprocessing():
        Example
         -------
             >>> data = input_data
-            >>> from KETIPrePartialDataPreprocessing.DataProcessing import DataPreprocessing
+            >>> from Clust.clust.preprocessing.DataProcessing import DataPreprocessing
             >>> refine_param = {'removeDuplication': {'flag': True}, 'staticFrequency': {'flag': True, 'frequency': '1H'}}
             >>> output = DataPreprocessing().get_refinedData(data, refine_param) 
 
         """
         result = data.copy()
         if refine_param['removeDuplication']['flag']== True:
-            from KETIPrePartialDataPreprocessing.refinement import redundancy
+            from Clust.clust.preprocessing.refinement import redundancy
             result = redundancy.ExcludeRedundancy().get_result(result)
 
         if refine_param['staticFrequency']['flag'] == True:
-            from KETIPrePartialDataPreprocessing.refinement import frequency
+            from Clust.clust.preprocessing.refinement import frequency
             inferred_freq = refine_param['staticFrequency']['frequency']
             result = frequency.RefineFrequency().get_RefinedData(result, inferred_freq)
 
@@ -84,7 +84,7 @@ class DataPreprocessing():
         
             
         """
-        from KETIPrePartialDataPreprocessing.errorDetection import errorToNaN
+        from Clust.clust.preprocessing.errorDetection import errorToNaN
         self.datawithMoreCertainNaN = errorToNaN.errorToNaN().getDataWithCertainNaN(data, outlier_param['certainErrorToNaN'])
         self.datawithMoreUnCertainNaN = errorToNaN.errorToNaN().getDataWithUncertainNaN(self.datawithMoreCertainNaN, outlier_param['unCertainErrorToNaN'])
         return self.datawithMoreCertainNaN, self.datawithMoreUnCertainNaN
@@ -106,7 +106,7 @@ class DataPreprocessing():
         """
         self.imputedData = data.copy()
         if imputation_param['serialImputation']['flag'] == True:
-            from KETIPrePartialDataPreprocessing.imputation import Imputation
+            from Clust.clust.preprocessing.imputation import Imputation
             self.imputedData = Imputation.SerialImputation().get_dataWithSerialImputationMethods(self.imputedData, imputation_param['serialImputation'])
 
         return self.imputedData
